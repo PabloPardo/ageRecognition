@@ -1,389 +1,394 @@
-{% load url from future %}
+<!DOCTYPE html>
 
-<html><head>
+{% load static %}
+
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
     <title>Age Recognition</title>
-    <style>
-        body {
-            margin:50px 0px; padding:0px; /* Need to set body margin and padding to get consistency between browsers. */
-            text-align:center; /* Hack for IE5/Win */
-            background-color:#000;
-            color: #333333;
-            direction: ltr;
-            font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
-            font-size: 11px;
-        }
-        #footer {
-            height: 80px;
-        }
-        .content {
-            width:600px;
-            margin:0px auto; /* Right and left margin widths set to "auto" */
-            text-align:left; /* Counteract to IE5/Win Hack */
-            padding:15px;
-            border:1px solid #333;
-            background-color:white;
-        }
-        .error {
-            border: 1px solid red;
-            margin-top: 10px;
-            padding: 20px;
-        }
-        h2 {
-            line-height: 20px;
-            min-height: 20px;
-            padding-bottom: 2px;
-            vertical-align: bottom;
-            color: #1C2A47;
-            font-size: 16px;
-        }
-        a {
-            color: #3B5998;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .messages {
-            padding: 15px;
-            background-color: #cdc;
-            list-style: none;
-        }
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        #github a {
-            -webkit-box-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 10px 0px, rgba(0, 0, 0, 0.0664063) 0px 0px 3px 1px inset;
-            -webkit-transform: matrix(0.7071067811865475, 0.7071067811865476, -0.7071067811865476, 0.7071067811865475, 0, 0);
-            background-attachment: scroll;
-            background-clip: border-box;
-            background-color: #EF7600;
-            background-image: none;
-            background-origin: padding-box;
-            border-bottom-color: #EF9F4C;
-            border-bottom-style: solid;
-            border-bottom-width: 2px;
-            border-top-color: #EF9F4C;
-            border-top-style: solid;
-            border-top-width: 2px;
-            box-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 10px 0px, rgba(0, 0, 0, 0.0664063) 0px 0px 3px 1px inset;
-            color: white;
-            cursor: auto;
-            display: block;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: 13px;
-            font-weight: bold;
-            height: 19px;
-            letter-spacing: -1px;
-            line-height: 19px;
-            margin-bottom: 0px;
-            margin-left: -50px;
-            margin-right: 0px;
-            margin-top: 40px;
-            overflow-x: visible;
-            padding-bottom: 3px;
-            padding-left: 0px;
-            padding-right: 0px;
-            padding-top: 3px;
-            text-align: center;
-            text-decoration: none;
-            text-shadow: #522600 0px 0px 10px;
-            width: 250px;
-            z-index: 0;
-        }
-        #github {
-            position: absolute;
-            z-index: 100;
-            top: 0px;
-            right: 0px;
-            width: 130px;
-            height: 140px;
-            overflow: hidden;
-        }
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet">
 
-        #rounded-corner
-        {
-            font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-            font-size: 12px;
-            margin: 45px;
-            width: 480px;
-            text-align: left;
-            border-collapse: collapse;
-        }
-        #rounded-corner thead th
-        {
-            background: #b9c9fe;
-        }
+    <link rel="icon" type="image/png" href="{% static 'images/logo/small_logo.png' %}" />
 
-        #rounded-corner th
-        {
-            padding: 8px;
-            font-weight: normal;
-            font-size: 13px;
-            color: #039;
-            background: #b9c9fe;
-        }
-        #rounded-corner td
-        {
-            padding: 8px;
-            background: #e8edff;
-            border-top: 1px solid #fff;
-            color: #669;
-        }
-        #rounded-corner tfoot td.rounded-foot-left
-        {
-            background: #e8edff url('table-images/botleft.png') left bottom no-repeat;
-        }
-        #rounded-corner tfoot td.rounded-foot-right
-        {
-            background: #e8edff url('table-images/botright.png') right bottom no-repeat;
-        }
-        #rounded-corner tbody tr:hover td
-        {
-            background: #d0dafd;
-        }
+    <!--Load Bootstrap css files-->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/normalize.min.css' %}">
 
-    </style>
+    <!--Load font-awesome css files (fancy icons)-->
+    <link rel="stylesheet" href="{% static 'font-awesome-4.1.0/css/font-awesome.min.css' %}">
 
+    <!--Load animate and presonaliced css files-->
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
+
+    <!-- Load django_facebook css files form STATIC-->
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
 
-</head><body>
-<div id="github"><a href="https://github.com/xbaro/ageRecognition" title="Fork me on GitHub">Fork me on Github</a></div>
-<div>
+    <!--Load js files from STATIC -->
+    <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
+    <script src="{% static 'js/facebook.js' %}"></script>
 
+</head>
+<body>
+    <!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+    <![endif]-->
 
+    <!-- HEADER -->
+    <div id="home">
+        <div class="site-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-xs-6 text-center">
+                        <div id="templatemo_logo">
+                            <h1><a rel="nofollow" title="Age Recognition">Age Recognition</a></h1>
+                        </div> <!-- /.logo -->
+                    </div> <!-- /.col-md-2 -->
+                    <div class="col-md-9 col-sm-4 col-xs-4">
+                            <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
+                            <div class="main-menu">
+                                <ul>
+                                    <li><a href="#profile">Profile</a></li>
+                                    <li><a href="#game">Game</a></li>
+                                    <li><a href="#achievements">Achievements</a></li>
+                                    <li><a href="#gallery">Gallery</a></li>
+                                    <li><a href="#ranking">Ranking</a></li>
+                                </ul>
+                            </div> <!-- /.age_recognition-menu -->
+                    </div> <!-- /.col-md-8 -->
+                </div> <!-- /.row -->
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="responsive">
+                            <div class="main-menu">
+                                <ul>
+                                    <li><a href="#profile">Profile</a></li>
+                                    <li><a href="#game">Game</a></li>
+                                    <li><a href="#achievements">Achievements</a></li>
+                                    <li><a href="#gallery">Gallery</a></li>
+                                    <li><a href="#ranking">Ranking</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /.container -->
+        </div> <!-- /.site-header -->
 
-<div class="content">
-    <h2>Age Recognition - Test page</h2>
-    <p>
-        Soon you will be able to check <a href="http://www.django-facebook.com/">django-facebook.com</a> for more info.
-    </p>
-    <iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.mellowmorning.com%2F&amp;send=false&amp;layout=standard&amp;width=450&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;font&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
-</div>
-<div class="content" style="margin-top: 10px;">
+    </div> <!-- /#home -->
+    <!--END-HEADER-->
+
+    <!--LOGIN-->
     {% if request.GET.fb_error_or_cancel or request.GET.error %}
         <div class="error">
             Please click allow in the facebook interface, to access Age Recognition
         </div>
     {% endif %}
 
-    <div class="error" id="django_static_error">
-        Couldn't load the static Javascript files, is django static configured correctly?
-        <a href="http://docs.djangoproject.com/en/1.3/howto/static-files/" target="_blank">See the docs here.</a>
-    </div>
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
     {% endif %}
 
-    <div style="margin-top: 60px;">
-
+    <div class="container">
         {% if not user.is_authenticated %}
 
-        <div class="inner_content">
+        <div class="row">
+            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            </div>
+            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
+                <div id="Login" class="content-section">
+                    <!--form to call registration via facebook -->
+                    <form action="{% url 'facebook_connect' %}" method="post">
+                        <h2>Register, login or connect with Facebook</h2>
+                        <br />
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ request.path }}" name="next" />
 
-            <!--form to call registration via facebook -->
-            <form action="{% url 'facebook_connect' %}" method="post">
-                <h2>Register, login or connect with Facebook</h2>
-                <br />
-                {% csrf_token %}
-                <input type="hidden" value="{{ request.path }}" name="next" />
-
-                <!--
-                use error next for a seperate error page
-                <input type="hidden" value="/error/" name="error_next" />
-                -->
-                <div id="facebook_login_js">
-                <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                (javascript popup)
+                        <div id="facebook_login_js">
+                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
+                        (javascript popup)
+                        </div>
+                    </form>
+                    You are not logged in, Please login by clicking one of the buttons above
                 </div>
-                <br /><br />
-                <div id="facebook_login_redirect">
-                    <input type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                    (redirect version)
+            </div>
+            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <!--END-LOGIN-->
+
+    {% if user.is_authenticated %}
+    <!-- PROFILE -->
+    <div id="profile" class="content-section">
+        <div class="col-md-12 text-center">
+            <h1 class="section-title">Profile</h1>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <span class="pull-right">
+                        <!--Profile Image-->
+                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook stored image" />
+                    </span>
                 </div>
-            </form>
-
-            You are not logged in, Please login by clicking one of the buttons above
-
+                <div class="col-md-6 col-sm-6">
+                    <header>
+                        <h1><strong>{{ user.first_name }}</strong></h1>
+                    </header>
+                    <ul>
+                        <li><strong>Uploaded Pictures: </strong> {{user.upload_img}} </li>
+                        <li><strong>Evaluated Pictures: </strong> {{user.eval_img}} </li>
+                        <li><strong>Score Global: </strong> {{user.score_global}} </li>
+                        <li><strong>Score Week: </strong> {{user.score_week}} </li>
+                        <li><strong>Score Day: </strong> {{user.score_day}} </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-center">
+                     <p>
+                         <a href="#game" class="btn btn-lg btn-default">Play</a>
+                    </p>
+                </div>
+            </div>
         </div>
+    </div>
+    <!-- END PROFILE -->
 
-        {% endif %}
+    <!-- GAME -->
+    <div id="game" class="content-section">
+        <div class="col-md-12 text-center">
+            <h1 class="section-title">Game</h1>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                </div>
+                <div class="col-md-8 col-sm-6 text-center">
+                    <img src="{% static 'images/example_image1.jpg' %}" width="200" height="300" alt="Image" class="img-thumbnail">
+                </div>
+                <div class="col-md-2 col-sm-3">
+                </div>
+            </div>
+            <dic class="row">
+                <div class="col-md-2 col-sm-3">
+                </div>
+                <div class="col-md-8 col-sm-6 text-center">
+                    <form class="form-horizontal" role="form">
+                       <div class="form-group">
+                          <div class="col-sm-offset-2 col-sm-10">
+                              <label for="age" class="col-sm-2 control-label">Age</label>
+                              <div class="col-sm-10">
+                                 <input type="number" class="form-control" id="age" min="1" max="110"
+                                    placeholder="Enter the age of the person in the image.">
+                              </div>
+                           </div>
+                       </div>
+                       <div class="form-group">
+                          <div class="col-sm-offset-2 col-sm-10">
+                             <button type="submit" class="btn btn-default">Submit</button>
+                          </div>
+                       </div>
+                    </form>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                </div>
+            </div>
+        </div> <!-- /.container -->
+    </div> <!-- /#game -->
+    <!-- END GAME -->
 
+    <!-- ACHIEVEMENTS -->
+    <div id="achievements" class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="section-title">Achievements</h1>
+                </div> <!-- /.col-md-12 -->
+            </div> <!-- /.row -->
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                </div> <!-- /.col-md-2 -->
+                <div class="col-md-8 col-sm-6">
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Achievement</th>
+                            <th>Description</th>
+                            <th>Stars</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>achievement 1</td>
+                            <td>description 1</td>
+                            <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
+                          </tr>
+                          <tr>
+                            <td>achievement 2</td>
+                            <td>description 2</td>
+                            <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                          </tr>
+                          <tr>
+                            <td>achievement 3</td>
+                            <td>description 3</td>
+                            <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div> <!-- /.col-md-8 -->
+                <div class="col-md-2 col-sm-3">
+                </div> <!-- /.col-md-2 -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </div> <!-- /#achievements -->
+    <!-- END ACHIEVEMENTS -->
 
-        <div id="header_bar">
+    <!-- GALLERY -->
+    <div id="gallery" class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="section-title">Gallery</h1>
+                    <!--
+                    <div class="well"><p>Here you can see your gallery of pictures. The label attached to the picture is the age other players think you look like.</p></div>
+                    -->
+                </div>
+            </div>
+            <div class="site-slider">
+                <ul class="bxslider">
+                    <li>
+                        <img src="{% static 'images/slider/slide1.jpg' %}" alt="slider image 1">
+                    </li>
+                    <li>
+                        <img src="{% static 'images/slider/slide2.jpg' %}" alt="slider image 2">
+                    </li>
+                    <li>
+                        <img src="{% static 'images/slider/slide3.jpg' %}" alt="slider image 3">
+                    </li>
+                    <li>
+                        <img src="{% static 'images/slider/slide4.jpg' %}" alt="slider image 4">
+                    </li>
+                    <li>
+                        <img src="{% static 'images/slider/slide5.jpg' %}" alt="slider image 5">
+                    </li>
+                </ul> <!-- /.bxslider -->
+                <div class="bx-thumbnail-wrapper">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="bx-pager">
+                                    <a data-slide-index="0" href=""><img src="{% static 'images/slider/thumb1.jpg' %}" alt="image 1" /></a>
+                                    <a data-slide-index="1" href=""><img src="{% static 'images/slider/thumb2.jpg' %}" alt="image 2" /></a>
+                                    <a data-slide-index="2" href=""><img src="{% static 'images/slider/thumb3.jpg' %}" alt="image 3" /></a>
+                                    <a data-slide-index="3" href=""><img src="{% static 'images/slider/thumb4.jpg' %}" alt="image 4" /></a>
+                                    <a data-slide-index="4" href=""><img src="{% static 'images/slider/thumb5.jpg' %}" alt="image 5" /></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- /.site-slider -->
+        </div>
+    </div>
+    <!-- END GALLERY -->
 
-        {% if user.is_authenticated %}
-            <h1>Welcome {{ user }}</h1><a href="{% url 'auth_logout' %}?next={{ request.path|urlencode }}">logout</a><br />
-
-            <p>
-            Thank you for logging in with Facebook.
-            By default you will have the following data available:
-            </p>
-
-            <table id="rounded-corner">
-                <thead>
-                    <tr>
-                        <th>Field</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tr>
-                    <td>First Name:</td><td>{{ user.first_name }}</td>
-                </tr>
-                <tr>
-                    <td>Last Name:</td><td>{{ user.last_name }}</td>
-                </tr>
-                <tr>
-                    <td>Gender:</td><td>{{ user.profile_or_self.gender }}</td>
-                </tr>
-                <tr>
-                    <td>About me:</td><td>{{ user.profile_or_self.about_me }}</td>
-                </tr>
-                <tr>
-                    <td>Facebook profile url:</td><td>{{ user.profile_or_self.facebook_profile_url }}</td>
-                </tr>
-                <tr>
-                    <td>Facebook ID:</td><td>{{ user.profile_or_self.facebook_id }}</td>
-                </tr>
-                <tr>
-                    <td>Date of Birth:</td><td>{{ user.profile_or_self.date_of_birth }}</td>
-                </tr>
-                <tr>
-                    <td>Website Url:</td><td>{{ user.profile_or_self.website_url }}</td>
-                </tr>
-                {% if user.profile_or_self.image %}
-                <tr>
-                    <td>Local Image:</td><td><img src="{{ user.profile_or_self.image.url }}" title="local copy" /></td>
-                </tr>
-                {% endif %}
-                <tr>
-                    <td>Hotlinked Image:</td><td><img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook stored image" /><br /></td>
-                </tr>
-                <tr>
-                    <td>Likes:</td>
-                    <td>
-                        <ul>
-                        {% for like in user.profile_or_self.likes|slice:":5" %}
-                            <li>{{ like.name }}</li>
+    <!-- RANKING -->
+    <div id="ranking" class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="section-title">Ranking</h1>
+                </div> <!-- /.col-md-12 -->
+            </div> <!-- /.row -->
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                </div> <!-- /.col-md-2 -->
+                <div class="col-md-8 col-md-8">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <!--<th>#</th>-->
+                          <th>Player</th>
+                          <th>Score</th>
+                          <th>Score Week</th>
+                          <th>Score Day</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% if user %}
+                        {% for u in user %}
+                            <tr>
+                              <!--<th>{{ users }}</th>-->
+                              <td><strong>{{ u.name}}</strong></td>
+                              <td>{{ u.score_global }}</td>
+                              <td>{{ u.score_week }}</td>
+                              <td>{{ u.score_day }}</td>
+                            </tr>
                         {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Friends:</td>
-                    <td>
-                        <ul>
-                        {% for friend in user.profile_or_self.friends|slice:":5" %}
-                            <li>{{ friend.name }}</li>
-                        {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Getting More:</td><td>Facebook has a ton more data, read about it <a href="https://developers.facebook.com/docs/reference/api/">here</a>.</td>
-                </tr>
-            </table>
+                      {% else %}
+                        <strong>There are no users</strong>
+                      {% endif %}
+                      </tbody>
+                    </table>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                </div> <!-- /.col-md-2 -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </div> <!-- /#ranking -->
+    <!-- END RANKING -->
+    {% endif %}
 
-            <p>
-                You can connect users which registered the old fashioned way, by giving them the following option to connect.
-                Note that we explitly indicate that we are connecting using the connect_facebook=1 value.
-            </p>
-            <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
-                <a href="javascript:void(0);" onclick="F.connect(this.parentNode);">Connect this account to Facebook</a> (used to connect non facebook accounts)
-                <input type="hidden" value="{{ request.path }}" name="next" />
-                <input type="hidden" name="connect_facebook" value="1">
-                {% csrf_token %}
-            </form>
-        {% endif %}
+    <!--FOOTER-->
+    <div class="site-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
+                    <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
+                        <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">
+                    </a>
+                    <a href="http://gesture.chalearn.org/">
+                        <img src="{% static 'images/logo/logoChalearn.png' %}" width="80" height="60" alt="HuPBA logo">
+                    </a>
+                    <a href="http://visada.me/">
+                        <img src="{% static 'images/logo/logoVisada.png' %}" width="110" height="60" alt="Visada logo">
+                    </a>
+                </div> <!-- /.col-md-6 -->
+                <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
+                    <p>Project developed in collaboration with:</p>
+                </div>
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </div> <!-- /.site-footer -->
+    <!--END-FOOTER-->
 
-    </div>
+    <script src="{% static 'js/vendor/jquery-1.10.1.min.js' %}"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-1.10.1.min.js' %}"><\/script>')</script>
+    <script src="{% static 'js/jquery.easing-1.3.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 
-    <div id="footer">
+    <!--Load django_facebook script from STATIC-->
+    <script src="{{ STATIC_URL }}django_facebook/js/statictest.js" type="text/javascript"></script>
+    {% include 'django_facebook/_facebook_js.html' %}
 
-        </div>
-        <div style="float: right;">
-            <h4>Advanced Testing</h4>
-            <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
-                <a href="javascript:void(0);" onclick="F.connect(this.parentNode);">Test fresh registration</a>
-                <input type="hidden" value="{{ request.path }}" name="next" />
-                <input type="hidden" value="1" name="force_registration_hard" />
-                {% csrf_token %}
-            </form>
-            <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
-                <a href="javascript:void(0);" onclick="F.connect(this.parentNode);">Test registration</a>
-                <input type="hidden" value="{{ request.path }}" name="next" />
-                <input type="hidden" value="1" name="force_registration" />
-                {% csrf_token %}
-            </form>
-        </div>
-    </div>
-
-   <br /><br /><br /><br /><br /><br /><br />
-    <div id="image_upload" style="margin: 60px 0px 20px 0px;">
-        <h2>Album upload flow</h2>
-        <div>
-            <form action="{% url 'facebook_image_upload' %}" method="get">
-                {% csrf_token %}
-                <input type="hidden" value="{{ request.path }}" name="next" />
-
-                <img src="http://e.fashiocdn.com/images/entities/0/7/z/0/D/0.126x126.jpg" alt="image"/>
-                <input type="hidden" value="http://e.fashiocdn.com/images/entities/0/7/z/0/D/0.365x365.jpg" name="pictures" />
-
-                <img src="http://d.fashiocdn.com/images/entities/0/6/T/p/8/0.126x126.jpg" alt="image"/>
-                <input type="hidden" value="http://d.fashiocdn.com/images/entities/0/6/T/p/8/0.365x365.jpg" name="pictures" />
-                <br />
-
-                <input type="submit" value="Upload to your album" />
-            </form>
-        </div>
-    </div>
-
-    <div id="wall_post" style="margin: 60px 0px 20px 0px;">
-        <h2>Post to My Wall</h2>
-        <div>
-            <form action="{% url 'facebook_wall_post' %}" method="get">
-                {% csrf_token %}
-                <input type="hidden" value="{{ request.path }}" name="next" />
-
-                <textarea name="message" rows="3" cols="35">Check out fashiolista.com, loving it :)</textarea>
-                <br />
-                <input type="submit" value="Post to your wall" />
-            </form>
-        </div>
-    </div>
-
-    <div id="wall_post" style="margin: 60px 0px 20px 0px;">
-        <h2>Post to My Wall - Javascript Popup version</h2>
-        <div>
-            <form action="{% url 'facebook_wall_post' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" value="{{ request.path }}" name="next" />
-
-                <textarea name="message" rows="3" cols="35">Check out fashiolista.com, loving it :)</textarea>
-                <br />
-                <input type="submit" value="Post to your wall" onclick="F.connect(this.parentNode, ['publish_stream']); return false;"/>
-            </form>
-        </div>
-    </div>
-
-    <div id="canvas_page" style="margin: 60px 0px 20px 0px;">
-        <h2>Canvas page Example</h2>
-        Note for the page tab and canvas example to work you need to serve the example at:
-        https://vagrant.mellowmorning.com/facebook/example/
-        <a href="http://apps.facebook.com/django_facebook_test/">Canvas page example</a>
-    </div>
-
-    <div id="page_tab" style="margin: 60px 0px 20px 0px;">
-        <h2>Page tab example</h2>
-        Note for the page tab and canvas example to work you need to serve the example at:
-        https://vagrant.mellowmorning.com/facebook/example/
-        <a href="https://www.facebook.com/dialog/pagetab?app_id={{ FACEBOOK_APP_ID }}&next=https://vagrant.mellowmorning.com/facebook/example/">Add the test page tab</a>
-    </div>
-
-</div>
-
-<script src="{{ STATIC_URL }}django_facebook/js/statictest.js" type="text/javascript"></script>
-
-{% include 'django_facebook/_facebook_js.html' %}
-
-</div>
-</body></html>
+</body>
+</html>

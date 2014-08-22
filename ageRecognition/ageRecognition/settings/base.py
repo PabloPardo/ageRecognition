@@ -130,6 +130,8 @@ class Base(Settings):
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+        # Path to the static files of the canvas app
+        os.path.join(PROJECT_DIR, 'apps/canvas'),
     )
 
     # List of finder classes that know how to find static files in
@@ -152,7 +154,7 @@ class Base(Settings):
     )
 
     MIDDLEWARE_CLASSES = (
-        'sslify.middleware.SSLifyMiddleware',
+        # 'sslify.middleware.SSLifyMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
@@ -170,7 +172,7 @@ class Base(Settings):
         # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
         # Always use forward slashes, even on Windows.
         # Don't forget to use absolute paths, not relative paths.
-        os.path.join(PROJECT_DIR,'templates'),
+        os.path.join(PROJECT_DIR, 'templates'),
     )
 
     TEMPLATE_CONTEXT_PROCESSORS = Settings.TEMPLATE_CONTEXT_PROCESSORS + (
@@ -403,8 +405,8 @@ class DevBase(Base):
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': os.path.join(Base.PROJECT_DIR,'dev_db.sqlite'), # Or path to database file if using sqlite3.
+            'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': os.path.join(Base.PROJECT_DIR, 'dev_db.sqlite'), # Or path to database file if using sqlite3.
             # The following settings are not used with sqlite3:
             'USER': '',
             'PASSWORD': '',
