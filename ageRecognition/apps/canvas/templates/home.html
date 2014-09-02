@@ -36,7 +36,6 @@
 
     <!--Load js files from STATIC -->
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
-    <script src="{% static 'js/facebook.js' %}"></script>
 
 </head>
 <body>
@@ -103,34 +102,32 @@
     </ul>
     {% endif %}
 
-    <div class="container">
-        {% if not user.is_authenticated %}
-
+    {% if not user.is_authenticated %}
+    <div id="login" class="content-section">
+        <div class="col-md-12 text-center">
+            <h1 class="section-title">Login</h1>
+        </div>
         <div class="row">
             <div class=".col-xs-4 .col-sm-2 .col-md-2">
             </div>
             <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <div id="Login" class="content-section">
-                    <!--form to call registration via facebook -->
-                    <form action="{% url 'facebook_connect' %}" method="post">
-                        <h2>Register, login or connect with Facebook</h2>
-                        <br />
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ request.path }}" name="next" />
+                <!--form to call registration via facebook -->
+                <form action="{% url 'facebook_connect' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ request.path }}" name="next" />
 
-                        <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                        </div>
-                    </form>
-                    You are not logged in, Please login by clicking one of the buttons above
-                </div>
+                    <div id="facebook_login_js">
+                    <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
+                    (javascript popup)
+                    </div>
+                </form>
+                You are not logged in, Please login by clicking one of the buttons above
             </div>
             <div class=".col-xs-4 .col-sm-2 .col-md-2">
             </div>
         </div>
-        {% endif %}
     </div>
+    {% endif %}
     <!--END-LOGIN-->
 
     {% if user.is_authenticated %}
@@ -144,26 +141,47 @@
                 <div class="col-md-6 col-sm-6">
                     <span class="pull-right">
                         <!--Profile Image-->
-                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook stored image" />
+                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook profile image" />
                     </span>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <header>
-                        <h1><strong>{{ user.first_name }}</strong></h1>
+                        <h1><strong>{{ user.first_name }} {{user.last_name}}</strong></h1>
                     </header>
                     <ul>
-                        <li><strong>Uploaded Pictures: </strong> {{user.upload_img}} </li>
-                        <li><strong>Evaluated Pictures: </strong> {{user.eval_img}} </li>
-                        <li><strong>Score Global: </strong> {{user.score_global}} </li>
-                        <li><strong>Score Week: </strong> {{user.score_week}} </li>
-                        <li><strong>Score Day: </strong> {{user.score_day}} </li>
+                        <li><strong>Uploaded Pictures: </strong> {{user.userprofile.upload_pic}} </li>
+                        <li><strong>Evaluated Pictures: </strong> {{user.userprofile.eval_pic}} </li>
+                        <li><strong>Score Global: </strong> {{user.userprofile.score_global}} </li>
+                        <li><strong>Score Week: </strong> {{user.userprofile.score_week}} </li>
+                        <li><strong>Score Day: </strong> {{user.userprofile.score_day}} </li>
                     </ul>
                 </div>
             </div>
             <div class="row">
-                <div class="text-center">
-                     <p>
-                         <a href="#game" class="btn btn-lg btn-default">Play</a>
+                <div class="col-md-4 col-sm-3">
+                </div>
+                <div class="col-md-4 col-sm-6 text-center">
+                    <form class="form-horizontal" role="form"
+                          action="{% url 'home' %}" method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
+                       <div class="form-group">
+                          <div style="padding:10px;margin:10px;border:0 solid #ccc">
+                              <span title="Upload images of yourself so other
+                                  players con guess how old you look
+                                  like">
+                                  <p>{{ form.non_field_errors }}</p>
+                                  <div>{{ form.pic.errors }}</div>
+                                  <div >
+                                      {{ form.pic }}
+                                  </div>
+                                  <input class="btn btn-default" type="submit"
+                                         value="Upload Images"/>
+                              </span>
+                          </div>
+                       </div>
+                    </form>
+                    <p>
+                         <a href="#game" class="btn btn-lg btn-default"><strong>Play</strong></a>
                     </p>
                 </div>
             </div>
@@ -192,22 +210,17 @@
                 <div class="col-md-8 col-sm-6 text-center">
                     <form class="form-horizontal" role="form">
                        <div class="form-group">
-                          <div class="col-sm-offset-2 col-sm-10">
-                              <label for="age" class="col-sm-2 control-label">Age</label>
-                              <div class="col-sm-10">
-                                 <input type="number" class="form-control" id="age" min="1" max="110"
-                                    placeholder="Enter the age of the person in the image.">
-                              </div>
-                           </div>
+                          <div class="col-sm-9">
+                              <label for="age" class="control-label">Age</label>
+                              <input type="number" class="form-control" id="age" min="1" max="90" placeholder="How old he/she looks like?">
+                          </div>
                        </div>
                        <div class="form-group">
-                          <div class="col-sm-offset-2 col-sm-10">
+                          <div class="col-sm-12">
                              <button type="submit" class="btn btn-default">Submit</button>
                           </div>
                        </div>
                     </form>
-                </div>
-                <div class="col-md-2 col-sm-3">
                 </div>
             </div>
         </div> <!-- /.container -->
@@ -236,8 +249,8 @@
                         </thead>
                         <tbody>
                           <tr>
-                            <td>achievement 1</td>
-                            <td>description 1</td>
+                            <td>Share it!</td>
+                            <td>You get stars by sharing the game with your friends.</td>
                             <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
                           </tr>
                           <tr>
@@ -332,19 +345,18 @@
                         </tr>
                       </thead>
                       <tbody>
-                      {% if user %}
-                        {% for u in user %}
-                            <tr>
-                              <!--<th>{{ users }}</th>-->
-                              <td><strong>{{ u.name}}</strong></td>
-                              <td>{{ u.score_global }}</td>
-                              <td>{{ u.score_week }}</td>
-                              <td>{{ u.score_day }}</td>
-                            </tr>
-                        {% endfor %}
-                      {% else %}
-                        <strong>There are no users</strong>
-                      {% endif %}
+                         {% for u in users %}
+                             {% if u.user_id >= 0 %}
+                                <tr>
+                                  <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
+                                  <td> {{u.score_global }}</td>
+                                  <td> {{u.score_week }}</td>
+                                  <td> {{u.score_day }}</td>
+                                </tr>
+                             {% endif %}
+                         {% empty %}
+                            <strong>There are no users</strong>
+                         {% endfor %}
                       </tbody>
                     </table>
                 </div>
@@ -385,7 +397,6 @@
     <script src="{% static 'js/bootstrap.js' %}"></script>
     <script src="{% static 'js/plugins.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-
     <!--Load django_facebook script from STATIC-->
     <script src="{{ STATIC_URL }}django_facebook/js/statictest.js" type="text/javascript"></script>
     {% include 'django_facebook/_facebook_js.html' %}

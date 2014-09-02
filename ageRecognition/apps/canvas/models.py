@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django_facebook.models import FacebookModel, get_user_model
+from django_facebook.models import FacebookModel, get_user_model, FacebookProfileModel
 from django_facebook.utils import get_profile_model
 import logging
 logger = logging.getLogger(__name__)
@@ -26,11 +26,11 @@ except ImportError as e:
 
 
 # Create your models here.
-class UserProfile(FacebookModel):
+class UserProfile(models.Model):
     """
     Inherit the properties from django facebook
     """
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True)
 
     # Statistics, Scores and Achievements
     upload_pic = models.IntegerField(default=0)
@@ -41,14 +41,17 @@ class UserProfile(FacebookModel):
     ach_friends = models.IntegerField(default=0)
     ach_precision = models.IntegerField(default=0)
 
+    # def __unicode__(self):
+    #     return self.user
+
 
 @receiver(post_save)
 def create_profile(sender, instance, created, **kwargs):
     """Create a matching profile whenever a user object is created."""
     if sender == get_user_model():
         user = instance
-        profile_model = get_profile_model()
-        if profile_model == UserProfile and created:
+        # profile_model = get_profile_model()
+        if not hasattr(user, 'userprofile') and created:
             profile, new = UserProfile.objects.get_or_create(user=instance)
 
 
@@ -56,7 +59,7 @@ class Picture(models.Model):
     id_pic = models.CharField(max_length=128, unique=True, primary_key=True)
     owner = models.ForeignKey(to=UserProfile)
 
-    pic = models.ImageField(upload_to='pictures')
+    pic = models.ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
     ground_truth = models.IntegerField(default=0)
 
     def __unicode__(self):

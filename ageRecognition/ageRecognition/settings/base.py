@@ -68,6 +68,7 @@ class Base(Settings):
 
     AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
     AUTH_PROFILE_MODULE = 'django_facebook.FacebookProfile'
+    # AUTH_PROFILE_MODULE = 'apps.canvas.models.UserProfile'
 
     AGE_RECOGNITION_VERSION = __version__
 
