@@ -28,7 +28,11 @@ def home(request):
 
     # Chose a random picture to guess
     # Restrict the selected images to the ones the user haven't vote
-    voted_pics = [v.pic for v in user_votes_list]
+    try:
+        voted_pics = [v.pic for v in user_votes_list]
+    except:
+        voted_pics = []
+
     game_picture_list = Picture.objects.exclude(owner=request.user).exclude(pic=voted_pics)
 
     try:
@@ -61,26 +65,20 @@ def home(request):
             request.user.userprofile.upload_pic += 1
             request.user.userprofile.save()
 
-            # TODO: Check if the new image has been uploaded by the user
-            # for p in user_pictures_list:
-            # h1 = Image.open('media/' + p.pic.name)
+            # Check if the new image has been uploaded by the user
+            h1 = Image.open('media/' + newpic.pic.name).histogram()
+            for p in range(0, user_pictures_list.count()-1):
+                h2 = Image.open('media/' + user_pictures_list[p].pic.name).histogram()
 
-            #     Problem accessing the Uploaded Image, is not saves so
-            #     the image is in a InMemoryUploadedFile variable.
+                rms = math.sqrt(reduce(operator.add, map(lambda a, b: (a-b)**2, h1, h2))/len(h1))
 
-            #     h2 = Image.open('media/images/uploaded_images' + request.FILES['pic'].name)
-            #
-            #     rms = math.sqrt(reduce(operator.add, map(lambda a, b: (a-b)**2, h1, h2))/len(h1))
-            #
-            #     if rms > 0.1:
-            #         newpic.save()
-            #         newpic.delate()
-            #
-            #         # Update the number of uploaded pictures
-            #         request.user.userprofile.upload_pic += 1
-            #         request.user.userprofile.save()
-            #     else:
-            #         print pic_form.errors
+                if rms < 0.1:
+                    newpic.delete()
+                    request.user.userprofile.upload_pic -= 1
+                    request.user.userprofile.save()
+
+                    print 'The image is has already been uploaded, rms: ' + str(rms)
+                    break
 
             # TODO: Check if there is a single face in the image
 
