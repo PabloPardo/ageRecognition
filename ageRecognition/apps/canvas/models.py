@@ -41,9 +41,6 @@ class UserProfile(models.Model):
     ach_friends = models.IntegerField(default=0)
     ach_precision = models.IntegerField(default=0)
 
-    # def __unicode__(self):
-    #     return self.user
-
 
 @receiver(post_save)
 def create_profile(sender, instance, created, **kwargs):
@@ -56,14 +53,13 @@ def create_profile(sender, instance, created, **kwargs):
 
 
 class Picture(models.Model):
-    id_pic = models.CharField(max_length=128, unique=True, primary_key=True)
     owner = models.ForeignKey(to=UserProfile)
 
     pic = models.ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
     ground_truth = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.id_pic
+        return self.pic.name
 
 
 class Votes(models.Model):
@@ -72,4 +68,4 @@ class Votes(models.Model):
     vote = models.IntegerField()
 
     def __unicode__(self):
-        return 'User: ' + str(self.user.user_id) + ' Picture: ' + str(self.pic.id_pic) + 'Vote: ' + str(self.vote)
+        return 'User: ' + str(self.user.user_id) + ' Picture: ' + str(self.pic.name) + 'Vote: ' + str(self.vote)

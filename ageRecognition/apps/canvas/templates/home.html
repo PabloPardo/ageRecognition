@@ -169,11 +169,10 @@
                               <span title="Upload images of yourself so other
                                   players con guess how old you look
                                   like">
-                                  <p>{{ form.non_field_errors }}</p>
-                                  <div>{{ form.pic.errors }}</div>
-                                  <div >
-                                      {{ form.pic }}
-                                  </div>
+                                  <p>{{ pic_form.non_field_errors }}</p>
+                                  <div>{{ pic_form.pic.errors }}</div>
+                                  <div >{{ pic_form.pic }}</div>
+
                                   <input class="btn btn-default" type="submit"
                                          value="Upload Images"/>
                               </span>
@@ -199,7 +198,8 @@
                 <div class="col-md-2 col-sm-3">
                 </div>
                 <div class="col-md-8 col-sm-6 text-center">
-                    <img src="{% static 'images/example_image1.jpg' %}" width="200" height="300" alt="Image" class="img-thumbnail">
+                    <img src="{{ MEDIA_URL }}{{ game_pic }}" alt="{{ game_pic }}"
+                                 style="width: 50%; height: 50%" class="img-thumbnail">
                 </div>
                 <div class="col-md-2 col-sm-3">
                 </div>
@@ -208,11 +208,13 @@
                 <div class="col-md-2 col-sm-3">
                 </div>
                 <div class="col-md-8 col-sm-6 text-center">
-                    <form class="form-horizontal" role="form">
+                    <form class="form-horizontal" role="form"
+                          action="{% url 'home' %}" method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
                        <div class="form-group">
                           <div class="col-sm-9">
-                              <label for="age" class="control-label">Age</label>
-                              <input type="number" class="form-control" id="age" min="1" max="90" placeholder="How old he/she looks like?">
+                              <p>{{ vote_form.errors }}</p>
+                              <p>{{ vote_form.vote }}</p>
                           </div>
                        </div>
                        <div class="form-group">
@@ -279,45 +281,40 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     <h1 class="section-title">Gallery</h1>
-                    <!--
-                    <div class="well"><p>Here you can see your gallery of pictures. The label attached to the picture is the age other players think you look like.</p></div>
-                    -->
                 </div>
             </div>
+            {% if pictures %}
             <div class="site-slider">
                 <ul class="bxslider">
-                    <li>
-                        <img src="{% static 'images/slider/slide1.jpg' %}" alt="slider image 1">
-                    </li>
-                    <li>
-                        <img src="{% static 'images/slider/slide2.jpg' %}" alt="slider image 2">
-                    </li>
-                    <li>
-                        <img src="{% static 'images/slider/slide3.jpg' %}" alt="slider image 3">
-                    </li>
-                    <li>
-                        <img src="{% static 'images/slider/slide4.jpg' %}" alt="slider image 4">
-                    </li>
-                    <li>
-                        <img src="{% static 'images/slider/slide5.jpg' %}" alt="slider image 5">
-                    </li>
+                    {% for picture in pictures %}
+                        <li>
+                            <img src="{{ MEDIA_URL }}{{ picture.pic }}" alt="{{ picture.pic }}"
+{#                                 width="300px" height="200px">#}
+                                 style="width: 50%; height: 400px">
+                        </li>
+                    {% endfor %}
                 </ul> <!-- /.bxslider -->
                 <div class="bx-thumbnail-wrapper">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
                                 <div id="bx-pager">
-                                    <a data-slide-index="0" href=""><img src="{% static 'images/slider/thumb1.jpg' %}" alt="image 1" /></a>
-                                    <a data-slide-index="1" href=""><img src="{% static 'images/slider/thumb2.jpg' %}" alt="image 2" /></a>
-                                    <a data-slide-index="2" href=""><img src="{% static 'images/slider/thumb3.jpg' %}" alt="image 3" /></a>
-                                    <a data-slide-index="3" href=""><img src="{% static 'images/slider/thumb4.jpg' %}" alt="image 4" /></a>
-                                    <a data-slide-index="4" href=""><img src="{% static 'images/slider/thumb5.jpg' %}" alt="image 5" /></a>
+                                    {% for picture in pictures %}
+                                        <a data-slide-index="{{ forloop.counter0 }}" href="">
+                                            <img src="{{ MEDIA_URL }}{{ picture.pic }}" alt="{{ picture.pic }}"
+{#                                                style="width:'50px'; height:'50px'" width="50px" height="50px">#}
+                                                style="width: 50%; height: 50%"/>
+                                        </a>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div> <!-- /.site-slider -->
+            {% else %}
+                <p>Not Images in your gallery, please upload some images</p>
+            {% endif %}
         </div>
     </div>
     <!-- END GALLERY -->
@@ -337,7 +334,7 @@
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <!--<th>#</th>-->
+                          <th>#</th>
                           <th>Player</th>
                           <th>Score</th>
                           <th>Score Week</th>
@@ -348,6 +345,7 @@
                          {% for u in users %}
                              {% if u.user_id >= 0 %}
                                 <tr>
+                                  <td> {{ forloop.counter0 }}</td>
                                   <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
                                   <td> {{u.score_global }}</td>
                                   <td> {{u.score_week }}</td>
