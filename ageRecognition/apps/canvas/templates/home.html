@@ -259,10 +259,32 @@
                             <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
                           </tr>
                           <tr>
-                            <td>achievement 2</td>
-                            <td>description 2</td>
-                            <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                          </tr>
+                            <td>Precision</td>
+                            <td>As better your guess are higher your rank will be.</td>
+                              {% if user.userprofile.ach_precision == 0 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 1 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 2 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 3 %}
+                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 4 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 5 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 6 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 7 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 8 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 9 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
+                              {% elif user.userprofile.ach_precision == 10 %}
+                                  <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span></td>
+                              {% endif %}
+                            </tr>
                           <tr>
                             <td>achievement 3</td>
                             <td>description 3</td>

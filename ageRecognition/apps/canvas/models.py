@@ -67,6 +67,8 @@ class Votes(models.Model):
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
     vote = models.IntegerField()
+    score = models.IntegerField()
+    date = models.DateField()
 
     def __unicode__(self):
         return 'User: ' + str(self.user.user_id) + ' Picture: ' + str(self.pic.name) + 'Vote: ' + str(self.vote)

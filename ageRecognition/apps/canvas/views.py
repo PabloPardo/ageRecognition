@@ -31,11 +31,13 @@ def home(request):
     except:
         voted_pics = []
 
-    game_picture_list = Picture.objects.exclude(owner=request.user).exclude(pic=voted_pics)
+    game_picture_list = Picture.objects.exclude(owner=request.user)
+    for v in voted_pics:
+        game_picture_list = game_picture_list.exclude(pic=v)
 
     try:
         random_idx = random.randint(0, game_picture_list.count() - 1)
-        actual_game_picture = game_picture_list[random_idx]  # .save(commit=False)
+        actual_game_picture = game_picture_list[random_idx]
     except:
         actual_game_picture = []
 
@@ -85,15 +87,18 @@ def home(request):
             newvote.vote = vote_form.cleaned_data['vote']
             newvote.user = request.user.userprofile
             newvote.pic = actual_game_picture
+            newvote.date = str(datetime.datetime.now().date())
 
+            if actual_game_picture.ground_truth == 0:
+                newvote.score = abs(actual_game_picture.real_age - vote_form.cleaned_data['vote'])
+            else:
+                newvote.score = abs(actual_game_picture.ground_truth - vote_form.cleaned_data['vote'])
             newvote.save()
 
             # Update the number of voted pictures
             request.user.userprofile.eval_pic += 1
-            request.user.userprofile.save()
 
             # Update Ground Truth of the voted picture
-            # TODO: Calculate the score according the difference between the vote and the ground truth
             if actual_game_picture.ground_truth == 0:
                 actual_game_picture.ground_truth = newvote.vote
             else:
@@ -105,6 +110,21 @@ def home(request):
                 actual_game_picture.ground_truth = gt
 
             actual_game_picture.save()
+
+            # Calculate the score of the user
+            user_votes_scores_list = [v.score for v in user_votes_list].append(newvote.score)
+            try:
+                assert isinstance(user_votes_scores_list, list)
+            except:
+                user_votes_scores_list = [newvote.score]
+
+            precision = sum(user_votes_scores_list)/(len(user_votes_scores_list))
+            if precision > 10:
+                request.user.userprofile.ach_precision = 0
+            else:
+                request.user.userprofile.ach_precision = 10 - precision
+
+            request.user.userprofile.save()
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('apps.canvas.views.home'))
