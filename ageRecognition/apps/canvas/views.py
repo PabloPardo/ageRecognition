@@ -1,8 +1,7 @@
 import time
 import datetime
 import random
-import math
-import operator
+import imagehash
 
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
@@ -10,7 +9,6 @@ from django.core.urlresolvers import reverse
 from django.utils.image import Image
 from apps.canvas.models import UserProfile, Picture, Votes
 from apps.canvas.forms import PictureForm, VoteForm
-from django.contrib.auth import logout as django_logout
 
 
 # Create your views here.
@@ -37,7 +35,7 @@ def home(request):
 
     try:
         random_idx = random.randint(0, game_picture_list.count() - 1)
-        actual_game_picture = game_picture_list[random_idx].save(commit=False)
+        actual_game_picture = game_picture_list[random_idx]  # .save(commit=False)
     except:
         actual_game_picture = []
 
@@ -54,11 +52,14 @@ def home(request):
             newpic = pic_form.save(commit=False)
             newpic.pic = pic_form.cleaned_data['pic']
             newpic.owner = request.user.userprofile
+            newpic.real_age = pic_form.cleaned_data['real_age']
 
             if request.FILES.has_key('pic'):
                 ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
                 request.FILES['pic'].name = str(request.user.id) + '_' + ts + '.jpg'
 
+            newpic.save()
+            newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
             newpic.save()
 
             # Update the number of uploaded pictures
@@ -66,18 +67,13 @@ def home(request):
             request.user.userprofile.save()
 
             # Check if the new image has been uploaded by the user
-            h1 = Image.open('media/' + newpic.pic.name).histogram()
             for p in range(0, user_pictures_list.count()-1):
-                h2 = Image.open('media/' + user_pictures_list[p].pic.name).histogram()
-
-                rms = math.sqrt(reduce(operator.add, map(lambda a, b: (a-b)**2, h1, h2))/len(h1))
-
-                if rms < 0.1:
+                if str(newpic.hash) == user_pictures_list[p].hash:
                     newpic.delete()
                     request.user.userprofile.upload_pic -= 1
                     request.user.userprofile.save()
 
-                    print 'The image is has already been uploaded, rms: ' + str(rms)
+                    print 'The image is has already been uploaded.'
                     break
 
             # TODO: Check if there is a single face in the image

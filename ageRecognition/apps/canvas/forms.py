@@ -6,7 +6,7 @@ from tinymce.widgets import TinyMCE
 class PictureForm(forms.ModelForm):
     class Meta:
         model = Picture
-        fields = {'pic'}
+        fields = {'pic', 'real_age'}
         widgets = {
             'pic': forms.ImageField.widget(attrs={
                 'style': 'margin-bottom: 7px;' +
