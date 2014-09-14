@@ -471,6 +471,7 @@ h6 {
   position: absolute;
   text-align: right;
   bottom: 80px;
+  padding-bottom: 25%;
   right: -2px;
   z-index: 998;
 }

@@ -1,6 +1,5 @@
 from django import forms
 from apps.canvas.models import Picture, Votes
-from tinymce.widgets import TinyMCE
 
 
 class PictureForm(forms.ModelForm):
@@ -13,6 +12,11 @@ class PictureForm(forms.ModelForm):
                          'padding-bottom: 25px;' +
                          'border-bottom: 0px;' +
                          'background-color: #FFFFFF;'
+            }),
+            'real_age': forms.IntegerField.widget(attrs={
+                'min': 1,
+                'max': 90,
+                'placeholder': 'How old were you in the image?'
             })
         }
 
