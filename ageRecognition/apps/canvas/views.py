@@ -66,6 +66,9 @@ def home(request):
 
             # Update the number of uploaded pictures
             request.user.userprofile.upload_pic += 1
+
+            #Update the global score:
+            request.user.userprofile.score_global += 100
             request.user.userprofile.save()
 
             # Check if the new image has been uploaded by the user
@@ -73,6 +76,7 @@ def home(request):
                 if str(newpic.hash) == user_pictures_list[p].hash:
                     newpic.delete()
                     request.user.userprofile.upload_pic -= 1
+                    request.user.userprofile.score_global -= 100
                     request.user.userprofile.save()
 
                     print 'The image is has already been uploaded.'
@@ -97,6 +101,12 @@ def home(request):
 
             # Update the number of voted pictures
             request.user.userprofile.eval_pic += 1
+
+            # Update the global score
+            if newvote.score > 10:
+                request.user.userprofile.score_global += 1
+            else:
+                request.user.userprofile.score_global += 1 + 2*(10 - newvote.score)
 
             # Update Ground Truth of the voted picture
             if actual_game_picture.ground_truth == 0:
