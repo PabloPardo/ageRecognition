@@ -79,7 +79,7 @@ def home(request):
             request.user.userprofile.upload_pic += 1
 
             #Update the global score:
-            request.user.userprofile.score_global += 100
+            request.user.userprofile.score_global += 50
             request.user.userprofile.save()
 
             # Check if the new image has been uploaded by the user
@@ -87,7 +87,7 @@ def home(request):
                 if str(newpic.hash) == user_pictures_list[p].hash:
                     newpic.delete()
                     request.user.userprofile.upload_pic -= 1
-                    request.user.userprofile.score_global -= 100
+                    request.user.userprofile.score_global -= 50
                     request.user.userprofile.save()
 
                     print 'The image is has already been uploaded.'
