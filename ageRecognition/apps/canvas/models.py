@@ -40,6 +40,7 @@ class UserProfile(models.Model):
     score_global = models.IntegerField(default=0)
     ach_friends = models.IntegerField(default=0)
     ach_precision = models.IntegerField(default=0)
+    hometown = models.CharField(max_length=128)
 
 
 @receiver(post_save)
@@ -58,6 +59,7 @@ class Picture(models.Model):
     hash = models.CharField(max_length=128)
     real_age = models.IntegerField()
     ground_truth = models.IntegerField(default=0)
+    date = models.DateField()
 
     def __unicode__(self):
         return self.pic.name

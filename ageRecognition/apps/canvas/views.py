@@ -9,17 +9,27 @@ from django.core.urlresolvers import reverse
 from django.utils.image import Image
 from apps.canvas.models import UserProfile, Picture, Votes
 from apps.canvas.forms import PictureForm, VoteForm
+from django_facebook.decorators import facebook_required
+from django_facebook.api import get_facebook_graph
 
 
-# Create your views here.
+# @facebook_required
 def home(request):
+    graph = get_facebook_graph(request=request)
+
+    if request.user.username:
+        if not request.user.userprofile.hometown:
+            hometown = graph.get('me', fields='hometown')
+            request.user.userprofile.hometown = hometown['hometown']['name']
+            request.user.userprofile.save()
+
     context = RequestContext(request)
 
     # Load pictures for the home page
     user_pictures_list = Picture.objects.filter(owner=request.user)
 
     # Load users for the home page
-    user_list = UserProfile.objects.order_by('-score_global')[:5]
+    user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:5]
 
     # Load votes for the home page
     user_votes_list = Votes.objects.filter(user=request.user)
@@ -55,6 +65,7 @@ def home(request):
             newpic.pic = pic_form.cleaned_data['pic']
             newpic.owner = request.user.userprofile
             newpic.real_age = pic_form.cleaned_data['real_age']
+            newpic.date = str(datetime.datetime.now().date())
 
             if request.FILES.has_key('pic'):
                 ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')

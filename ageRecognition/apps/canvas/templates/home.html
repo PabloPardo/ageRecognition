@@ -316,9 +316,9 @@
             <div class="site-slider">
                 <ul class="bxslider">
                     {% for picture in pictures %}
-                        <li>
+                        <li class="gallery">
                             <img src="{{ MEDIA_URL }}{{ picture.pic }}" alt="{{ picture.pic }}"
-                                 style="width: 50%; height: 50%">
+                                 style="height: 500px">
                         </li>
                     {% endfor %}
                 </ul> <!-- /.bxslider -->
@@ -354,7 +354,6 @@
                       </thead>
                       <tbody>
                          {% for u in users %}
-                             {% if u.user_id >= 0 %}
                                 <tr>
                                   <td> {{ forloop.counter0 }}</td>
                                   <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
@@ -362,7 +361,6 @@
                                   <td> {{u.score_week }}</td>
                                   <td> {{u.score_day }}</td>
                                 </tr>
-                             {% endif %}
                          {% empty %}
                             <strong>There are no users</strong>
                          {% endfor %}
