@@ -24,7 +24,7 @@ class PictureForm(forms.ModelForm):
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Votes
-        fields = {'vote'}
+        fields = {'vote', 'report'}
         widgets = {
             'vote': forms.NumberInput(attrs={
                 'min': '1',

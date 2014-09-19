@@ -173,8 +173,11 @@
                                   <div>{{ pic_form.pic.errors }}</div>
                                   <div>{{ pic_form.pic }}</div>
 
-                                  <label for="real_age"><strong>Your age in the image:</strong></label>
-                                  <div id="real_age">{{ pic_form.real_age }}</div>
+                                  <div>{{ pic_form.real_age.errors }}</div>
+                                  <div id="real_age">
+                                      <label for="real_age"><strong>Your age in the image:</strong></label>
+                                      {{ pic_form.real_age }}
+                                  </div>
 
                                   <input class="btn btn-default" type="submit"
                                          value="Upload Images"/>
@@ -219,6 +222,7 @@
                                 <div class="col-sm-9">
                                     <p>{{ vote_form.errors }}</p>
                                     <p>{{ vote_form.vote }}</p>
+                                    <p>Report Image: {{ vote_form.report }}</p>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -259,12 +263,14 @@
                         </thead>
                         <tbody>
                         <tr>
+                            <!-- SHARE IT -->
                             <td>Share it!</td>
                             <td>You get stars by sharing the game with your friends.</td>
                             <td></td>
                             <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
                         </tr>
                         <tr>
+                            <!-- PRECISION -->
                             <td>Precision</td>
                             <td>As better your guess are higher your rank will be.</td>
                             {% if user.userprofile.ach_precision == 0 %}
@@ -303,9 +309,10 @@
                             {% endif %}
                         </tr>
                         <tr>
+                            <!-- VOTE -->
                             <td>Vote!</td>
                             <td>Vote more images to get more stars.</td>
-                                {% if user.userprofile.eval_pic < 5 %}
+                            {% if user.userprofile.eval_pic < 5 %}
                                 <td>Vote 5 pictures</td>
                                 <td><span class="pull-left"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
                             {% elif user.userprofile.eval_pic < 10 %}
@@ -341,6 +348,7 @@
                             {% endif %}
                         </tr>
                         <tr>
+                        <!-- ADD PICTURES -->
                             <td>Add Pictures!</td>
                             <td>Upload more images to get more stars.</td>
                                 {% if user.userprofile.upload_pic < 1 %}

@@ -69,6 +69,7 @@ class Votes(models.Model):
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
     vote = models.IntegerField()
+    report = models.BooleanField(default=False)
     score = models.IntegerField()
     date = models.DateField()
 

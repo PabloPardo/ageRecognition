@@ -2,6 +2,7 @@ import time
 import datetime
 import random
 import imagehash
+import cv2
 
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
@@ -9,13 +10,15 @@ from django.core.urlresolvers import reverse
 from django.utils.image import Image
 from apps.canvas.models import UserProfile, Picture, Votes
 from apps.canvas.forms import PictureForm, VoteForm
-from django_facebook.decorators import facebook_required
 from django_facebook.api import get_facebook_graph
 
 
-# @facebook_required
 def home(request):
+    # Get the graph from the FB API
     graph = get_facebook_graph(request=request)
+
+    # Store messages
+    messages = {}
 
     if request.user.username:
         if not request.user.userprofile.hometown:
@@ -29,7 +32,7 @@ def home(request):
     user_pictures_list = Picture.objects.filter(owner=request.user)
 
     # Load users for the home page
-    user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:5]
+    user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:10]
 
     # Load votes for the home page
     user_votes_list = Votes.objects.filter(user=request.user)
@@ -90,10 +93,41 @@ def home(request):
                     request.user.userprofile.score_global -= 50
                     request.user.userprofile.save()
 
+                    messages['repeated'] = 'This picture is already uploaded.'
+
                     print 'The image is has already been uploaded.'
                     break
 
-            # TODO: Check if there is a single face in the image
+            # Check if there is a single face in the image
+            imagePath = 'media/' + newpic.pic.name
+            cascPath = 'media/cascade/'
+
+            # Create the haar cascade
+            faceCascade = cv2.CascadeClassifier(cascPath)
+
+            # Read the image
+            image = cv2.imread(imagePath)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+            # Detect faces in the image
+            faces = faceCascade.detectMultiScale(
+                gray,
+                scaleFactor=1.1,
+                minNeighbors=5,
+                minSize=(30, 30),
+                flags = cv2.cv.CV_HAAR_SCALE_IMAGE
+            )
+
+            # Check if the new image contains just one face
+            if len(faces) != 1:
+                newpic.delete()
+                request.user.userprofile.upload_pic -= 1
+                request.user.userprofile.score_global -= 50
+                request.user.userprofile.save()
+
+                messages['noOneFace'] = 'The image must contain exactly one person.'
+
+                print 'The image is has already been uploaded.'
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('apps.canvas.views.home'))
@@ -162,7 +196,8 @@ def home(request):
                     'pic_form': pic_form,
                     'vote_form': vote_form,
                     'user': request.user,
-                    'game_pic': actual_game_picture}
+                    'game_pic': actual_game_picture,
+                    'messages': messages}
 
     # Render list page with the documents and the pic_form
     return render_to_response('home.html', context_dict, context_instance=context)
