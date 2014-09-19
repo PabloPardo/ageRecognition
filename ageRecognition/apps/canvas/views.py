@@ -100,7 +100,7 @@ def home(request):
 
             # Check if there is a single face in the image
             imagePath = 'media/' + newpic.pic.name
-            cascPath = 'media/cascade/'
+            cascPath = 'haarcascade_frontalface_default.xml'
 
             # Create the haar cascade
             faceCascade = cv2.CascadeClassifier(cascPath)
@@ -127,7 +127,7 @@ def home(request):
 
                 messages['noOneFace'] = 'The image must contain exactly one person.'
 
-                print 'The image is has already been uploaded.'
+                print 'The image must contain exactly one person.'
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('apps.canvas.views.home'))
