@@ -265,9 +265,9 @@
                         <tr>
                             <!-- SHARE IT -->
                             <td>Share it!</td>
-                            <td>You get stars by sharing the game with your friends.</td>
+                            <td>Invite your friends to play and you will get starts.</td>
                             <td></td>
-                            <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
+                            <td><span class="pull-left-o"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
                         </tr>
                         <tr>
                             <!-- PRECISION -->
@@ -447,7 +447,7 @@
                         <tbody>
                         {% for u in users %}
                             <tr>
-                                <td> {{ forloop.counter0 }}</td>
+                                <td> {{ forloop.counter }}</td>
                                 <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
                                 <td> {{u.score_global }}</td>
                                 <td> {{u.score_week }}</td>

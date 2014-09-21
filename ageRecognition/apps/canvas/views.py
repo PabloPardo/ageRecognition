@@ -101,37 +101,38 @@ def home(request):
                     print 'The image is has already been uploaded.'
                     break
 
-            if newpic.pk:
-                # Check if there is a single face in the image
-                imagePath = 'media/' + newpic.pic.name
-                cascPath = 'haarcascade_frontalface_default.xml'
-
-                # Create the haar cascade
-                faceCascade = cv2.CascadeClassifier(cascPath)
-
-                # Read the image
-                image = cv2.imread(imagePath)
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-                # Detect faces in the image
-                faces = faceCascade.detectMultiScale(
-                    gray,
-                    scaleFactor=1.1,
-                    minNeighbors=2,
-                    minSize=(30, 30),
-                    flags = cv2.cv.CV_HAAR_SCALE_IMAGE
-                )
-
-                # Check if the new image contains just one face
-                if len(faces) != 1:
-                    newpic.delete()
-                    request.user.userprofile.upload_pic -= 1
-                    request.user.userprofile.score_global -= 50
-                    request.user.userprofile.save()
-
-                    messages['noOneFace'] = 'The image must contain exactly one person.'
-
-                    print 'The image must contain exactly one person.'
+            # TODO: Improve detection accuracy
+            # if newpic.pk:
+            #     # Check if there is a single face in the image
+            #     imagePath = 'media/' + newpic.pic.name
+            #     cascPath = 'haarcascade_frontalface_default.xml'
+            #
+            #     # Create the haar cascade
+            #     faceCascade = cv2.CascadeClassifier(cascPath)
+            #
+            #     # Read the image
+            #     image = cv2.imread(imagePath)
+            #     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            #
+            #     # Detect faces in the image
+            #     faces = faceCascade.detectMultiScale(
+            #         gray,
+            #         scaleFactor=1.1,
+            #         minNeighbors=2,
+            #         minSize=(30, 30),
+            #         flags = cv2.cv.CV_HAAR_SCALE_IMAGE
+            #     )
+            #
+            #     # Check if the new image contains just one face
+            #     if len(faces) != 1:
+            #         newpic.delete()
+            #         request.user.userprofile.upload_pic -= 1
+            #         request.user.userprofile.score_global -= 50
+            #         request.user.userprofile.save()
+            #
+            #         messages['noOneFace'] = 'The image must contain exactly one person.'
+            #
+            #         print 'The image must contain exactly one person.'
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('apps.canvas.views.home'))
