@@ -364,6 +364,10 @@ h6 {
   border: 0;
   display: block;
 }
+.main-menu ul .current_li a {
+  background: url(../images/active-state.png) no-repeat;
+  background-position: center 65px;
+}
 .main-menu ul li a.current {
   background: url(../images/active-state.png) no-repeat;
   background-position: center 65px;

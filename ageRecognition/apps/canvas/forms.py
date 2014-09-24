@@ -1,5 +1,5 @@
 from django import forms
-from apps.canvas.models import Picture, Votes
+from apps.canvas.models import Picture, Votes, Report
 
 
 class PictureForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class PictureForm(forms.ModelForm):
             'real_age': forms.IntegerField.widget(attrs={
                 'min': 1,
                 'max': 90,
-                'placeholder': 'How old were you in the image?'
+                'placeholder': 'How old were the person in the image?'
             })
         }
 
@@ -24,7 +24,7 @@ class PictureForm(forms.ModelForm):
 class VoteForm(forms.ModelForm):
     class Meta:
         model = Votes
-        fields = {'vote', 'report'}
+        fields = {'vote'}
         widgets = {
             'vote': forms.NumberInput(attrs={
                 'min': '1',
@@ -33,3 +33,12 @@ class VoteForm(forms.ModelForm):
         }
 
 
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = {'detail'}
+        widgets = {
+            'detail': forms.TextInput(attrs={
+                'placeholder': 'Write the reasons of your report'
+            })
+        }

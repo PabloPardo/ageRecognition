@@ -8,8 +8,8 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
-from apps.canvas.models import UserProfile, Picture, Votes
-from apps.canvas.forms import PictureForm, VoteForm
+from apps.canvas.models import UserProfile, Picture, Votes, Report
+from apps.canvas.forms import PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
 
 
@@ -34,34 +34,10 @@ def home(request):
     # Load pictures for the home page
     user_pictures_list = Picture.objects.filter(owner=request.user)
 
-    # Load users for the home page
-    user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:10]
-
-    # Load votes for the home page
-    user_votes_list = Votes.objects.filter(user=request.user)
-
-    # Chose a random picture to guess
-    # Restrict the selected images to the ones the user haven't vote
-    try:
-        voted_pics = [v.pic for v in user_votes_list]
-    except:
-        voted_pics = []
-
-    game_picture_list = Picture.objects.exclude(owner=request.user)
-    for v in voted_pics:
-        game_picture_list = game_picture_list.exclude(pic=v)
-
-    try:
-        random_idx = random.randint(0, game_picture_list.count() - 1)
-        actual_game_picture = game_picture_list[random_idx]
-    except:
-        actual_game_picture = []
-
     # Handle file upload
     if request.method == 'POST':
 
         pic_form = PictureForm(data=request.POST, files=request.FILES)
-        vote_form = VoteForm(data=request.POST, files=request.FILES)
 
         if pic_form.is_valid():
 
@@ -136,7 +112,43 @@ def home(request):
 
             # Redirect to the document list after POST
             return HttpResponseRedirect(reverse('apps.canvas.views.home'))
-        elif vote_form.is_valid():
+        else:
+            print pic_form.errors
+
+    else:
+        pic_form = PictureForm()  # A empty, unbound pic_form
+
+    context_dict = {'pic_form': pic_form,
+                    'user': request.user,
+                    'messages': messages}
+
+    return render_to_response('home.html', context_dict, context_instance=context)
+
+
+def game(request):
+    context = RequestContext(request)
+
+    user_votes_list = Votes.objects.filter(user=request.user)
+
+    # Chose a random picture to guess
+    # Restrict the selected images to the ones the user haven't vote
+    game_picture_list = Picture.objects.exclude(owner=request.user)
+
+    try:
+        voted_pics = [v.pic for v in user_votes_list]
+        for v in voted_pics:
+            game_picture_list = game_picture_list.exclude(pic=v)
+
+        random_idx = random.randint(0, game_picture_list.count() - 1)
+        actual_game_picture = game_picture_list[random_idx]
+    except:
+        actual_game_picture = []
+
+    # Handle file upload
+    if request.method == 'POST':
+        vote_form = VoteForm(data=request.POST, files=request.FILES)
+
+        if vote_form.is_valid():
             newvote = vote_form.save(commit=False)
             newvote.vote = vote_form.cleaned_data['vote']
             newvote.user = request.user.userprofile
@@ -187,22 +199,63 @@ def home(request):
             request.user.userprofile.save()
 
             # Redirect to the document list after POST
+            return HttpResponseRedirect(reverse('apps.canvas.views.game'))
+        else:
+            print vote_form.errors
+    else:
+        vote_form = VoteForm()
+
+    context_dict = {'vote_form': vote_form,
+                    'user': request.user,
+                    'game_pic': actual_game_picture}
+
+    return render_to_response('game.html', context_dict, context_instance=context)
+
+
+def ranking(request):
+    context = RequestContext(request)
+
+    # Load users ordered by global score
+    user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:20]
+
+    context_dict = {'users': user_list,
+                    'user': request.user}
+
+    return render_to_response('ranking.html', context_dict, context_instance=context)
+
+
+def gallery(request):
+    context = RequestContext(request)
+
+    # Load pictures for the home page
+    user_pictures_list = Picture.objects.filter(owner=request.user)
+
+    context_dict = {'pictures': user_pictures_list,
+                    'user': request.user}
+
+    return render_to_response('gallery.html', context_dict, context_instance=context)
+
+
+def achievements(request):
+    context = RequestContext(request)
+    context_dict = {'user': request.user}
+    return render_to_response('achievements.html', context_dict, context_instance=context)
+
+
+def report(request):
+    context = RequestContext(request)
+
+    if request.method == 'POST':
+        report_form = ReportForm(data=request.POST, files=request.FILES)
+        if report_form.is_valid():
+            newreport = report_form.save(commit=False)
+            newreport.pic
             return HttpResponseRedirect(reverse('apps.canvas.views.home'))
         else:
-            print pic_form.errors, vote_form.errors
-
+            print report_form.errors
     else:
-        pic_form = PictureForm()  # A empty, unbound pic_form
-        vote_form = VoteForm()  # A empty, unbound vote_form
+        report_form = ReportForm()
 
-    # Create dictionary with the list of users, the list of pictures and the pic_form
-    context_dict = {'users': user_list,
-                    'pictures': user_pictures_list,
-                    'pic_form': pic_form,
-                    'vote_form': vote_form,
-                    'user': request.user,
-                    'game_pic': actual_game_picture,
-                    'messages': messages}
+    context_dict = {'report_form': report_form}
 
-    # Render list page with the documents and the pic_form
-    return render_to_response('home.html', context_dict, context_instance=context)
+    return render_to_response('report.html', context_dict, context_instance=context)

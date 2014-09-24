@@ -57,7 +57,7 @@ class Picture(models.Model):
     owner = models.ForeignKey(to=UserProfile)
     pic = models.ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
     hash = models.CharField(max_length=128)
-    real_age = models.IntegerField()
+    real_age = models.IntegerField(null=True, blank=True)
     ground_truth = models.IntegerField(default=0)
     date = models.DateField()
 
@@ -69,9 +69,13 @@ class Votes(models.Model):
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
     vote = models.IntegerField()
-    report = models.BooleanField(default=False)
-    score = models.IntegerField()
     date = models.DateField()
 
     def __unicode__(self):
         return 'User: ' + str(self.user.user_id) + ' Picture: ' + str(self.pic.name) + 'Vote: ' + str(self.vote)
+
+
+class Report(models.Model):
+    user = models.ForeignKey(to=UserProfile)
+    pic = models.ForeignKey(to=Picture)
+    detail = models.TextField(max_length=500, blank=True)
