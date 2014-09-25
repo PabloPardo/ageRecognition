@@ -156,7 +156,10 @@ def game(request):
             newvote.date = str(datetime.datetime.now().date())
 
             if actual_game_picture.ground_truth == 0:
-                newvote.score = abs(actual_game_picture.real_age - vote_form.cleaned_data['vote'])
+                if actual_game_picture.real_age:
+                    newvote.score = abs(actual_game_picture.real_age - vote_form.cleaned_data['vote'])
+                else:
+                    newvote.score = 1
             else:
                 newvote.score = abs(actual_game_picture.ground_truth - vote_form.cleaned_data['vote'])
             newvote.save()
