@@ -133,7 +133,7 @@
 {% if user.is_authenticated %}
     <!-- PROFILE -->
     <div id="profile" class="content-section">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 text-center" style="height:200px;">
             <h1 class="section-title">Profile</h1>
         </div>
         <div class="container">
@@ -176,7 +176,10 @@
                                   <div>{{ pic_form.real_age.errors }}</div>
                                   <div id="real_age">
                                       <label for="real_age"><strong>Your age in the image:</strong></label>
-                                      {{ pic_form.real_age }}
+                                      <div class="slider">
+                                          {{ pic_form.real_age }}
+                                          <span><strong id="range">0</strong></span>
+                                      </div>
                                   </div>
 
                                   <input class="btn btn-default" type="submit"

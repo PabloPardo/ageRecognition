@@ -133,7 +133,7 @@
 {% if user.is_authenticated %}
 <!-- GAME -->
     <div id="game" class="content-section">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 text-center" style="height:200px;">
             <h1 class="section-title">Game</h1>
         </div>
         <div class="container">
@@ -156,10 +156,15 @@
                               action="{% url 'game' %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
-                                <div class="col-sm-9">
+                                <div class="col-md-3"></div>
+                                <div class="col-sm-6">
                                     <p>{{ vote_form.errors }}</p>
-                                    <p>{{ vote_form.vote }}</p>
+                                    <div class="slider">
+                                        {{ vote_form.vote }}
+                                        <span><strong id="range">0</strong></span>
+                                    </div>
                                 </div>
+                                <div class="col-md-3"></div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-12">
