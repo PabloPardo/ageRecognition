@@ -57,7 +57,7 @@
                     <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
                     <div class="main-menu">
                         <ul>
-                            <li class="current_li"><a href="home" onclick="window.location='/home'">Profile</a></li>
+                            <li><a href="home" onclick="window.location='/home'">Profile</a></li>
                             <li><a href="game" onclick="window.location='/game'">Game</a></li>
                             <li><a href="achievements" onclick="window.location='/achievements'">Achievements</a></li>
                             <li><a href="gallery" onclick="window.location='/gallery'">Gallery</a></li>
@@ -71,7 +71,7 @@
                     <div class="responsive">
                         <div class="main-menu">
                             <ul>
-                                <li class="current_li"><a href="home" onclick="window.location='/home'">Profile</a></li>
+                                <li><a href="home" onclick="window.location='/home'">Profile</a></li>
                                 <li><a href="game" onclick="window.location='/game'">Game</a></li>
                                 <li><a href="achievements" onclick="window.location='/achievements'">Achievements</a></li>
                                 <li><a href="gallery" onclick="window.location='/gallery'">Gallery</a></li>
@@ -131,67 +131,47 @@
 <!--END-LOGIN-->
 
 {% if user.is_authenticated %}
-    <!-- PROFILE -->
-    <div id="profile" class="content-section">
+    <!-- UPLOAD -->
+    <div id="upload" class="content-section">
         <div class="col-md-12 text-center" style="height:200px;">
-            <h1 class="section-title">Profile</h1>
+            <h1 class="section-title">Upload Image</h1>
         </div>
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <span class="pull-right">
-                        <!--Profile Image-->
-                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook profile image" />
-                    </span>
+            <dic class="row">
+                <div class="col-md-2 col-sm-3">
                 </div>
-                <div class="col-md-6 col-sm-6">
-                    <header>
-                        <h1><strong>{{ user.first_name }} {{user.last_name}}</strong></h1>
-                    </header>
-                    <ul>
-                        <li><strong>Uploaded Pictures: </strong> {{user.userprofile.upload_pic}} </li>
-                        <li><strong>Evaluated Pictures: </strong> {{user.userprofile.eval_pic}} </li>
-                        <li><strong>Score Global: </strong> {{user.userprofile.score_global}} </li>
-                        <li><strong>Score Week: </strong> {{user.userprofile.score_week}} </li>
-                        <li><strong>Score Day: </strong> {{user.userprofile.score_day}} </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-3">
-                </div>
-                <div class="col-md-4 col-sm-6 text-center">
-                    <a href="/upload" class="btn btn-default">Upload Images</a>
-{#                    <form class="form-horizontal" role="form"#}
-{#                          action="{% url 'home' %}" method="post" enctype="multipart/form-data">#}
-{#                        {% csrf_token %}#}
-{#                        <div class="form-group">#}
-{#                            <div style="padding:10px;margin:10px;border:0 solid #ccc">#}
-{#                              <span title="Upload images of yourself so other#}
-{#                                  players con guess how old you look#}
-{#                                  like">#}
-{#                                  <p>{{ pic_form.non_field_errors }}</p>#}
-{#                                  <div>{{ pic_form.pic.errors }}</div>#}
-{#                                  <div>{{ pic_form.pic }}</div>#}
-{##}
-{#                                  <div>{{ pic_form.real_age.errors }}</div>#}
-{#                                  <div id="real_age" class="slider">#}
-{#                                      <label for="real_age"><strong>Your age in the image:</strong></label>#}
-{#                                      {{ pic_form.real_age }}#}
-{#                                      <span><strong id="range">0</strong></span>#}
-{#                                  </div>#}
-{##}
-{#                                  <input class="btn btn-default" type="submit"#}
-{#                                         value="Upload Images"/>#}
-{#                              </span>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </form>#}
+                <div class="col-md-8 col-sm-6 text-center">
+                    <form class="form-horizontal" role="form"
+                          action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div style="padding:10px;margin:10px;border:0 solid #ccc">
+                                <span title="Upload images of yourself so other
+                                    players con guess how old you look
+                                    like">
+                                    <p>{{ pic_form.non_field_errors }}</p>
+                                    <div>{{ pic_form.pic.errors }}</div>
+                                    <div>{{ pic_form.pic }}</div>
+
+                                    <div>{{ pic_form.real_age.errors }}</div>
+                                    <div id="real_age" class="slider">
+                                        <label for="real_age"><strong>Your age in the image:</strong></label>
+                                        {{ pic_form.real_age }}
+                                        <span><strong id="range">0</strong></span>
+                                    </div>
+
+                                    <input class="btn btn-default" type="submit"
+                                        value="Upload Images"/>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- END PROFILE -->
+    </div> <!-- /.container -->
+    </div> <!-- /#report -->
+    <!-- END REPORT -->
+
 {% endif %}
 
 <!--FOOTER-->

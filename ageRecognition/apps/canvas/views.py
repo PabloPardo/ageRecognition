@@ -89,7 +89,10 @@ def home(request):
                     'user': request.user,
                     'messages': messages}
 
-    return render_to_response('home.html', context_dict, context_instance=context)
+    if request.path == '/upload/':
+        return render_to_response('upload.html', context_dict, context_instance=context)
+    else:
+        return render_to_response('home.html', context_dict, context_instance=context)
 
 
 def game(request):
