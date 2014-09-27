@@ -174,12 +174,10 @@
                                   <div>{{ pic_form.pic }}</div>
 
                                   <div>{{ pic_form.real_age.errors }}</div>
-                                  <div id="real_age">
+                                  <div id="real_age" class="slider">
                                       <label for="real_age"><strong>Your age in the image:</strong></label>
-                                      <div class="slider">
-                                          {{ pic_form.real_age }}
-                                          <span><strong id="range">0</strong></span>
-                                      </div>
+                                      {{ pic_form.real_age }}
+                                      <span><strong id="range">0</strong></span>
                                   </div>
 
                                   <input class="btn btn-default" type="submit"
@@ -188,9 +186,6 @@
                             </div>
                         </div>
                     </form>
-                    <p>
-                        <a href="#game" class="btn btn-lg btn-default"><strong>Play</strong></a>
-                    </p>
                 </div>
             </div>
         </div>

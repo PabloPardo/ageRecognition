@@ -78,4 +78,5 @@ class Votes(models.Model):
 class Report(models.Model):
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
+    date = models.DateField()
     detail = models.TextField(max_length=500, blank=True)

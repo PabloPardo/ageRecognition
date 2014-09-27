@@ -6,5 +6,5 @@ urlpatterns = patterns('apps.canvas.views',
     url(r'^achievements/$', 'achievements', name='achievements'),
     url(r'^gallery/$', 'gallery', name='gallery'),
     url(r'^ranking/$', 'ranking', name='ranking'),
-    url(r'^report/$', 'report', name='report'),
+    url(r'^report/$', 'game', name='report'),
 )

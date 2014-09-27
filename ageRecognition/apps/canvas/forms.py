@@ -15,11 +15,12 @@ class PictureForm(forms.ModelForm):
             }),
             'real_age': forms.IntegerField.widget(attrs={
                 'min': 1,
-                'max': 90,
+                'max': 100,
                 'value': 0,
                 'placeholder': 'How old were the person in the image?',
                 'type': 'range',
-                'onchange': 'showValue(this.value)'
+                'onchange': 'showValue(this.value)',
+                'oninput': 'showValue(this.value)'
             })
         }
 
@@ -35,7 +36,8 @@ class VoteForm(forms.ModelForm):
                 'value': 0,
                 'placeholder': 'How old does he/she looks like?',
                 'type': 'range',
-                'onchange': 'showValue(this.value)'
+                'onchange': 'showValue(this.value)',
+                'oninput': 'showValue(this.value)'
             })
         }
 
