@@ -60,6 +60,7 @@ class Picture(models.Model):
     real_age = models.IntegerField(null=True, blank=True)
     ground_truth = models.IntegerField(default=0)
     date = models.DateField()
+    visibility = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.pic.name
@@ -69,6 +70,7 @@ class Votes(models.Model):
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
     vote = models.IntegerField()
+    score = models.IntegerField()
     date = models.DateField()
 
     def __unicode__(self):

@@ -406,8 +406,8 @@ h6 {
 .site-slider ul li {
   float: left;
   position: relative;
-  left: 25%;
-  text-align: left;
+  /*left: 25%;*/
+  /*text-align: left;*/
   margin: 25px;
 }
 
@@ -714,13 +714,18 @@ ul.social li a {
   display: inline-block;
 }
 
-li.gallery {
-   height: 600px;
+div.gallery {
+   margin: 0 auto;
+   height: 525px;
+   width: 525px;
 }
 
-li.gallery img {
-    width: 600px;
-    height: 600px;
+div.gallery img {
+    margin: 0 auto;
+    max-height: 500px;
+    max-width: 500px;
+    height: auto;
+    width: auto;
 }
 
 /*------------------------------------------------------

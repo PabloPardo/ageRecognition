@@ -103,6 +103,7 @@ def game(request):
     # Chose a random picture to guess
     # Restrict the selected images to the ones the user haven't vote
     game_picture_list = Picture.objects.exclude(owner=request.user)
+    game_picture_list = game_picture_list.exclude(visibility=False)
 
     try:
         voted_pics = [v.pic for v in user_votes_list]
@@ -180,6 +181,9 @@ def game(request):
             newreport.user = request.user.userprofile
             newreport.date = str(datetime.datetime.now().date())
 
+            if Report.objects.filter(pic=actual_game_picture).count() >= 3:
+                actual_game_picture.visibility = False
+                actual_game_picture.save()
             return HttpResponseRedirect(reverse('apps.canvas.views.game'))
         else:
             print vote_form.errors, report_form.errors

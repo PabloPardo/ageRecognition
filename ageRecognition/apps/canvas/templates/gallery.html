@@ -143,9 +143,10 @@
                 <div class="site-slider">
                     <ul class="bxslider">
                         {% for picture in pictures %}
-                            <li class="gallery">
-                                <img src="{{ MEDIA_URL }}{{ picture.pic }}" alt="{{ picture.pic }}"
-                                     style="height: 500px">
+                            <li>
+                                <div class="gallery">
+                                        <img src="{{ MEDIA_URL }}{{ picture.pic }}" alt="{{ picture.pic }}">
+                                </div>
                             </li>
                         {% endfor %}
                     </ul> <!-- /.bxslider -->
