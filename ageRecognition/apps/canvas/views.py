@@ -9,11 +9,28 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
 from apps.canvas.models import UserProfile, Picture, Votes, Report
-from apps.canvas.forms import PictureForm, VoteForm, ReportForm
+from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
 
 
 def home(request):
+    context = RequestContext(request)
+
+    # Terms & Conditions
+    if not request.user.pk == None:
+        if not request.user.userprofile.terms_conditions:
+            if request.method == 'POST':
+                user_form = UserForm(data=request.POST, files=request.FILES)
+                if user_form.is_valid():
+                    request.user.userprofile.terms_conditions = user_form.cleaned_data['terms_conditions']
+                    request.user.userprofile.save()
+                    return HttpResponseRedirect(reverse('apps.canvas.views.home'))
+            else:
+                user_form = UserForm()
+            context_dict = {'user_form': user_form}
+
+            return render_to_response('terms.html', context_dict, context_instance=context)
+
     # Get the graph from the FB API
     graph = get_facebook_graph(request=request)
 
@@ -28,8 +45,6 @@ def home(request):
             else:
                 request.user.userprofile.hometown = ''
             request.user.userprofile.save()
-
-    context = RequestContext(request)
 
     # Load pictures for the home page
     user_pictures_list = Picture.objects.filter(owner=request.user)

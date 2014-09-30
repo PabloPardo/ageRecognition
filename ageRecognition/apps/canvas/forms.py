@@ -1,5 +1,11 @@
 from django import forms
-from apps.canvas.models import Picture, Votes, Report
+from apps.canvas.models import UserProfile, Picture, Votes, Report
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = {'terms_conditions'}
 
 
 class PictureForm(forms.ModelForm):
@@ -16,7 +22,7 @@ class PictureForm(forms.ModelForm):
             'real_age': forms.IntegerField.widget(attrs={
                 'min': 1,
                 'max': 100,
-                'value': 0,
+                'value': 50,
                 'placeholder': 'How old were the person in the image?',
                 'type': 'range',
                 'onchange': 'showValue(this.value)',

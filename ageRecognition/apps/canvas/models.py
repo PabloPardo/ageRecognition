@@ -41,6 +41,7 @@ class UserProfile(models.Model):
     ach_friends = models.IntegerField(default=0)
     ach_precision = models.IntegerField(default=0)
     hometown = models.CharField(max_length=128)
+    terms_conditions = models.BooleanField(default=False)
 
 
 @receiver(post_save)

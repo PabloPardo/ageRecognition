@@ -211,7 +211,7 @@ form .button.yellow {
 html, body {
   font-size: 100%;
   width: 100%;
-  height: 100%;
+  height:100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   vertical-align: baseline;
@@ -221,6 +221,9 @@ body {
   font: 13px/21px "Open Sans", Arial, sans-serif;
   color: #838383;
   background-color: white;
+  height: auto;
+  min-height: 100% !important;
+  position: relative;
 }
 
 a {
@@ -264,6 +267,21 @@ h5 {
 h6 {
   font-size: .8em;
 }
+
+div.terms {
+    margin: auto;
+	width: 600px;
+	height: 200px;
+	border: 1px solid #ccc;
+	background: #f2f2f2;
+	padding: 6px;
+	overflow: auto;
+}
+div.terms p,
+div.terms li {font:normal 11px/15px arial;color:#333;}
+div.terms h3 {font:bold 14px/19px arial;color:#000;}
+div.terms h4 {font:bold 12px/17px arial;color:#000;}
+div.terms strong {color:#000;}
 
 *, *:before, *:after {
   -moz-box-sizing: border-box;
@@ -685,11 +703,13 @@ input.button {
 }
 
 .site-footer {
-  margin-top: 7%;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   /*background-color: #161616;*/
   background-color: black;
   color: white;
-  padding: 5% 0;
+  padding: 20px 0 10px 0;
 }
 .site-footer a {
   color: white;
@@ -723,7 +743,7 @@ div.gallery {
 div.gallery img {
     margin: 0 auto;
     max-height: 500px;
-    max-width: 500px;
+    /*max-width: 500px;*/
     height: auto;
     width: auto;
 }
