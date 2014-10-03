@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 {% load static %}
+{% load canvas_filters %}
 
 <!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -157,124 +158,128 @@
                             <!-- SHARE IT -->
                             <td>Share it!</td>
                             <td>Invite your friends to play and you will get starts.</td>
-                            <td></td>
-                            <td><span class="pull-left-o"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
+                            {% if num_friends < share.0 %}
+                                <td>Invite {{ share.0 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.0| safe }}</span></td>
+                            {% elif num_friends < share.1 %}
+                                <td>Invite {{ share.1 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.1| safe }}</span></td>
+                            {% elif num_friends < share.2 %}
+                                <td>Invite {{ share.2 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.2| safe }}</span></td>
+                            {% elif num_friends < share.3 %}
+                                <td>Invite {{ share.3 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.3| safe }}</span></td>
+                            {% elif num_friends < share.4 %}
+                                <td>Invite {{ share.4 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.4| safe }}</span></td>
+                            {% elif num_friends < share.5 %}
+                                <td>Invite {{ share.5 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.5| safe }}</span></td>
+                            {% elif num_friends < share.6 %}
+                                <td>Invite {{ share.6 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.6| safe }}</span></td>
+                            {% elif num_friends < share.7 %}
+                                <td>Invite {{ share.7 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.7| safe }}</span></td>
+                            {% elif num_friends < share.8 %}
+                                <td>Invite {{ share.8 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.8| safe }}</span></td>
+                            {% elif num_friends < share.9 %}
+                                <td>Invite {{ share.9 }} of your friends to play</td>
+                                <td><span class="pull-left"> {{ stars.9| safe }}</span></td>
+                            {% elif num_friends >= share.9 %}
+                                <td>Keep inviting your friends</td>
+                                <td><span class="pull-left"> {{ stars.10 }}</span></td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <!-- PRECISION -->
                             <td>Precision</td>
-                            <td>As better your guess are higher your rank will be.</td>
-                            {% if user.userprofile.ach_precision == 0 %}
-                                <td>This is awkward</td>
-                                <td><span class="pull-left"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 1 %}
-                                <td>You should check your sight</td>
-                                <td><span class="pull-left"> <i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 2 %}
-                                <td>That's all you can do?</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 3 %}
-                                <td>Well, you can do better.</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 4 %}
-                                <td>Good, but try harder</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 5 %}
-                                <td>You are in the good way, keep improving</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 6 %}
-                                <td>Well done</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 7 %}
-                                <td>Great!</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 8 %}
-                                <td>Excellent guessing skills!</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 9 %}
-                                <td>Incredible, you are touching perfection.</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
-                            {% elif user.userprofile.ach_precision == 10 %}
-                                <td>Amazing! Prefect precision!</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span></td>
-                            {% endif %}
+                            <td>The better your guess is the higher your rank will be.</td>
+                            {% for p in precision %}
+                                {% if user.userprofile.ach_precision == forloop.counter0 %}
+                                    <td>{{ p }}</td>
+                                    <td><span class="pull-left"> {{ stars | lookup:forloop.counter0 | safe }}</span></td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                         <tr>
                             <!-- VOTE -->
                             <td>Vote!</td>
                             <td>Vote more images to get more stars.</td>
-                            {% if user.userprofile.eval_pic < 5 %}
-                                <td>Vote 5 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 10 %}
-                                <td>Vote 10 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 20 %}
-                                <td>Vote 20 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 50 %}
-                                <td>Vote 50 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 150 %}
-                                <td>Vote 150 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 400 %}
-                                <td>Vote 400 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 1000 %}
-                                <td>Vote 1000 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 5000 %}
-                                <td>Vote 5000 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 12000 %}
-                                <td>Vote 12000 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic < 30000 %}
-                                <td>Vote 30000 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
-                            {% elif user.userprofile.eval_pic >= 30000 %}
+                            {% if user.userprofile.eval_pic < vote.0 %}
+                                <td>Vote {{ vote.0 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.0 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.1 %}
+                                <td>Vote {{ vote.1 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.1 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.2 %}
+                                <td>Vote {{ vote.2 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.2 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.3 %}
+                                <td>Vote {{ vote.3 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.3 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.4 %}
+                                <td>Vote {{ vote.4 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.4 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.5 %}
+                                <td>Vote {{ vote.5 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.5 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.6 %}
+                                <td>Vote {{ vote.6 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.6 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.7 %}
+                                <td>Vote {{ vote.7 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.7 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.8 %}
+                                <td>Vote {{ vote.8 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.8 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic < vote.9 %}
+                                <td>Vote {{ vote.9 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.9 | safe }}</span></td>
+                            {% elif user.userprofile.eval_pic >= vote.9 %}
                                 <td>Keep Voting</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span></td>
+                                <td><span class="pull-left"> {{ stars.10 | safe }}</span></td>
                             {% endif %}
                         </tr>
                         <tr>
-                        <!-- ADD PICTURES -->
+                            <!-- ADD PICTURES -->
                             <td>Add Pictures!</td>
                             <td>Upload more images to get more stars.</td>
-                                {% if user.userprofile.upload_pic < 1 %}
-                                <td>Upload 1 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 2 %}
-                                <td>Upload 2 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 5 %}
-                                <td>Upload 5 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 10 %}
-                                <td>Upload 10 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 15 %}
-                                <td>Upload 15 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 30 %}
-                                <td>Upload 30 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 50 %}
-                                <td>Upload 50 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 75 %}
-                                <td>Upload 75 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 100 %}
-                                <td>Upload 100 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic < 200 %}
-                                <td>Upload 200 pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i></span></td>
-                            {% elif user.userprofile.upload_pic >= 200 %}
+                            {% if user.userprofile.upload_pic < pic.0 %}
+                                <td>Upload {{ pic.0 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.0 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.1 %}
+                                <td>Upload {{ pic.1 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.1 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.2 %}
+                                <td>Upload {{ pic.2 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.2 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.3 %}
+                                <td>Upload {{ pic.3 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.3 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.4 %}
+                                <td>Upload {{ pic.4 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.4 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.5 %}
+                                <td>Upload {{ pic.5 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.5 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.6 %}
+                                <td>Upload {{ pic.6 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.6 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.7 %}
+                                <td>Upload {{ pic.7 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.7 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.8 %}
+                                <td>Upload {{ pic.8 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.8 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic < pic.9 %}
+                                <td>Upload {{ pic.9 }} pictures</td>
+                                <td><span class="pull-left"> {{ stars.9 | safe }}</span></td>
+                            {% elif user.userprofile.upload_pic >= pic.9 %}
                                 <td>Keep uploading pictures</td>
-                                <td><span class="pull-left"> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></span></td>
+                                <td><span class="pull-left"> {{ stars.10 | safe }}</span></td>
                             {% endif %}
                         </tr>
                         </tbody>
@@ -283,6 +288,7 @@
                 <div class="col-md-2 col-sm-3">
                 </div> <!-- /.col-md-2 -->
             </div> <!-- /.row -->
+            <div class="row" style="height: 50px"></div>
         </div> <!-- /.container -->
     </div> <!-- /#achievements -->
     <!-- END ACHIEVEMENTS -->

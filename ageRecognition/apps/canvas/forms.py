@@ -51,9 +51,11 @@ class VoteForm(forms.ModelForm):
 class ReportForm(forms.ModelForm):
     class Meta:
         model = Report
-        fields = {'detail'}
+        fields = {'options', 'other'}
         widgets = {
-            'detail': forms.TextInput(attrs={
-                'placeholder': 'Write the reasons of your report'
-            })
+            'other': forms.TextInput(attrs={
+                'placeholder': 'Write the reasons of your report'}),
+            'options': forms.RadioSelect(attrs={
+                'list-style-type': 'none',
+                'display': 'none'})
         }

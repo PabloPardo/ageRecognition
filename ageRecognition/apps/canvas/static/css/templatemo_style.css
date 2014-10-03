@@ -333,6 +333,7 @@ div.terms strong {color:#000;}
   width: 100%;
   z-index: 9999;
   background-color: #161616;
+  top: 0;
 }
 
 #templatemo_logo {
@@ -703,13 +704,14 @@ input.button {
 }
 
 .site-footer {
-  position: absolute;
+  clear: both;
+  position: relative;
   bottom: 0;
   width: 100%;
   /*background-color: #161616;*/
   background-color: black;
   color: white;
-  padding: 20px 0 10px 0;
+  padding: 20px 0 0 0;
 }
 .site-footer a {
   color: white;

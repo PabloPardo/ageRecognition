@@ -79,7 +79,13 @@ class Votes(models.Model):
 
 
 class Report(models.Model):
+    REPORT_CHOICES = [(0, 'Doesn\' appear any face'),
+                      (1, 'There are more than one face'),
+                      (2, 'Unethical'),
+                      (3, 'Other')]
+
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
     date = models.DateField()
-    detail = models.TextField(max_length=500, blank=True)
+    options = models.BooleanField(choices=REPORT_CHOICES)
+    other = models.TextField(max_length=500, blank=True, null=True)

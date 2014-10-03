@@ -11,6 +11,7 @@ from django.utils.image import Image
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
+from django_facebook.models import FacebookProfile
 
 
 def home(request):
@@ -122,8 +123,7 @@ def game(request):
 
     try:
         voted_pics = [v.pic for v in user_votes_list]
-        for v in voted_pics:
-            game_picture_list = game_picture_list.exclude(pic=v)
+        game_picture_list = game_picture_list.exclude(pic__in=voted_pics)
 
         random_idx = random.randint(0, game_picture_list.count() - 1)
         actual_game_picture = game_picture_list[random_idx]
@@ -220,11 +220,20 @@ def game(request):
 def ranking(request):
     context = RequestContext(request)
 
+    # Get the graph from the FB API
+    graph = get_facebook_graph(request=request)
+    friends = graph.get('me/friends', fields='')['data']
+    friends = [f['name'] for f in friends]
+
     # Load users ordered by global score
-    user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:20]
+    user_list = UserProfile.objects.exclude(pk=-1)[:20]
+
+    friends_user_list = UserProfile.objects.filter(user__facebookprofile__facebook_name__in=friends)
+    friends_user_list = friends_user_list | UserProfile.objects.filter(user=request.user)
 
     context_dict = {'users': user_list,
-                    'user': request.user}
+                    'user': request.user,
+                    'friends': friends_user_list}
 
     return render_to_response('ranking.html', context_dict, context_instance=context)
 
@@ -243,5 +252,46 @@ def gallery(request):
 
 def achievements(request):
     context = RequestContext(request)
-    context_dict = {'user': request.user}
+
+     # Get the graph from the FB API
+    graph = get_facebook_graph(request=request)
+    num_friends = len(graph.get('me/friends', fields='')['data'])
+
+    stars = ['<i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o">',
+             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star">',
+             ]
+
+    precision_coments = ['This is awkward',
+                         'You should check your sight',
+                         'That\'s all you can do?',
+                         'Well, you can do better',
+                         'Good, but try harder',
+                         'You are in the right track, keep improving',
+                         'Well done',
+                         'Great!',
+                         'Excellent guessing skills!',
+                         'Incredible, you are reaching perfection',
+                         'Amazing! Prefect precision!']
+
+    share_goals = [1, 3, 5, 7, 10, 15, 20, 25, 35, 50]
+    vote_goals = [5, 10, 20, 50, 150, 400, 1000, 5000, 12000, 30000]
+    pic_goals = [1, 2, 5, 10, 15, 30, 50, 75, 100, 200]
+
+    context_dict = {'user': request.user,
+                    'num_friends': num_friends,
+                    'stars': stars,
+                    'precision': precision_coments,
+                    'share': share_goals,
+                    'vote': vote_goals,
+                    'pic': pic_goals}
+
     return render_to_response('achievements.html', context_dict, context_instance=context)
