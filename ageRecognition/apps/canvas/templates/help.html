@@ -57,7 +57,7 @@
                     <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
                     <div class="main-menu">
                         <ul>
-                            <li class="current_li"><a href="home" onclick="window.location='/home'">Profile</a></li>
+                            <li><a href="home" onclick="window.location='/home'">Profile</a></li>
                             <li><a href="game" onclick="window.location='/game'">Game</a></li>
                             <li><a href="achievements" onclick="window.location='/achievements'">Achievements</a></li>
                             <li><a href="gallery" onclick="window.location='/gallery'">Gallery</a></li>
@@ -71,7 +71,7 @@
                     <div class="responsive">
                         <div class="main-menu">
                             <ul>
-                                <li class="current_li"><a href="home" onclick="window.location='/home'">Profile</a></li>
+                                <li><a href="home" onclick="window.location='/home'">Profile</a></li>
                                 <li><a href="game" onclick="window.location='/game'">Game</a></li>
                                 <li><a href="achievements" onclick="window.location='/achievements'">Achievements</a></li>
                                 <li><a href="gallery" onclick="window.location='/gallery'">Gallery</a></li>
@@ -131,51 +131,43 @@
 <!--END-LOGIN-->
 
 {% if user.is_authenticated %}
-    <!-- PROFILE -->
-    <div id="profile" class="content-section">
+    <!-- HELP -->
+    <div id="help" class="content-section">
         <div class="col-md-12 text-center" style="height:200px;">
-            <h1 class="section-title">Profile</h1>
+            <h1 class="section-title">How to Play</h1>
         </div>
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <span class="pull-right">
-                        <!--Profile Image-->
-{#                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook profile image" />#}
-                        <img src="{{ MEDIA_URL }}{{ user.facebookprofile.image }}" title="facebook profile image" />
-                    </span>
+            <dic class="row">
+                <div class="col-md-3 col-sm-3">
                 </div>
                 <div class="col-md-6 col-sm-6">
-                    <header>
-                        <h1><strong>{{ user.first_name }} {{user.last_name}}</strong></h1>
-                    </header>
-                    <ul>
-                        <li><strong>Uploaded Pictures: </strong> {{user.userprofile.upload_pic}} </li>
-                        <li><strong>Evaluated Pictures: </strong> {{user.userprofile.eval_pic}} </li>
-                        <li><strong>Score Global: </strong> {{user.userprofile.score_global}} </li>
-                        <li><strong>Score Week: </strong> {{user.userprofile.score_week}} </li>
-                        <li><strong>Score Day: </strong> {{user.userprofile.score_day}} </li>
-                    </ul>
+                   <p>In this section you have a short description of the game and its possibilities:</p>
+                   <h4>Profile</h4>
+                   <p>In this section you can keep track your statistics. If you click the <strong>Upload button</strong> you will be able to add images to your gallery.</p>
+                   <h4>Game</h4>
+                   <p>This is the main section, 4 images are shown and you have to guess the age of all of them. The better your guess is the more score you get.</p>
+                   <h4>Achievements</h4>
+                   <p>Here you can see what have you achieve and what do you have do to get the next reward.</p>
+                   <h4>Gallery</h4>
+                   <p>In this section you will be able to se the images you have uploaded and see how many people have voted them and get an estimation of your apparent age. </p>
+                   <h4>Ranking</h4>
+                   <p>The last section allows you to compare your score with your friends.</p>
+                   <div class="text-center"><a href="{% url 'home' %}" class="btn btn-default">Start</a></div>
+                </div>
+                <div class="col-md-3 col-sm-3">
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-3">
-                </div>
-                <div class="col-md-4 col-sm-6 text-center">
-                    <a href="{% url 'help' %}" class="btn btn-default">How to Play</a>
-                    <a href="{% url 'upload' %}" class="btn btn-default">Upload Images</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END PROFILE -->
+        </div> <!-- /.container -->
+    </div> <!-- /#report -->
+    <!-- END HELP -->
+
 {% endif %}
 
 <!--FOOTER-->
 <div class="site-footer">
     <div class="container-fluid">
+        <div class="col-md-2 pull-left"><a href="{% url 'policy' %}">Privacy Policy</a></div>
         <div class="row">
-            <div class="col-md-2 pull-left"><a href="{% url 'policy' %}">Privacy Policy</a></div>
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
                     <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">

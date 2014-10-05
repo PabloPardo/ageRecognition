@@ -25,7 +25,7 @@ def home(request):
                 if user_form.is_valid():
                     request.user.userprofile.terms_conditions = user_form.cleaned_data['terms_conditions']
                     request.user.userprofile.save()
-                    return HttpResponseRedirect(reverse('apps.canvas.views.home'))
+                    return HttpResponseRedirect(reverse('apps.canvas.views.help'))
             else:
                 user_form = UserForm()
             context_dict = {'user_form': user_form}
@@ -300,3 +300,8 @@ def achievements(request):
 def policy(request):
     context = RequestContext(request)
     return render_to_response('policy.html', context_instance=context)
+
+
+def help(request):
+    context = RequestContext(request)
+    return render_to_response('help.html', context_instance=context)
