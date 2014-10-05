@@ -838,6 +838,12 @@ div.gallery img {
   margin: 20px auto;
 }
 
+.dz-slider{
+    width: 150px;
+    margin-top: 30px;
+    margin-bottom: -20px;
+}
+
 input[type="range"] {
   -webkit-appearance: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.98);

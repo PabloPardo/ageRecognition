@@ -295,3 +295,8 @@ def achievements(request):
                     'pic': pic_goals}
 
     return render_to_response('achievements.html', context_dict, context_instance=context)
+
+
+def policy(request):
+    context = RequestContext(request)
+    return render_to_response('policy.html', context_instance=context)

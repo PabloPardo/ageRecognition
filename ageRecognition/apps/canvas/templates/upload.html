@@ -34,8 +34,11 @@
     <!-- Load django_facebook css files form STATIC-->
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
 
+    <link rel="stylesheet" href="{% static 'css/basic.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dropzone.css' %}">
     <!--Load js files from STATIC -->
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
+    <script src="{% static 'js/dropzone.js' %}"></script>
 
 </head>
 <body>
@@ -141,28 +144,29 @@
                 <div class="col-md-2 col-sm-3">
                 </div>
                 <div class="col-md-8 col-sm-6 text-center">
-                    <form class="form-horizontal" role="form"
+                    <form class="dropzone" role="form"
                           action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group">
                             <div style="padding:10px;margin:10px;border:0 solid #ccc">
-                                <span title="Upload images of yourself so other
-                                    players con guess how old you look
-                                    like">
-                                    <p>{{ pic_form.non_field_errors }}</p>
-                                    <div>{{ pic_form.pic.errors }}</div>
-                                    <div>{{ pic_form.pic }}</div>
-
-                                    <div>{{ pic_form.real_age.errors }}</div>
-                                    <div id="real_age" class="slider">
-                                        <label for="real_age"><strong>Your age in the image:</strong></label>
-                                        {{ pic_form.real_age }}
-                                        <span><strong id="range">50</strong></span>
-                                    </div>
-
-                                    <input class="btn btn-default" type="submit"
+                                <input class="btn btn-default" type="submit"
                                         value="Upload Images"/>
-                                </span>
+{#                                <span title="Upload images of yourself so other#}
+{#                                    players con guess how old you look#}
+{#                                    like">#}
+{#                                    <p>{{ pic_form.non_field_errors }}</p>#}
+{#                                    <div>{{ pic_form.pic.errors }}</div>#}
+{#                                    <div>{{ pic_form.pic }}</div>#}
+{##}
+{##}
+{#                                    <div>{{ pic_form.real_age.errors }}</div>#}
+{#                                    <div id="real_age" class="slider">#}
+{#                                        <label for="real_age"><strong>Your age in the image:</strong></label>#}
+{#                                        {{ pic_form.real_age }}#}
+{#                                        <span><strong id="range">50</strong></span>#}
+{#                                    </div>#}
+{##}
+{#                                </span>#}
                             </div>
                         </div>
                     </form>
@@ -177,6 +181,7 @@
 <!--FOOTER-->
 <div class="site-footer">
     <div class="container-fluid">
+        <div class="col-md-2 pull-left"><a href="{% url 'policy' %}">Privacy Policy</a></div>
         <div class="row">
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">

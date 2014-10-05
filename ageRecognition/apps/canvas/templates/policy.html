@@ -57,11 +57,11 @@
                     <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
                     <div class="main-menu">
                         <ul>
-                            <li><a href="home" onclick="window.location='/home'">Profile</a></li>
-                            <li><a href="game" onclick="window.location='/game'">Game</a></li>
-                            <li><a href="achievements" onclick="window.location='/achievements'">Achievements</a></li>
-                            <li><a href="gallery" onclick="window.location='/gallery'">Gallery</a></li>
-                            <li><a href="ranking" onclick="window.location='/ranking'">Ranking</a></li>
+                            <li><a href="{% url 'home' %}"  onclick="window.location='/home'">Profile</a></li>
+                            <li><a href="{% url 'game' %}"  onclick="window.location='/game'">Game</a></li>
+                            <li><a href="{% url 'achievements' %}"  onclick="window.location='/achievements'">Achievements</a></li>
+                            <li><a href="{% url 'gallery' %}"  onclick="window.location='/gallery'">Gallery</a></li>
+                            <li><a href="{% url 'ranking' %}"  onclick="window.location='/ranking'">Ranking</a></li>
                         </ul>
                     </div> <!-- /.age_recognition-menu -->
                 </div> <!-- /.col-md-8 -->
@@ -71,11 +71,11 @@
                     <div class="responsive">
                         <div class="main-menu">
                             <ul>
-                                <li><a href="home" onclick="window.location='/home'">Profile</a></li>
-                                <li><a href="game" onclick="window.location='/game'">Game</a></li>
-                                <li><a href="achievements" onclick="window.location='/achievements'">Achievements</a></li>
-                                <li><a href="gallery" onclick="window.location='/gallery'">Gallery</a></li>
-                                <li><a href="ranking" onclick="window.location='/ranking'">Ranking</a></li>
+                                <li><a href="{% url 'home' %}" onclick="window.location='/home'">Profile</a></li>
+                                <li><a href="{%  url 'game' %}" onclick="window.location='/game'">Game</a></li>
+                                <li><a href="{%  url 'achievements' %}" onclick="window.location='/achievements'">Achievements</a></li>
+                                <li><a href="{%  url 'gallery' %}" onclick="window.location='/gallery'">Gallery</a></li>
+                                <li><a href="{%  url 'ranking' %}" onclick="window.location='/ranking'">Ranking</a></li>
                             </ul>
                         </div>
                     </div>
@@ -87,91 +87,35 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
+<!-- POLICY -->
+<div id="policiy" class="content-section">
+    <div class="col-md-12 text-center" style="height:200px;">
+        <h1 class="section-title">Privacy Policy</h1>
     </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
-        </div>
-        <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+    <div class="container">
+        <dic class="row">
+            <div class="col-md-2 col-sm-3">
             </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
-
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                    </div>
-                </form>
-                You are not logged in, Please login by clicking one of the buttons above
-            </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
-            </div>
-        </div>
-    </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- REPORT -->
-    <div id="report" class="content-section">
-        <div class="col-md-12 text-center" style="height:200px;">
-            <h1 class="section-title">Report</h1>
-        </div>
-        <div class="container">
-            <dic class="row">
-                <div class="col-md-2 col-sm-3">
-                </div>
-                <div class="col-md-8 col-sm-6 text-center">
-                    <form class="form-horizontal" role="form"
-                          action="{% url 'home' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <div class="col-sm-4"></div>
-                            <div class="col-sm-4 pull-left">
-                                {{ report_form.options }}
-                                <p><strong>Write here:  </strong>{{ report_form.other}}</p>
-                                <p>{{ report_form.errors }}</p>
-                            </div>
-                            <div class="col-sm-4"></div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-default">Send Report</button>
-                            </div>
-                        </div>
-                    </form>
+            <div class="col-md-8 col-sm-6 text-center">
+                <div class="terms">
+                    <h3>Terms and Conditions</h3>
+                    <h4>General</h4>
+                    <p>bla bla bla</p>
                 </div>
             </div>
-    </div> <!-- /.container -->
-    </div> <!-- /#report -->
-    <!-- END REPORT -->
-
-{% endif %}
+        </div>
+</div> <!-- /.container -->
+</div> <!-- /#report -->
+<!-- END POLICY -->
 
 <!--FOOTER-->
 <div class="site-footer">
     <div class="container-fluid">
-        <div class="col-md-2 pull-left"><a href="{% url 'policy' %}">Privacy Policy</a></div>
         <div class="row">
+            <div class="col-md-2 pull-left">
+{#                <a href="policy.html" onclick="window.location='/policy'">Privacy Policy</a>#}
+                <a href="{% url 'policy' %}">Privacy Policy</a>
+            </div>
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
                     <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">

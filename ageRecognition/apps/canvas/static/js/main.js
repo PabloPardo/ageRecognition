@@ -44,9 +44,9 @@
 
 })(window, jQuery);
 
-function showValue(newValue)
+function showValue(id, newValue)
 {
-	document.getElementById("range").innerHTML=newValue;
+	document.getElementById(id).innerHTML=newValue;
 };
 
 
@@ -59,3 +59,23 @@ function showValue(newValue)
   ga('create', 'UA-39111866-1', 'auto');
   ga('send', 'pageview');
 
+
+// DROPZONE CONFIGURATION
+//Dropzone.options.myAwesomeDropzone = {
+//
+//    // Properties configuration
+//    autoProcessQueue: false,
+//    paramName: "pic",
+//    maxFiles: 10,
+//    addRemoveLinks: true,
+//
+//    // The setting up of the dropzone
+//    init: function() {
+//        var myDropzone = this;
+//
+//        myDropzone.on("sending", function(file, xhr, formData) {
+//            formData.append("pic", file);
+//        });
+//
+//    }
+//}

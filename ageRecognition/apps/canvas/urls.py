@@ -9,4 +9,5 @@ urlpatterns = patterns('apps.canvas.views',
     url(r'^ranking/$', 'ranking', name='ranking'),
     url(r'^report/$', 'game', name='report'),
     url(r'^terms/$', 'home', name='terms'),
+    url(r'^policy/$', 'policy', name='policy'),
 )
