@@ -36,9 +36,7 @@ class UserProfile(models.Model):
     upload_pic = models.IntegerField(default=0)
     eval_pic = models.IntegerField(default=0)
     score_day = models.IntegerField(default=0)
-    score_week = models.IntegerField(default=0)
     score_global = models.IntegerField(default=0)
-    ach_friends = models.IntegerField(default=0)
     ach_precision = models.IntegerField(default=0)
     hometown = models.CharField(max_length=128)
     terms_conditions = models.BooleanField(default=False)
@@ -79,7 +77,7 @@ class Votes(models.Model):
 
 
 class Report(models.Model):
-    REPORT_CHOICES = [(0, 'Doesn\' appear any face'),
+    REPORT_CHOICES = [(0, 'Doesn\'t appear any face'),
                       (1, 'There are more than one face'),
                       (2, 'Unethical'),
                       (3, 'Other')]

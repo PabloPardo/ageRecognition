@@ -32,11 +32,22 @@
     <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
     <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
 
+    <link rel="stylesheet" href="{% static 'css/style_tables.css' %}">
+
     <!-- Load django_facebook css files form STATIC-->
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
 
     <!--Load js files from STATIC -->
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
+
+    <script src="{% static 'js/vendor/jquery-1.10.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
+    <script type="text/javascript" id="js">$(document).ready(function() {
+        // call the tablesorter plugin
+        $("table").tablesorter({
+            headers: { 0: { sorter: false }, 1: { sorter: false }, 2: { sorter: false }, 3: { sorter: false }}
+        });
+    }); </script>
 
 </head>
 <body>
@@ -143,7 +154,7 @@
                 <div class="col-md-2 col-sm-3">
                 </div> <!-- /.col-md-2 -->
                 <div class="col-md-8 col-sm-6">
-                    <table class="table table-striped">
+                    <table cellspacing="1" id="myTable" class="table table-striped tablesorter">
                         <thead>
                         <tr>
                             <th>Achievement</th>
@@ -157,129 +168,30 @@
                             <!-- SHARE IT -->
                             <td>Share it!</td>
                             <td>Invite your friends to play and you will get starts.</td>
-                            {% if num_friends < share.0 %}
-                                <td>Invite {{ share.0 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.0| safe }}</span></td>
-                            {% elif num_friends < share.1 %}
-                                <td>Invite {{ share.1 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.1| safe }}</span></td>
-                            {% elif num_friends < share.2 %}
-                                <td>Invite {{ share.2 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.2| safe }}</span></td>
-                            {% elif num_friends < share.3 %}
-                                <td>Invite {{ share.3 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.3| safe }}</span></td>
-                            {% elif num_friends < share.4 %}
-                                <td>Invite {{ share.4 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.4| safe }}</span></td>
-                            {% elif num_friends < share.5 %}
-                                <td>Invite {{ share.5 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.5| safe }}</span></td>
-                            {% elif num_friends < share.6 %}
-                                <td>Invite {{ share.6 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.6| safe }}</span></td>
-                            {% elif num_friends < share.7 %}
-                                <td>Invite {{ share.7 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.7| safe }}</span></td>
-                            {% elif num_friends < share.8 %}
-                                <td>Invite {{ share.8 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.8| safe }}</span></td>
-                            {% elif num_friends < share.9 %}
-                                <td>Invite {{ share.9 }} of your friends to play</td>
-                                <td><span class="pull-left"> {{ stars.9| safe }}</span></td>
-                            {% elif num_friends >= share.9 %}
-                                <td>Keep inviting your friends</td>
-                                <td><span class="pull-left"> {{ stars.10 }}</span></td>
-                            {% endif %}
+                            <td>{{ share }}</td>
+                            <td><span class="pull-left"> {{ share_stars| safe }}</span></td>
                         </tr>
                         <tr>
                             <!-- PRECISION -->
                             <td>Precision</td>
                             <td>The better your guess is the higher your rank will be.</td>
-                            {% for p in precision %}
-                                {% if user.userprofile.ach_precision == forloop.counter0 %}
-                                    <td>{{ p }}</td>
-                                    <td><span class="pull-left"> {{ stars | lookup:forloop.counter0 | safe }}</span></td>
-                                {% endif %}
-                            {% endfor %}
+                            <td>{{ precision }}</td>
+                            <td><span class="pull-left"> {{ precision_stars | safe }}</span></td>
                         </tr>
                         <tr>
                             <!-- VOTE -->
                             <td>Vote!</td>
                             <td>Vote more images to get more stars.</td>
-                            {% if user.userprofile.eval_pic < vote.0 %}
-                                <td>Vote {{ vote.0 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.0 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.1 %}
-                                <td>Vote {{ vote.1 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.1 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.2 %}
-                                <td>Vote {{ vote.2 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.2 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.3 %}
-                                <td>Vote {{ vote.3 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.3 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.4 %}
-                                <td>Vote {{ vote.4 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.4 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.5 %}
-                                <td>Vote {{ vote.5 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.5 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.6 %}
-                                <td>Vote {{ vote.6 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.6 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.7 %}
-                                <td>Vote {{ vote.7 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.7 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.8 %}
-                                <td>Vote {{ vote.8 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.8 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic < vote.9 %}
-                                <td>Vote {{ vote.9 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.9 | safe }}</span></td>
-                            {% elif user.userprofile.eval_pic >= vote.9 %}
-                                <td>Keep Voting</td>
-                                <td><span class="pull-left"> {{ stars.10 | safe }}</span></td>
-                            {% endif %}
+                            <td>{{ vote }}</td>
+                            <td><span class="pull-left"> {{ vote_stars | safe }}</span></td>
                         </tr>
                         <tr>
                             <!-- ADD PICTURES -->
                             <td>Add Pictures!</td>
                             <td>Upload more images to get more stars.</td>
-                            {% if user.userprofile.upload_pic < pic.0 %}
-                                <td>Upload {{ pic.0 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.0 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.1 %}
-                                <td>Upload {{ pic.1 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.1 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.2 %}
-                                <td>Upload {{ pic.2 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.2 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.3 %}
-                                <td>Upload {{ pic.3 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.3 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.4 %}
-                                <td>Upload {{ pic.4 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.4 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.5 %}
-                                <td>Upload {{ pic.5 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.5 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.6 %}
-                                <td>Upload {{ pic.6 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.6 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.7 %}
-                                <td>Upload {{ pic.7 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.7 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.8 %}
-                                <td>Upload {{ pic.8 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.8 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic < pic.9 %}
-                                <td>Upload {{ pic.9 }} pictures</td>
-                                <td><span class="pull-left"> {{ stars.9 | safe }}</span></td>
-                            {% elif user.userprofile.upload_pic >= pic.9 %}
-                                <td>Keep uploading pictures</td>
-                                <td><span class="pull-left"> {{ stars.10 | safe }}</span></td>
-                            {% endif %}
+                            <td>{{ pic }}</td>
+                            <td><span class="pull-left"> {{ pic_stars | safe }}</span></td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -296,8 +208,8 @@
 <!--FOOTER-->
 <div class="site-footer">
     <div class="container-fluid">
-        <div class="col-md-2 pull-left"><a href="{% url 'policy' %}">Privacy Policy</a></div>
         <div class="row">
+            <div class="col-md-2"><a href="{% url 'policy' %}"><p>Privacy Policy</p></a></div>
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
                     <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">
@@ -312,7 +224,7 @@
                     <img src="{% static 'images/logo/logoUOC.png' %}" width="80" height="60" alt="UOC logo">
                 </a>
             </div> <!-- /.col-md-6 -->
-            <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
+            <div class="col-md-4 col-sm-4 col-xs-6 pull-right text-right">
                 <p>Project developed in collaboration with:</p>
             </div>
         </div> <!-- /.row -->
@@ -320,7 +232,7 @@
 </div> <!-- /.site-footer -->
 <!--END-FOOTER-->
 
-<script src="{% static 'js/vendor/jquery-1.10.1.min.js' %}"></script>
+{#<script src="{% static 'js/vendor/jquery-1.10.1.min.js' %}"></script>#}
 <script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-1.10.1.min.js' %}"><\/script>')</script>
 <script src="{% static 'js/jquery.easing-1.3.js' %}"></script>
 <script src="{% static 'js/bootstrap.js' %}"></script>

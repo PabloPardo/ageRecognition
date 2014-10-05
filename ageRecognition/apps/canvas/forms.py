@@ -42,20 +42,20 @@ class VoteForm(forms.ModelForm):
                 'value': 0,
                 'placeholder': 'How old does he/she looks like?',
                 'type': 'range',
-                'onchange': 'showValue(this.value)',
-                'oninput': 'showValue(this.value)'
+                'onchange': 'showValue("range_game_1", this.value)',
+                'oninput': 'showValue("range_game_1", this.value)'
             })
         }
 
 
-class ReportForm(forms.ModelForm):
-    class Meta:
-        model = Report
-        fields = {'options', 'other'}
-        widgets = {
-            'other': forms.TextInput(attrs={
-                'placeholder': 'Write the reasons of your report'}),
-            'options': forms.RadioSelect(attrs={
-                'list-style-type': 'none',
-                'display': 'none'})
-        }
+class ReportForm(forms.Form):
+    REPORT_CHOICES = [(0, 'Doesn\'t appear any face'),
+                      (1, 'There are more than one face'),
+                      (2, 'Unethical'),
+                      (3, 'Other')]
+
+    other = forms.CharField()
+    other.widget = forms.TextInput(attrs={'placeholder': 'Write the reasons of your report',
+                                          'style': 'width: 200px', 'width': '200px'})
+
+    options = forms.ChoiceField(choices=REPORT_CHOICES, widget=forms.RadioSelect())

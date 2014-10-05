@@ -148,44 +148,11 @@
 {% if user.is_authenticated %}
     <!-- RANKING -->
     <div id="ranking" class="content-section">
-        <div class="container">
+        <div class="container" style="padding-bottom: 50px">
             <div class="row">
                 <div class="col-md-12 text-center" style="height:200px;">
                     <h1 class="section-title">Ranking</h1>
                 </div> <!-- /.col-md-12 -->
-            </div> <!-- /.row -->
-            <div class="text-center"> <h3>Global Ranking</h3></div>
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-                <div class="col-md-8 col-md-8">
-                    <table cellspacing="1" id="myTable" class="table table-striped tablesorter"> {# table table-striped  #}
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Player</th>
-                                <th>Score</th>
-                                <th>Score Week</th>
-                                <th>Score Day</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for u in users %}
-                            <tr>
-                                <td> {{ forloop.counter }}</td>
-                                <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
-                                <td> {{u.score_global }}</td>
-                                <td> {{u.score_week }}</td>
-                                <td> {{u.score_day }}</td>
-                            </tr>
-                        {% empty %}
-                            <strong style="text-align: center">There are no users</strong>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
             </div> <!-- /.row -->
             <div class="text-center"> <h3>Friend's Ranking</h3></div>
             <div class="row">
@@ -198,8 +165,8 @@
                                 <th>#</th>
                                 <th>Player</th>
                                 <th>Score</th>
-                                <th>Score Week</th>
-                                <th>Score Day</th>
+                                <th>#Votes</th>
+                                <th>#Uploaded Images</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -208,11 +175,44 @@
                                 <td> {{ forloop.counter }}</td>
                                 <td><strong> {{f.user.first_name}} {{f.user.last_name}}</strong></td>
                                 <td> {{f.score_global }}</td>
-                                <td> {{f.score_week }}</td>
-                                <td> {{f.score_day }}</td>
+                                <td> {{ f.eval_pic }}</td>
+                                <td> {{ f.upload_pic }}</td>
                             </tr>
                         {% empty %}
                             <strong style="text-align: center">Invite your friends and compete with them.</strong>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-2 col-sm-3">
+                </div> <!-- /.col-md-2 -->
+            </div> <!-- /.row -->
+            <div class="text-center"> <h3>Global Ranking</h3></div>
+            <div class="row">
+                <div class="col-md-2 col-sm-3">
+                </div> <!-- /.col-md-2 -->
+                <div class="col-md-8 col-md-8">
+                    <table cellspacing="1" id="myTable" class="table table-striped tablesorter"> {# table table-striped  #}
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Player</th>
+                                <th>Score</th>
+                                <th>#Votes</th>
+                                <th>#Uploaded Images</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for u in users %}
+                            <tr>
+                                <td> {{ forloop.counter }}</td>
+                                <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
+                                <td> {{u.score_global }}</td>
+                                <td> {{ u.eval_pic }}</td>
+                                <td> {{ u.upload_pic }}</td>
+                            </tr>
+                        {% empty %}
+                            <strong style="text-align: center">There are no users</strong>
                         {% endfor %}
                         </tbody>
                     </table>
@@ -230,8 +230,8 @@
 <!--FOOTER-->
 <div class="site-footer">
     <div class="container-fluid">
-        <div class="col-md-2 pull-left"><a href="{% url 'policy' %}">Privacy Policy</a></div>
         <div class="row">
+            <div class="col-md-2"><a href="{% url 'policy' %}"><p>Privacy Policy</p></a></div>
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
                     <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">
@@ -246,7 +246,7 @@
                     <img src="{% static 'images/logo/logoUOC.png' %}" width="80" height="60" alt="UOC logo">
                 </a>
             </div> <!-- /.col-md-6 -->
-            <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
+            <div class="col-md-4 col-sm-4 col-xs-6 pull-right text-right">
                 <p>Project developed in collaboration with:</p>
             </div>
         </div> <!-- /.row -->

@@ -101,6 +101,7 @@ def home(request):
     else:
         pic_form = PictureForm()  # A empty, unbound pic_form
 
+
     context_dict = {'pic_form': pic_form,
                     'user': request.user,
                     'messages': messages}
@@ -286,13 +287,49 @@ def achievements(request):
     vote_goals = [5, 10, 20, 50, 150, 400, 1000, 5000, 12000, 30000]
     pic_goals = [1, 2, 5, 10, 15, 30, 50, 75, 100, 200]
 
+    for i in range(0, len(share_goals)):
+        if num_friends < share_goals[i]:
+            share = 'Invite ' + str(share_goals[i]) + ' of your friends to play'
+            share_stars = stars[i]
+            break
+        elif num_friends >= share_goals[-1]:
+            share = 'Keep inviting your friends'
+            share_stars = stars[-1]
+
+    for i in range(0, len(precision_coments)):
+        if request.user.userprofile.ach_precision == i:
+            precision = precision_coments[i]
+            precision_stars = stars[i]
+            break
+
+    for i in range(0, len(vote_goals)):
+        if request.user.userprofile.eval_pic < vote_goals[i]:
+            vote = 'Vote ' + str(vote_goals[i]) + ' pictures'
+            vote_stars = stars[i]
+            break
+        elif request.user.userprofile.eval_pic >= vote_goals[-1]:
+            vote = 'Keep Voting'
+            vote_stars = stars[-1]
+
+    for i in range(0, len(pic_goals)):
+        if request.user.userprofile.upload_pic < pic_goals[i]:
+            pic = 'Upload ' + str(pic_goals[i]) + ' pictures'
+            pic_stars = stars[i]
+            break
+        elif request.user.userprofile.upload_pic >= pic_goals[-1]:
+            pic = 'Keep uploading pictures'
+            pic_stars = stars[-1]
+
     context_dict = {'user': request.user,
                     'num_friends': num_friends,
-                    'stars': stars,
-                    'precision': precision_coments,
-                    'share': share_goals,
-                    'vote': vote_goals,
-                    'pic': pic_goals}
+                    'share_stars': share_stars,
+                    'share': share,
+                    'precision': precision,
+                    'precision_stars': precision_stars,
+                    'vote': vote,
+                    'vote_stars': vote_stars,
+                    'pic': pic,
+                    'pic_stars': pic_stars}
 
     return render_to_response('achievements.html', context_dict, context_instance=context)
 
