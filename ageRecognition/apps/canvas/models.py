@@ -64,6 +64,8 @@ class Picture(models.Model):
     def __unicode__(self):
         return self.pic.name
 
+    def num_votes(self):
+        return Votes.objects.filter(pic=self).count()
 
 class Votes(models.Model):
     user = models.ForeignKey(to=UserProfile)

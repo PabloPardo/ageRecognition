@@ -769,6 +769,12 @@ div.gallery img {
 /*------------------------------------------------------
 	RESPONSIVE STYLES
 --------------------------------------------------------*/
+@media (max-width: 1199px){
+  .container {
+      width: auto;
+  }
+}
+
 @media (max-width: 991px) {
   .main-menu, .bx-thumbnail-wrapper {
     display: none;
@@ -850,8 +856,14 @@ div.gallery img {
 }
 
 .slider {
-  width: 250px;
+  width: 180px;
   margin: 20px auto;
+}
+@media(max-width: 991px) {
+    .slider {
+        width: 100px;
+        margin: 20px auto;
+    }
 }
 
 .dz-slider{
@@ -921,4 +933,32 @@ input[type="range"]::-ms-thumb {
   border-radius: 12px;
   border: 0;
   background-image: linear-gradient(to bottom, #0ECC4C 0, #a5e1ba 100%); /* W3C */
+}
+
+.game-pic-container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+    }
+
+.game-pic-container img {
+    width: 200px;
+    height: auto;
+}
+
+@media(max-width: 991px){
+    .game-pic-container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+    }
+
+    .game-pic-container img {
+        width: 100px;
+        height: auto;
+    }
 }

@@ -1,6 +1,8 @@
 import time
 import datetime
 import random
+from django.db.models import Count
+from django.db.models.query import QuerySet
 import imagehash
 import cv2
 
@@ -55,46 +57,45 @@ def home(request):
 
         pic_form = PictureForm(data=request.POST, files=request.FILES)
 
-        if pic_form.is_valid():
+        if pic_form.files:
+            real_age_list = pic_form.data.getlist('real_age')
+            for i in range(0, len(pic_form.files)):
+                file_name = 'pic[' + str(i) + ']'
+                newpic = Picture()
+                newpic.pic = pic_form.files[file_name]
+                newpic.owner = request.user.userprofile
+                newpic.real_age = real_age_list[i]
+                newpic.date = str(datetime.datetime.now().date())
 
-            # Since we need to set the new picture attribute ourselves, we set commit=False.
-            # This delays saving the model until we're ready to avoid integrity problems.
-            newpic = pic_form.save(commit=False)
-            newpic.pic = pic_form.cleaned_data['pic']
-            newpic.owner = request.user.userprofile
-            newpic.real_age = pic_form.cleaned_data['real_age']
-            newpic.date = str(datetime.datetime.now().date())
-
-            if request.FILES.has_key('pic'):
                 ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
-                request.FILES['pic'].name = str(request.user.id) + '_' + ts + '.jpg'
+                request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + '.jpg'
 
-            newpic.save()
-            newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
-            newpic.save()
+                newpic.save()
+                newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
+                newpic.save()
 
-            # Update the number of uploaded pictures
-            request.user.userprofile.upload_pic += 1
+                # Update the number of uploaded pictures
+                request.user.userprofile.upload_pic += 1
 
-            #Update the global score:
-            request.user.userprofile.score_global += 50
-            request.user.userprofile.save()
+                #Update the global score:
+                request.user.userprofile.score_global += 50
+                request.user.userprofile.save()
 
-            # Check if the new image has been uploaded by the user
-            for p in range(0, user_pictures_list.count()-1):
-                if str(newpic.hash) == user_pictures_list[p].hash:
-                    newpic.delete()
-                    request.user.userprofile.upload_pic -= 1
-                    request.user.userprofile.score_global -= 50
-                    request.user.userprofile.save()
+                # Check if the new image has been uploaded by the user
+                for p in range(0, user_pictures_list.count()-1):
+                    if str(newpic.hash) == user_pictures_list[p].hash:
+                        newpic.delete()
+                        request.user.userprofile.upload_pic -= 1
+                        request.user.userprofile.score_global -= 50
+                        request.user.userprofile.save()
 
-                    messages['repeated'] = 'This picture is already uploaded.'
+                        messages['repeated'] = 'This picture is already uploaded.'
 
-                    print 'The image is has already been uploaded.'
-                    break
+                        print 'The image is has already been uploaded.'
+                        break
 
             # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('apps.canvas.views.home'))
+            return HttpResponseRedirect('/upload/')
         else:
             print pic_form.errors
 
@@ -119,17 +120,29 @@ def game(request):
 
     # Chose a random picture to guess
     # Restrict the selected images to the ones the user haven't vote
-    game_picture_list = Picture.objects.exclude(owner=request.user)
-    game_picture_list = game_picture_list.exclude(visibility=False)
+    game_picture_list = Picture.objects.exclude(owner=request.user).exclude(visibility=False)
 
     try:
+        UserProfile.objects.select_related('pic')
         voted_pics = [v.pic for v in user_votes_list]
         game_picture_list = game_picture_list.exclude(pic__in=voted_pics)
+
+        # Sort the images by the users global score (se the users with highest scores get their images voted more).
+        game_picture_list = game_picture_list.order_by('-owner__score_global')
+
+        # Sort the images by number of votes
+        pics_ord_by_votes = Picture.objects.raw("SELECT canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) ON canvas_picture.id=vote_pic_id ORDER BY num_votes")
+
+        # Sort the images by number of ppl from
+
+        # Get the four images to show:
+        actual_game_pic_list = game_picture_list[:4]
 
         random_idx = random.randint(0, game_picture_list.count() - 1)
         actual_game_picture = game_picture_list[random_idx]
     except:
         actual_game_picture = []
+        actual_game_pic_list = []
 
     # Handle file upload
     if request.method == 'POST':
@@ -190,7 +203,7 @@ def game(request):
             request.user.userprofile.save()
 
             # Redirect to the document list after POST
-            return HttpResponseRedirect(reverse('apps.canvas.views.game'))
+            return HttpResponseRedirect('/game/')
         elif report_form.is_valid():
             newreport = report_form.save(commit=False)
             newreport.pic = actual_game_picture
@@ -200,7 +213,7 @@ def game(request):
             if Report.objects.filter(pic=actual_game_picture).count() >= 3:
                 actual_game_picture.visibility = False
                 actual_game_picture.save()
-            return HttpResponseRedirect(reverse('apps.canvas.views.game'))
+            return HttpResponseRedirect('/game/')
         else:
             print vote_form.errors, report_form.errors
     else:
@@ -210,7 +223,7 @@ def game(request):
     context_dict = {'vote_form': vote_form,
                     'report_form': report_form,
                     'user': request.user,
-                    'game_pic': actual_game_picture}
+                    'game_pic_list': actual_game_pic_list}
 
     if request.path == '/game/':
         return render_to_response('game.html', context_dict, context_instance=context)

@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
     <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
 
+    <link rel="stylesheet" href="{% static 'css/dropzone.css' %}">
+
     <!-- Load django_facebook css files form STATIC-->
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
 
@@ -137,49 +139,41 @@
             <h1 class="section-title">Game</h1>
         </div>
         <div class="container" style="padding-bottom: 50px">
-            {% if game_pic %}
-                <div class="row">
-                    <div class="col-md-2 col-sm-3">
-                    </div>
-                    <div class="col-md-8 col-sm-6 text-center">
-                        <img src="{{ MEDIA_URL }}{{ game_pic }}" alt="{{ game_pic }}"
-                             style="width: 50%; height: 50%" class="img-thumbnail">
-                    </div>
-                    <div class="col-md-2 col-sm-3">
-                    </div>
-                </div>
-                <dic class="row">
-                    <div class="col-md-2 col-sm-3">
-                    </div>
-                    <div class="col-md-8 col-sm-6 text-center">
-                        <form class="form-horizontal" role="form"
+            <div class="row">
+            {% if game_pic_list %}
+            {% for game_pic in game_pic_list %}
+
+                    <div class="col-md-3 col-sm-3 text-center dz-preview dz-image-preview">
+                        <form class="form-horizontal" role="form" id="form{{ forloop.counter }}"
                               action="{% url 'game' %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
-                                <div class="col-md-3"></div>
-                                <div class="col-sm-6">
-                                    <p>{{ vote_form.errors }}</p>
-                                    <div class="slider">
-                                        <p>Input the age: <strong id="range_game_1">0</strong></p>
-                                        {{ vote_form.vote }}
-                                    </div>
+                                <div class="dz-details game-pic-container">
+                                    <img src="{{ MEDIA_URL }}{{ game_pic }}" alt="{{ game_pic }}">
                                 </div>
-                                <div class="col-md-3"></div>
+                                <p>{{ vote_form.errors }}</p>
+                                <div class="slider">
+                                    <p>Input the age: <strong id="range_game_{{ forloop.counter }}">0</strong></p>
+                                    <input id="id_vote" max="100" min="1" name="vote" onchange='showValue("range_game_{{ forloop.counter }}", this.value)' oninput="showValue('range_game_{{ forloop.counter }}', this.value)" type="range" value="0">
+                                </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-12">
-                                    <button type="submit" class="btn btn-default">Submit</button>
-                                    <a href="/report" class="btn btn-default">Report Image</a>
-                                </div>
+                                <a href="{% url 'report' %}" class="btn btn-default">Report Image</a>
+                                <button type="submit" class="btn btn-default" onclick="submitForms()">Submit</button>
                             </div>
+{#                            <button type="submit" class="hidden">Submit</button>#}
                         </form>
                     </div>
-                </div>
+            {% endfor %}
+                <div class="col-md-12 text-center">
+{#                <button type="submit" class="btn btn-default" onclick="submitForms()">Submit</button>#}
+            </div>
             {% else %}
                 <div style="text-align: center">
                     <p>There are no pictures you can vote to, ask your friends to join the game and increase the set of images!</p>
                 </div>
             {% endif %}
+            </div>
         <div class="row" style="height: 50px"></div>
     </div> <!-- /.container -->
     </div> <!-- /#game -->
@@ -188,7 +182,7 @@
 {% endif %}
 
 <!--FOOTER-->
-<div class="site-footer">
+<div class="site-footer hidden-xs hidden-sm">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2"><a href="{% url 'policy' %}"><p>Privacy Policy</p></a></div>

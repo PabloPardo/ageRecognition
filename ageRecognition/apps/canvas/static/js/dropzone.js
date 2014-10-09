@@ -291,14 +291,14 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       url: null,
       method: "post",
       withCredentials: false,
-      parallelUploads: 2,
-      uploadMultiple: false,
+      parallelUploads: 10,
+      uploadMultiple: true,
       maxFilesize: 256,
       paramName: "pic",
       createImageThumbnails: true,
       maxThumbnailFilesize: 10,
-      thumbnailWidth: 100,
-      thumbnailHeight: 100,
+      thumbnailWidth: 150,
+      thumbnailHeight: 150,
       maxFiles: 10,
       params: {},
       clickable: true,
@@ -552,7 +552,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       completemultiple: noop,
       maxfilesexceeded: noop,
       maxfilesreached: noop,
-      previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <div class=\"dz-size\" data-dz-size></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"dz-slider\">\n    <span>Input the age: <strong id=\"range_id\">0</strong></span>\n    <input  name=\"real_age\" min=\"1\" max=\"100\" value=\"0\" placeholder=\"How old does he/she looks like?\" type=\"range\" onchange='showValue(\"range_id\", this.value)' oninput='showValue(\"range_id\", this.value)'/>\n </div>\n   <div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n  <div class=\"dz-success-mark\"><span>✔</span></div>\n  <div class=\"dz-error-mark\"><span>✘</span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n </div>"
+      previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"dz-slider\">\n    <span>Input the age: <strong id=\"range_id\">0</strong></span>\n    <input  name=\"real_age\" min=\"1\" max=\"100\" value=\"0\" placeholder=\"How old does he/she looks like?\" type=\"range\" onchange='showValue(\"range_id\", this.value)' oninput='showValue(\"range_id\", this.value)'/>\n </div>\n   <div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n   <div class=\"dz-error-mark\"><span>✘</span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n </div>"
     };
 
     extend = function() {
@@ -1875,3 +1875,9 @@ if (typeof exports == "object") {
   this["Dropzone"] = require("dropzone");
 }
 })();
+
+//$('#imgsubmit').click(function (e){
+//    e.preventDefault();
+//    e.stopPropagation();
+//    $('#mydropzone').processQueue();
+//});
