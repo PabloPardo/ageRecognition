@@ -67,6 +67,7 @@ class Picture(models.Model):
     def num_votes(self):
         return Votes.objects.filter(pic=self).count()
 
+
 class Votes(models.Model):
     user = models.ForeignKey(to=UserProfile)
     pic = models.ForeignKey(to=Picture)
@@ -79,8 +80,8 @@ class Votes(models.Model):
 
 
 class Report(models.Model):
-    REPORT_CHOICES = [(0, 'Doesn\'t appear any face'),
-                      (1, 'There are more than one face'),
+    REPORT_CHOICES = [(0, 'Doesn\'t appear any person'),
+                      (1, 'There are more than one person'),
                       (2, 'Unethical'),
                       (3, 'Other')]
 

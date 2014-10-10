@@ -1875,9 +1875,3 @@ if (typeof exports == "object") {
   this["Dropzone"] = require("dropzone");
 }
 })();
-
-//$('#imgsubmit').click(function (e){
-//    e.preventDefault();
-//    e.stopPropagation();
-//    $('#mydropzone').processQueue();
-//});

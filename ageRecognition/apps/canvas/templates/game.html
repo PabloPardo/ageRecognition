@@ -141,12 +141,15 @@
         <div class="container" style="padding-bottom: 50px">
             <div class="row">
             {% if game_pic_list %}
+                <form class="form-horizontal" role="form"
+                              action="{% url 'game' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
             {% for game_pic in game_pic_list %}
 
-                    <div class="col-md-{% widthratio 12 game_pic_list.count 1 %} text-center dz-preview dz-image-preview">
-                        <form class="form-horizontal" role="form" id="form{{ forloop.counter }}"
-                              action="{% url 'game' %}" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
+                    <div class="col-md-{% widthratio 12 game_pic_list|length 1 %} text-center dz-preview dz-image-preview">
+{#                        <form class="form-horizontal" role="form" id="form{{ forloop.counter }}"#}
+{#                              action="{% url 'game' %}" method="post" enctype="multipart/form-data">#}
+{#                            {% csrf_token %}#}
                             <div class="form-group">
                                 <div class="dz-details game-pic-container">
                                     <img src="{{ MEDIA_URL }}{{ game_pic }}" alt="{{ game_pic }}">
@@ -158,13 +161,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <a href="{% url 'report' %}" class="btn btn-default">Report Image</a>
+                                <a href="{% url 'report' %}?id={{ game_pic.id }}" class="btn btn-default">Report Image</a>
                             </div>
-                        </form>
+
                     </div>
             {% endfor %}
                 <div class="col-md-12 text-center">
-                <button type="submit" class="btn btn-default" onclick="submitForms()">Submit</button>
+                <button type="submit" class="btn btn-default">Submit</button> <!--onclick="submitForms()"-->
+                </form>
             </div>
             {% else %}
                 <div style="text-align: center">

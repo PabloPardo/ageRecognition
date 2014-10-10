@@ -49,12 +49,6 @@ function showValue(id, newValue)
 	document.getElementById(id).innerHTML=newValue;
 };
 
-function submitForms(){
-    document.getElementById("form1").submit();
-    document.getElementById("form2").submit();
-    document.getElementById("form3").submit();
-    document.getElementById("form4").submit();
-}
 
 //Google Analytics code:
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -66,22 +60,4 @@ function submitForms(){
   ga('send', 'pageview');
 
 
-// DROPZONE CONFIGURATION
-//Dropzone.options.myAwesomeDropzone = {
-//
-//    // Properties configuration
-//    autoProcessQueue: false,
-//    paramName: "pic",
-//    maxFiles: 10,
-//    addRemoveLinks: true,
-//
-//    // The setting up of the dropzone
-//    init: function() {
-//        var myDropzone = this;
-//
-//        myDropzone.on("sending", function(file, xhr, formData) {
-//            formData.append("pic", file);
-//        });
-//
-//    }
-//}
+

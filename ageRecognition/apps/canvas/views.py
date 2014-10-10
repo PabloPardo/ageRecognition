@@ -129,90 +129,114 @@ def game(request):
 
         # Sort the images by the users global score (se the users with highest scores get their images voted more).
         game_picture_list = game_picture_list.order_by('-owner__score_global')
+        names_list = [p.pic.name for p in game_picture_list]
 
         # Sort the images by number of votes
-        pics_ord_by_votes = Picture.objects.raw("SELECT canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) ON canvas_picture.id=vote_pic_id ORDER BY num_votes")
+        pics_ord_by_votes = list(Picture.objects.raw("SELECT canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) ON canvas_picture.id=vote_pic_id ORDER BY num_votes"))
+
+        # Intersct the pics_ord_by_votes amb els game_picture_list
+        pics_ord_by_votes = [p for p in pics_ord_by_votes if p.pic.name in names_list]
 
         # Sort the images by number of ppl from
 
         # Get the four images to show:
-        actual_game_pic_list = game_picture_list[:4]
+        actual_game_pic_list = list(game_picture_list[:2])
+        j = 0
+        i = 0
+        hash_list = [p.hash for p in game_picture_list]
+        while j != 2 and i < len(pics_ord_by_votes):
+            if not pics_ord_by_votes[i].pic.name in names_list \
+                    and not pics_ord_by_votes[i].hash in hash_list:
+                actual_game_pic_list.append(pics_ord_by_votes[i])
+                j += 1
+            i += 1
 
-        random_idx = random.randint(0, game_picture_list.count() - 1)
-        actual_game_picture = game_picture_list[random_idx]
-    except:
-        actual_game_picture = []
+        # random_idx = random.randint(0, game_picture_list.count() - 1)
+        # actual_game_picture = game_picture_list[random_idx]
+    except Exception, e:
         actual_game_pic_list = []
+        print e
 
     # Handle file upload
     if request.method == 'POST':
         vote_form = VoteForm(data=request.POST, files=request.FILES)
         report_form = ReportForm(data=request.POST, files=request.FILES)
 
+        votes_list = vote_form.data.getlist('vote')
         if vote_form.is_valid():
-            newvote = vote_form.save(commit=False)
-            newvote.vote = vote_form.cleaned_data['vote']
-            newvote.user = request.user.userprofile
-            newvote.pic = actual_game_picture
-            newvote.date = str(datetime.datetime.now().date())
+            for i in range(0, len(votes_list)):
+                newvote = vote_form.save(commit=False)
+                newvote.vote = votes_list[i]
+                newvote.user = request.user.userprofile
+                newvote.pic = actual_game_pic_list[i]
+                newvote.date = str(datetime.datetime.now().date())
 
-            if actual_game_picture.ground_truth == 0:
-                if actual_game_picture.real_age:
-                    newvote.score = abs(actual_game_picture.real_age - vote_form.cleaned_data['vote'])
+                if actual_game_pic_list[i].ground_truth == 0:
+                    if actual_game_pic_list[i].real_age:
+                        newvote.score = abs(actual_game_pic_list[i].real_age - votes_list[i])
+                    else:
+                        newvote.score = 1
                 else:
-                    newvote.score = 1
-            else:
-                newvote.score = abs(actual_game_picture.ground_truth - vote_form.cleaned_data['vote'])
-            newvote.save()
+                    newvote.score = abs(actual_game_pic_list[i].ground_truth - votes_list[i])
+                newvote.save()
 
-            # Update the number of voted pictures
-            request.user.userprofile.eval_pic += 1
+                # Update the number of voted pictures
+                request.user.userprofile.eval_pic += 1
 
-            # Update the global score
-            if newvote.score > 10:
-                request.user.userprofile.score_global += 1
-            else:
-                request.user.userprofile.score_global += 1 + 2*(10 - newvote.score)
+                # Update the global score
+                if newvote.score > 10:
+                    request.user.userprofile.score_global += 1
+                else:
+                    request.user.userprofile.score_global += 1 + 2*(10 - newvote.score)
 
-            # Update Ground Truth of the voted picture
-            if actual_game_picture.ground_truth == 0:
-                actual_game_picture.ground_truth = newvote.vote
-            else:
-                votes_act_pic = Votes.objects.filter(pic=actual_game_picture)
-                gt = 0.
-                for v in votes_act_pic:
-                    gt += v.vote
-                gt = int(gt / votes_act_pic.count())
-                actual_game_picture.ground_truth = gt
+                # Update Ground Truth of the voted picture
+                if actual_game_pic_list[i].ground_truth == 0:
+                    actual_game_pic_list[i].ground_truth = newvote.vote
+                else:
+                    votes_act_pic = Votes.objects.filter(pic=actual_game_pic_list[i])
+                    gt = 0.
+                    for v in votes_act_pic:
+                        gt += v.vote
+                    gt = int(gt / votes_act_pic.count())
+                    actual_game_pic_list[i].ground_truth = gt
 
-            actual_game_picture.save()
+                actual_game_pic_list[i].save()
 
-            # Calculate the score of the user
-            user_votes_scores_list = [v.score for v in user_votes_list].append(newvote.score)
-            try:
-                assert isinstance(user_votes_scores_list, list)
-            except:
-                user_votes_scores_list = [newvote.score]
+                # Calculate the score of the user
+                user_votes_scores_list = [v.score for v in user_votes_list].append(newvote.score)
+                try:
+                    assert isinstance(user_votes_scores_list, list)
+                except:
+                    user_votes_scores_list = [newvote.score]
 
-            precision = sum(user_votes_scores_list)/(len(user_votes_scores_list))
-            if precision > 10:
-                request.user.userprofile.ach_precision = 0
-            else:
-                request.user.userprofile.ach_precision = 10 - precision
+                precision = sum(user_votes_scores_list)/(len(user_votes_scores_list))
+                if precision > 10:
+                    request.user.userprofile.ach_precision = 0
+                else:
+                    request.user.userprofile.ach_precision = 10 - precision
 
-            request.user.userprofile.save()
+                request.user.userprofile.save()
 
             # Redirect to the document list after POST
             return HttpResponseRedirect('/game/')
         elif report_form.is_valid():
-            newreport = report_form.save(commit=False)
-            newreport.pic = actual_game_picture
+            # Find out which of the images is being reported
+            id_pic = request.GET.get('id')
+            for i in range(0, len(actual_game_pic_list)):
+                if int(id_pic) == pics_ord_by_votes[i].id:
+                    break
+
+            newreport = Report()
+            newreport.pic = actual_game_pic_list[i]
             newreport.user = request.user.userprofile
             newreport.date = str(datetime.datetime.now().date())
+            newreport.options = report_form.cleaned_data['options']
+            newreport.other = report_form.cleaned_data['other']
+            newreport.save()
 
-            if Report.objects.filter(pic=actual_game_picture).count() >= 3:
-                actual_game_picture.visibility = False
-                actual_game_picture.save()
+            if Report.objects.filter(pic=actual_game_pic_list[i]).count() >= 3:
+                actual_game_pic_list[i].visibility = False
+                actual_game_pic_list[i].save()
             return HttpResponseRedirect('/game/')
         else:
             print vote_form.errors, report_form.errors

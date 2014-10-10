@@ -143,7 +143,7 @@
                 <div class="col-md-8 col-sm-6 text-center">
                     <p><strong>Specify the reasons of your report, thanks.</strong></p>
                     <form class="form-horizontal" role="form"
-                          action="{% url 'home' %}" method="post" enctype="multipart/form-data">
+                          action="{% url 'report' %}?id={{ request.GET.id }}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group">
                             <div class="col-sm-4"></div>
