@@ -35,17 +35,6 @@ class VoteForm(forms.ModelForm):
     class Meta:
         model = Votes
         fields = {'vote'}
-        # widgets = {
-        #     'vote': forms.NumberInput(attrs={
-        #         'min': 1,
-        #         'max': 100,
-        #         'value': 0,
-        #         'placeholder': 'How old does he/she looks like?',
-        #         'type': 'range',
-        #         'onchange': 'showValue("range_game", this.value)',
-        #         'oninput': 'showValue("range_game", this.value)'
-        #     })
-        # }
 
 
 class ReportForm(forms.Form):

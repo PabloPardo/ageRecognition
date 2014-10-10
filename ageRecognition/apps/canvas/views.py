@@ -155,6 +155,7 @@ def game(request):
         # actual_game_picture = game_picture_list[random_idx]
     except Exception, e:
         actual_game_pic_list = []
+        pics_ord_by_votes = []
         print e
 
     # Handle file upload
@@ -371,9 +372,9 @@ def achievements(request):
     return render_to_response('achievements.html', context_dict, context_instance=context)
 
 
-def policy(request):
+def privacy(request):
     context = RequestContext(request)
-    return render_to_response('policy.html', context_instance=context)
+    return render_to_response('privacy.html', context_instance=context)
 
 
 def help(request):

@@ -151,7 +151,8 @@
                                 <div class="terms">
                                     <h3>Terms and Conditions</h3>
                                     <h4>General</h4>
-                                    <p>bla bla bla</p>
+                                    <p>The purpose of this Facebook application is to gather images of anonymous people labeled with an approximation of the estimated age. The usage of this data is defined in our <a href="{% url 'privacy' %}" style="color: blue">Privacy Policy.</a></p>
+                                    <p>Accepting this Terms and Conditions you accept the to </p>
                                 </div>
 
                                 <p><strong>I accept the terms and conditions:  </strong>{{ user_form.terms_conditions}}</p>
@@ -172,7 +173,7 @@
 <div class="site-footer hidden-xs hidden-sm">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2"><a href="{% url 'policy' %}"><p>Privacy Policy</p></a></div>
+            <div class="col-md-2"><a href="{% url 'privacy' %}"><p>Privacy Policy</p></a></div>
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
                     <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">

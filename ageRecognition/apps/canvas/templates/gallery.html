@@ -133,7 +133,7 @@
 {% if user.is_authenticated %}
     <!-- GALLERY -->
     <div id="gallery" class="content-section">
-        <div class="container">
+        <div class="container" style="padding-bottom: 100px">
             <div class="row">
                 <div class="col-md-12 text-center" style="height:200px;">
                     <h1 class="section-title">Gallery</h1>
@@ -165,7 +165,7 @@
 <div class="site-footer hidden-xs hidden-sm">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2"><a href="{% url 'policy' %}"><p>Privacy Policy</p></a></div>
+            <div class="col-md-2"><a href="{% url 'privacy' %}"><p>Privacy Policy</p></a></div>
             <div class="col-md-4 col-sm-4 col-xs-6 pull-right">
                 <a href="http://www.maia.ub.es/~sergio/sergio%20escalera%20homepage_006.htm">
                     <img src="{% static 'images/logo/logoHuPBA_white.png' %}" width="80" height="60" alt="HuPBA logo">
