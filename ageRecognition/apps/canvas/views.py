@@ -1,7 +1,7 @@
 import time
 import datetime
 import random
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.db.models.query import QuerySet
 import imagehash
 import cv2
@@ -129,34 +129,37 @@ def game(request):
 
         # Sort the images by the users global score (se the users with highest scores get their images voted more).
         game_picture_list = game_picture_list.order_by('-owner__score_global')
-        names_list = [p.pic.name for p in game_picture_list]
+        id_list = [p.id for p in game_picture_list]
 
         # Sort the images by number of votes
         pics_ord_by_votes = list(Picture.objects.raw("SELECT canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) ON canvas_picture.id=vote_pic_id ORDER BY num_votes"))
 
-        # Intersct the pics_ord_by_votes amb els game_picture_list
-        pics_ord_by_votes = [p for p in pics_ord_by_votes if p.pic.name in names_list]
+        # Intersect the pics_ord_by_votes amb els game_picture_list
+        pics_ord_by_votes = [p for p in pics_ord_by_votes if p.id in id_list]
 
         # Sort the images by number of ppl from
 
         # Get the four images to show:
         actual_game_pic_list = list(game_picture_list[:2])
-        j = 0
-        i = 0
-        hash_list = [p.hash for p in game_picture_list]
-        while j != 2 and i < len(pics_ord_by_votes):
-            if not pics_ord_by_votes[i].pic.name in names_list \
-                    and not pics_ord_by_votes[i].hash in hash_list:
+        for i in range(0, len(pics_ord_by_votes)):
+            if not pics_ord_by_votes[i].id in id_list[:2]:
                 actual_game_pic_list.append(pics_ord_by_votes[i])
-                j += 1
-            i += 1
+            if len(actual_game_pic_list) == 4:
+                break
 
-        # random_idx = random.randint(0, game_picture_list.count() - 1)
-        # actual_game_picture = game_picture_list[random_idx]
     except Exception, e:
         actual_game_pic_list = []
         pics_ord_by_votes = []
         print e
+
+    # Get statistics of the actual game pictures
+    actual_game_pic_stats = []
+    for p in actual_game_pic_list:
+        stats = {'num_votes': Votes.objects.filter(pic=p).count()}
+        avg_votes = Votes.objects.filter(pic=p).annotate(avg=Avg('vote'))
+        stats['avg_votes'] = int(avg_votes[0].avg) if avg_votes else 'No one voted yet'
+
+        actual_game_pic_stats.append(stats)
 
     # Handle file upload
     if request.method == 'POST':
@@ -166,7 +169,7 @@ def game(request):
         votes_list = vote_form.data.getlist('vote')
         if vote_form.is_valid():
             for i in range(0, len(votes_list)):
-                newvote = vote_form.save(commit=False)
+                newvote = Votes()
                 newvote.vote = votes_list[i]
                 newvote.user = request.user.userprofile
                 newvote.pic = actual_game_pic_list[i]
@@ -174,11 +177,11 @@ def game(request):
 
                 if actual_game_pic_list[i].ground_truth == 0:
                     if actual_game_pic_list[i].real_age:
-                        newvote.score = abs(actual_game_pic_list[i].real_age - votes_list[i])
+                        newvote.score = abs(actual_game_pic_list[i].real_age - int(votes_list[i]))
                     else:
                         newvote.score = 1
                 else:
-                    newvote.score = abs(actual_game_pic_list[i].ground_truth - votes_list[i])
+                    newvote.score = abs(actual_game_pic_list[i].ground_truth - int(votes_list[i]))
                 newvote.save()
 
                 # Update the number of voted pictures
@@ -248,7 +251,8 @@ def game(request):
     context_dict = {'vote_form': vote_form,
                     'report_form': report_form,
                     'user': request.user,
-                    'game_pic_list': actual_game_pic_list}
+                    'game_pic_list': actual_game_pic_list,
+                    'game_pic_stats': actual_game_pic_stats}
 
     if request.path == '/game/':
         return render_to_response('game.html', context_dict, context_instance=context)

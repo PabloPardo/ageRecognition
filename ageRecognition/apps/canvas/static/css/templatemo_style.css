@@ -948,6 +948,19 @@ input[type="range"]::-ms-thumb {
     height: auto;
 }
 
+.game-pic-container-small {
+        margin-left: auto;
+        margin-right: auto;
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+    }
+
+.game-pic-container-small img {
+    width: 50px;
+    height: auto;
+}
+
 @media(max-width: 991px){
     .game-pic-container {
         margin-left: auto;

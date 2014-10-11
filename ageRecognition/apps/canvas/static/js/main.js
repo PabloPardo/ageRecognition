@@ -47,7 +47,7 @@
 function showValue(id, newValue)
 {
 	document.getElementById(id).innerHTML=newValue;
-};
+}
 
 
 //Google Analytics code:

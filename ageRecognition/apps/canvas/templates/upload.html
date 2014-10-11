@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="{% static 'css/animate.css' %}">
     <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
     <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/messi.css' %}">
 
     <!-- Load django_facebook css files form STATIC-->
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
@@ -39,6 +40,7 @@
     <!--Load js files from STATIC -->
     <script src="{{ STATIC_URL }}js/vendor/jquery-1.10.1.min.js" type="text/javascript"></script>
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
+    <script src="{% static 'js/messi.js' %}"></script>
     <script src="{% static 'js/dropzone.js' %}"></script>
 
 
@@ -151,7 +153,7 @@
                           action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group">
-                                <input id="imgsubmit" class="btn btn-default" type="submit"
+                                <input id="imgsubmit" class="btn btn-default" type="button"
                                         value="Upload Images"/>
                         </div>
                     </form>
