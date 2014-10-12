@@ -1349,7 +1349,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
     Dropzone.prototype.uploadFiles = function(files) {
     var obj = this;
 //    new Messi('This is a message with Messi with custom buttons.', {title: 'Buttons', buttons: [{id: 0, label: 'Yes', val: 'Y'}, {id: 1, label: 'No', val: 'N'}], callback: function(val) { if (val=='Y'){ uploadsMessi(files, obj);} else{cancelUploads(files, obj);} }});
-    cancelUploads(files, obj);
+    uploadsMessi(files, obj);
     };
 
     Dropzone.prototype._finished = function(files, responseText, e) {

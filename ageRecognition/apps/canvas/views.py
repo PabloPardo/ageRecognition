@@ -16,7 +16,7 @@ def home(request):
     context = RequestContext(request)
 
     # Terms & Conditions
-    if not request.user.pk == None:
+    if not request.user.pk is None:
         if not request.user.userprofile.terms_conditions:
             if request.method == 'POST':
                 user_form = UserForm(data=request.POST, files=request.FILES)
