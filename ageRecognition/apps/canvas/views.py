@@ -1,10 +1,7 @@
 import time
 import datetime
-import random
 from django.db.models import Count, Avg
-from django.db.models.query import QuerySet
 import imagehash
-import cv2
 
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
@@ -13,7 +10,6 @@ from django.utils.image import Image
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
-from django_facebook.models import FacebookProfile
 
 
 def home(request):
