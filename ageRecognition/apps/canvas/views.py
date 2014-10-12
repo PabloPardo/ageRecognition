@@ -283,8 +283,11 @@ def gallery(request):
     # Load pictures for the home page
     user_pictures_list = Picture.objects.filter(owner=request.user)
 
+    numVotes_list = [p.num_votes() for p in user_pictures_list]
+
     context_dict = {'pictures': user_pictures_list,
-                    'user': request.user}
+                    'user': request.user,
+                    'num_votes': numVotes_list}
 
     return render_to_response('gallery.html', context_dict, context_instance=context)
 

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 {% load static %}
+{% load canvas_filters %}
 
 <!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -149,7 +150,7 @@
             <div><p><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
             <div class="dropzone dz-clickable dz-started">
                 {% for p in pictures %}
-                    <div class="dz-preview dz-image-preview">
+                    <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ p.pic }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ num_votes|lookup:forloop.counter0 }}');">
                         <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
                             <img src="{{ MEDIA_URL }}{{ p.pic }}" alt="{{ p.pic }}">
                         </div>
@@ -200,6 +201,37 @@
 <script src="{% static 'js/bootstrap.js' %}"></script>
 <script src="{% static 'js/plugins.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/messi.js' %}"></script>
+<script>
+    function ShowStats(pic, real_age, ground_truth, num_votes_pic){
+        if (ground_truth==''){
+            ground_truth = 'Not voted yet'
+        }
+        var content =
+                "<table cellspacing='2' id='stats' class='table table-striped tablesorter'>" +
+                "<tbody>" +
+                    "<tr>" +
+                    "<td><div class='dz-details game-pic-container' style='padding-top: 20px;'>" +
+                        "<img src='{{ MEDIA_URL }}"+ pic +"' alt='"+ pic +"'>" +
+                    "</div></td>" +
+                    "<td>" +
+                        "<table cellspacing='2' id='stats' class='table table-striped tablesorter'>" +
+                        "<thaed><tr>" +
+                            "<th>Real Age</th>" +
+                            "<th>Aparented Age</th>" +
+                            "<th>Number of Votes</th>" +
+                        "</tr><thead><tbody>" +
+                            "<td>" + real_age + "</td>" +
+                            "<td>" + ground_truth + "</td>" +
+                            "<td>" + num_votes_pic + "</td>" +
+                            "<td></td>" +
+                        "</tbody></talbe>" +
+                    "</td></tr>" +
+                "</tbody></table>";
+
+        new Messi(content, {title: 'Image Information', modal: true, buttons: [{id:0, label: 'Remove Image', val: 'Remove Image', class: 'btn-danger'},  {id: 1, label: 'Continue', val: 'X', class: 'btn-success'}], width: '800px'});
+    }
+</script>
 <!--Load django_facebook script from STATIC-->
 <script src="{{ STATIC_URL }}django_facebook/js/statictest.js" type="text/javascript"></script>
 {% include 'django_facebook/_facebook_js.html' %}
