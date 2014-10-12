@@ -961,6 +961,18 @@ input[type="range"]::-ms-thumb {
     height: auto;
 }
 
+.game-pic-container-gallery {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100px;
+        height: 100px;
+        overflow: hidden;
+    }
+
+.game-pic-container-gallery img {
+    width: 100px;
+    height: auto;
+}
 @media(max-width: 991px){
     .game-pic-container {
         margin-left: auto;

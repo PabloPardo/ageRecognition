@@ -1753,6 +1753,43 @@ function cancelUploads(files, obj) {
     obj.processQueue();
 }
 
+function resize_image(file) {
+    var info, srcRatio, trgRatio;
+    info = {
+      srcX: 0,
+      srcY: 0,
+      srcWidth: file.width,
+      srcHeight: file.height
+    };
+    srcRatio = file.width / file.height;
+    info.optWidth = this.options.thumbnailWidth;
+    info.optHeight = this.options.thumbnailHeight;
+    if ((info.optWidth == null) && (info.optHeight == null)) {
+      info.optWidth = info.srcWidth;
+      info.optHeight = info.srcHeight;
+    } else if (info.optWidth == null) {
+      info.optWidth = srcRatio * info.optHeight;
+    } else if (info.optHeight == null) {
+      info.optHeight = (1 / srcRatio) * info.optWidth;
+    }
+    trgRatio = info.optWidth / info.optHeight;
+    if (file.height < info.optHeight || file.width < info.optWidth) {
+      info.trgHeight = info.srcHeight;
+      info.trgWidth = info.srcWidth;
+    } else {
+      if (srcRatio > trgRatio) {
+        info.srcHeight = file.height;
+        info.srcWidth = info.srcHeight * trgRatio;
+      } else {
+        info.srcWidth = file.width;
+        info.srcHeight = info.srcWidth / trgRatio;
+      }
+    }
+    info.srcX = (file.width - info.srcWidth) / 2;
+    info.srcY = (file.height - info.srcHeight) / 2;
+    return info;
+  };
+
 function uploadsMessi(files, obj) {
       var file, formData, handleError, headerName, headerValue, headers, i, input, inputName, inputType, key, option, progressObj, response, updateProgress, value, xhr, _i, _j, _k, _l, _len, _len1, _len2, _len3, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       xhr = new XMLHttpRequest();

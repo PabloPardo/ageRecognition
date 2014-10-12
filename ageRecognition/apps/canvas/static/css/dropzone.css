@@ -219,9 +219,9 @@
 .dropzone .dz-preview.dz-image-preview:hover .dz-details img,
 .dropzone-previews .dz-preview.dz-image-preview:hover .dz-details img {
   display: block;
-  opacity: 0.6;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";
-  filter: alpha(opacity=10);
+  /*opacity: 0.6;*/
+  /*-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)";*/
+  /*filter: alpha(opacity=10);*/
 }
 .dropzone .dz-preview.dz-success .dz-success-mark,
 .dropzone-previews .dz-preview.dz-success .dz-success-mark {
@@ -396,6 +396,7 @@
   }
 }
 
-/*.dropzone .dz-preview.dz-image-preview::after {*/
-    /*content: "<input value='age'/>";*/
-/*}*/
+.dropzone .dz-preview.dz-image-preview:hover,
+.dropzone-previews .dz-preview.dz-image-preview:hover {
+    background-color: rgba(174, 245, 206, 0.91);
+}
