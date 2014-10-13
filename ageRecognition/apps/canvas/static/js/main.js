@@ -1,54 +1,45 @@
-(function (window, $) {
-	'use strict';
-
-	// Cache document for fast access.
-	var document = window.document;
-
-
-	function mainSlider() {
-		$('.bxslider').bxSlider({
-			pagerCustom: '#bx-pager',
-			mode: 'fade',
-			nextText: '',
-			prevText: ''
-		});
-	}
-
-	mainSlider();
-
-
-
-	var $links = $(".bx-wrapper .bx-controls-direction a, #bx-pager a");
-	$links.click(function(){
-	   $(".slider-caption").removeClass('animated fadeInLeft');
-	   $(".slider-caption").addClass('animated fadeInLeft');
-	});
-
-	$(".bx-controls").addClass('container');
-	$(".bx-next").addClass('fa fa-angle-right');
-	$(".bx-prev").addClass('fa fa-angle-left');
-
-
-	$('a.toggle-menu').click(function(){
-        $('.responsive .main-menu').toggle();
-        return false;
-    });
-
-    $('.responsive .main-menu a').click(function(){
-        $('.responsive .main-menu').hide();
-
-    });
-
-    $('.main-menu').singlePageNav();
-
-
-})(window, jQuery);
 
 function showValue(id, newValue)
 {
 	document.getElementById(id).innerHTML=newValue;
 }
 
+function showSave() {
+   document.getElementById('save').style.visibility = 'visible';
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function rmFormSubmit(id_rm) {
+
+    var csrftoken = getCookie('csrftoken');
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "/gallery/"+id_rm, false);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrftoken);
+    xmlhttp.send();
+
+    if (xmlhttp.status === 200) {
+        location.reload();
+    }
+}
+
+function hideSave() {
+   document.getElementById('save').style.visibility = 'hidden';
+}
 
 //Google Analytics code:
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

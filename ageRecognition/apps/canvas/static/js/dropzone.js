@@ -317,7 +317,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       dictResponseError: "Server responded with {{statusCode}} code.",
       dictCancelUpload: "Cancel upload",
       dictCancelUploadConfirmation: "Are you sure you want to cancel this upload?",
-      dictRemoveFile: "Remove image",
+      dictRemoveFile: "Discard Image",
       dictRemoveFileConfirmation: null,
       dictMaxFilesExceeded: "You can not upload any more files.",
       accept: function(file, done) {
@@ -1348,7 +1348,16 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 
     Dropzone.prototype.uploadFiles = function(files) {
     var obj = this;
-//    new Messi('This is a message with Messi with custom buttons.', {title: 'Buttons', buttons: [{id: 0, label: 'Yes', val: 'Y'}, {id: 1, label: 'No', val: 'N'}], callback: function(val) { if (val=='Y'){ uploadsMessi(files, obj);} else{cancelUploads(files, obj);} }});
+//    new Messi('This is a message with Messi with custom buttons.', {
+//        title: 'Buttons',
+//        buttons: [{id: 0, label: 'Yes', val: 'Y'}, {id: 1, label: 'No', val: 'N'}],
+//        callback: function(val) {
+//            if (val=='Y'){
+//                uploadsMessi(files, obj);
+//            } else{
+//                cancelUploads(files, obj);
+//            }
+//        }});
     uploadsMessi(files, obj);
     };
 

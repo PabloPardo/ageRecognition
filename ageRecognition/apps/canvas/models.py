@@ -75,9 +75,6 @@ class Votes(models.Model):
     score = models.IntegerField()
     date = models.DateField()
 
-    # def __unicode__(self):
-    #     return 'User: ' + str(self.user.user_id) + ' Picture: ' + str(self.pic.name) + 'Vote: ' + str(self.vote)
-
 
 class Report(models.Model):
     REPORT_CHOICES = [(0, 'Doesn\'t appear any person'),

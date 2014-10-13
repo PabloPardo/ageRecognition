@@ -33,9 +33,6 @@ def home(request):
     # Get the graph from the FB API
     graph = get_facebook_graph(request=request)
 
-    # Store messages
-    messages = {}
-
     if request.user.username:
         if not request.user.userprofile.hometown:
             hometown = graph.get('me', fields='hometown')
@@ -45,68 +42,9 @@ def home(request):
                 request.user.userprofile.hometown = ''
             request.user.userprofile.save()
 
-    # Load pictures for the home page
-    user_pictures_list = Picture.objects.filter(owner=request.user)
+    context_dict = {'user': request.user}
 
-    # Handle file upload
-    if request.method == 'POST':
-
-        pic_form = PictureForm(data=request.POST, files=request.FILES)
-
-        if pic_form.files:
-            real_age_list = pic_form.data.getlist('real_age')
-            for i in range(0, len(pic_form.files)):
-                file_name = 'pic[' + str(i) + ']'
-                newpic = Picture()
-                newpic.pic = pic_form.files[file_name]
-                newpic.owner = request.user.userprofile
-                newpic.real_age = real_age_list[i]
-                newpic.date = str(datetime.datetime.now().date())
-
-                ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
-                request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + '.jpg'
-
-                newpic.save()
-                newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
-                newpic.save()
-
-                # Update the number of uploaded pictures
-                request.user.userprofile.upload_pic += 1
-
-                #Update the global score:
-                request.user.userprofile.score_global += 50
-                request.user.userprofile.save()
-
-                # Check if the new image has been uploaded by the user
-                for p in range(0, user_pictures_list.count()-1):
-                    if str(newpic.hash) == user_pictures_list[p].hash:
-                        newpic.delete()
-                        request.user.userprofile.upload_pic -= 1
-                        request.user.userprofile.score_global -= 50
-                        request.user.userprofile.save()
-
-                        messages['repeated'] = 'This picture is already uploaded.'
-
-                        print 'The image is has already been uploaded.'
-                        break
-
-            # Redirect to the document list after POST
-            return HttpResponseRedirect('/upload/')
-        else:
-            print pic_form.errors
-
-    else:
-        pic_form = PictureForm()  # A empty, unbound pic_form
-
-
-    context_dict = {'pic_form': pic_form,
-                    'user': request.user,
-                    'messages': messages}
-
-    if request.path == '/upload/':
-        return render_to_response('upload.html', context_dict, context_instance=context)
-    else:
-        return render_to_response('home.html', context_dict, context_instance=context)
+    return render_to_response('home.html', context_dict, context_instance=context)
 
 
 def game(request):
@@ -281,15 +219,77 @@ def gallery(request):
     context = RequestContext(request)
 
     # Load pictures for the home page
-    user_pictures_list = Picture.objects.filter(owner=request.user)
+    user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
 
     numVotes_list = [p.num_votes() for p in user_pictures_list]
 
+    # Handle file upload
+    if request.method == 'POST':
+
+        pic_form = PictureForm(data=request.POST, files=request.FILES)
+
+        if pic_form.files:
+            real_age_list = pic_form.data.getlist('real_age')
+            for i in range(0, len(pic_form.files)):
+                file_name = 'pic[' + str(i) + ']'
+                newpic = Picture()
+                newpic.pic = pic_form.files[file_name]
+                newpic.owner = request.user.userprofile
+                newpic.real_age = real_age_list[i]
+                newpic.date = str(datetime.datetime.now().date())
+
+                ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
+                request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + '.jpg'
+
+                newpic.save()
+                newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
+                newpic.save()
+
+                # Update the number of uploaded pictures
+                request.user.userprofile.upload_pic += 1
+
+                #Update the global score:
+                request.user.userprofile.score_global += 50
+                request.user.userprofile.save()
+
+                # Check if the new image has been uploaded by the user
+                for p in range(0, user_pictures_list.count()-1):
+                    if str(newpic.hash) == user_pictures_list[p].hash:
+                        newpic.delete()
+                        request.user.userprofile.upload_pic -= 1
+                        request.user.userprofile.score_global -= 50
+                        request.user.userprofile.save()
+
+                        print 'The image is has already been uploaded.'
+                        break
+
+            # Redirect to the document list after POST
+            return HttpResponseRedirect('/gallery/')
+        else:
+            print pic_form.errors
+
+        if request.POST['id_pic'] and request.POST['vote']:
+            p = Picture.objects.get(id=request.POST['id_pic'])
+            p.real_age = request.POST['vote']
+            p.save()
+    else:
+        pic_form = PictureForm()  # A empty, unbound pic_form
+
     context_dict = {'pictures': user_pictures_list,
                     'user': request.user,
-                    'num_votes': numVotes_list}
+                    'num_votes': numVotes_list,
+                    'pic_form': pic_form}
 
     return render_to_response('gallery.html', context_dict, context_instance=context)
+
+
+def rm_image(request, id_rm):
+    p = Picture.objects.get(pk=id_rm)
+    if request.user.id == p.owner.user.id:
+        p.visibility = False
+        p.save()
+
+    return ''
 
 
 def achievements(request):
