@@ -219,7 +219,7 @@
                 </div>
             </div>
             <div><p><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
-            <form id='mydropzone' class="dropzone" role="form"
+            <form id='mydropzone' class="dropzone text-center" role="form"
                           action="{% url 'gallery' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
@@ -239,8 +239,8 @@
                 {% endfor %}
 
 {#                ADD UPLOAD BOTTON #}
-                <div class="form-group">
-                        <input id="imgsubmit" class="btn btn-default" type="button"
+                <div class="form-group text-center">
+                        <input id="imgsubmit" class="btn btn-success" type="button"
                                 value="Upload Images"/>
                 </div>
             </form>

@@ -33,7 +33,7 @@ function rmFormSubmit(id_rm) {
     xmlhttp.send();
 
     if (xmlhttp.status === 200) {
-        location.reload();
+        location.reload(true);
     }
 }
 

@@ -163,7 +163,7 @@ def game(request):
                 request.user.userprofile.save()
 
             # Redirect to the document list after POST
-            return HttpResponseRedirect('/game/')
+            # return HttpResponseRedirect('/game/')
         elif report_form.is_valid():
             # Find out which of the images is being reported
             id_pic = request.GET.get('id')
@@ -290,10 +290,11 @@ def gallery(request):
         else:
             print pic_form.errors
 
-        if request.POST['id_pic'] and request.POST['vote']:
+        if 'id_pic' in request.POST and 'vote' in request.POST:
             p = Picture.objects.get(id=request.POST['id_pic'])
             p.real_age = request.POST['vote']
             p.save()
+            return HttpResponseRedirect('/gallery/')
     else:
         pic_form = PictureForm()  # A empty, unbound pic_form
 
