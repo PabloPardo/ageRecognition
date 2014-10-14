@@ -8,6 +8,7 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
+from apps.canvas.extra_functions import compare
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
@@ -258,7 +259,8 @@ def gallery(request):
 
                 # Check if the new image has been uploaded by the user
                 for p in range(0, user_pictures_list.count()-1):
-                    if str(newpic.hash) == user_pictures_list[p].hash:
+                    if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
+                    # if str(newpic.hash) == user_pictures_list[p].hash:
                         os.remove(newpic.pic.path)
                         newpic.delete()
                         request.user.userprofile.upload_pic -= 1
