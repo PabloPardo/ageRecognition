@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load canvas_filters %}
+{% load thumbnail %}
 
 <!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -53,12 +54,19 @@
             if (ground_truth==''){
                 ground_truth = 'Not voted yet'
             }
+            {% for p in pictures %}
+                if(pic == {{ forloop.counter0 }}){
+                    var thumb = "{% thumbnail p '200x200' quality=80 crop="center" as im %}" +
+                                    "<img src='{{ im.url }}' alt='{{ im.url }}'> width='{{ im.width }}' height='{{ im.height }}'" +
+                                "{% endthumbnail %}"
+                }
+            {% endfor %}
             var content =
                     "<table cellspacing='2' id='stats' class='table table-striped tablesorter' style='barckground-color: wite'>" +
                     "<tbody>" +
                         "<tr>" +
                             "<td><div class='dz-details game-pic-container' style='padding-top: 20px;'>" +
-                                "<img src='{{ MEDIA_URL }}"+ pic +"' alt='"+ pic +"'>" +
+                                thumb +
                             "</div></td>" +
                             "<td>" +
                                 "<table cellspacing='2' id='stats' class='table table-striped tablesorter' style='barckground-color: wite'>" +
@@ -217,9 +225,11 @@
 
 {#                ADD GALLERY OF PICTURES #}
                 {% for p in pictures %}
-                    <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ p.pic }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ num_votes|lookup:forloop.counter0 }}', '{{ p.id }}');">
+                    <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ forloop.counter0 }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ num_votes|lookup:forloop.counter0 }}', '{{ p.id }}');">
                         <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
-                            <img src="{{ MEDIA_URL }}{{ p.pic }}" alt="{{ p.pic }}">
+                            {% thumbnail p.pic "100x100" quality=50 crop="center" as im %}
+                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ p.pic }}">
+                            {% endthumbnail %}
                         </div>
                     </div>
                 {% empty %}

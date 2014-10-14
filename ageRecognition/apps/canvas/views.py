@@ -4,6 +4,7 @@ import datetime
 from django.db.models import Count, Avg
 from django_facebook.decorators import facebook_required_lazy
 import imagehash
+import imghdr
 
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
@@ -15,6 +16,7 @@ from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
 
 
+@facebook_required_lazy
 def home(request):
     context = RequestContext(request)
 
@@ -235,7 +237,7 @@ def gallery(request):
     numVotes_list = [p.num_votes() for p in user_pictures_list]
 
     # Messages dict
-    #messages = {}
+    # messages = {}
 
     # Handle file upload
     if request.method == 'POST':
@@ -248,12 +250,14 @@ def gallery(request):
                 file_name = 'pic[' + str(i) + ']'
                 newpic = Picture()
                 newpic.pic = pic_form.files[file_name]
+                newpic.thurmnail = pic_form.files[file_name]
                 newpic.owner = request.user.userprofile
                 newpic.real_age = real_age_list[i]
                 newpic.date = str(datetime.datetime.now().date())
 
                 ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
-                request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + '.jpg'
+                file_extension = os.path.splitext(newpic.pic.path)[-1]
+                request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + file_extension
 
                 newpic.save()
                 newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))

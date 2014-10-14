@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_facebook.models import FacebookModel, get_user_model, FacebookProfileModel
-from django_facebook.utils import get_profile_model
+from sorl.thumbnail import ImageField
 import logging
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ def create_profile(sender, instance, created, **kwargs):
 
 class Picture(models.Model):
     owner = models.ForeignKey(to=UserProfile)
-    pic = models.ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
+    pic = ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
     hash = models.CharField(max_length=128)
     real_age = models.IntegerField(null=True, blank=True)
     ground_truth = models.IntegerField(default=0)

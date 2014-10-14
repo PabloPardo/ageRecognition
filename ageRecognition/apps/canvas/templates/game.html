@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load canvas_filters %}
+{% load thumbnail %}
 
 <!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -154,7 +155,9 @@
                     <div class="col-md-{% widthratio 12 game_pic_list|length 1 %} text-center dz-preview dz-image-preview">
                             <div class="form-group">
                                 <div class="dz-details game-pic-container">
-                                    <img src="{{ MEDIA_URL }}{{ game_pic }}" alt="{{ game_pic }}">
+                                    {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
+                                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                                    {% endthumbnail %}
                                 </div>
                                 <p>{{ vote_form.errors }}</p>
                                 <div class="slider">
@@ -239,7 +242,9 @@
                     "{% for p in game_pic_list %}" +
                         "<tr>" +
                         "<td><div class='dz-details game-pic-container-small'>" +
-                            "<img src='{{ MEDIA_URL }}{{ p }}'' alt='{{ p }}'>" +
+                            "{% thumbnail p "50x50" quality=50 crop="center" as im %}" +
+                                "<img src='{{ im.url }}'' width='{{ im.width }}'' height='{{ im.height }}'>" +
+                            "{% endthumbnail %}" +
                         "</div></td>" +
                         "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
                         "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'avg_votes' }}</td>" +
