@@ -1,3 +1,4 @@
+import os
 import time
 import datetime
 from django.db.models import Count, Avg
@@ -223,6 +224,9 @@ def gallery(request):
 
     numVotes_list = [p.num_votes() for p in user_pictures_list]
 
+    # Messages dict
+    messages = {}
+
     # Handle file upload
     if request.method == 'POST':
 
@@ -255,11 +259,13 @@ def gallery(request):
                 # Check if the new image has been uploaded by the user
                 for p in range(0, user_pictures_list.count()-1):
                     if str(newpic.hash) == user_pictures_list[p].hash:
+                        os.remove(newpic.pic.path)
                         newpic.delete()
                         request.user.userprofile.upload_pic -= 1
                         request.user.userprofile.score_global -= 50
                         request.user.userprofile.save()
 
+                        messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
                         print 'The image is has already been uploaded.'
                         break
 
@@ -278,7 +284,8 @@ def gallery(request):
     context_dict = {'pictures': user_pictures_list,
                     'user': request.user,
                     'num_votes': numVotes_list,
-                    'pic_form': pic_form}
+                    'pic_form': pic_form,
+                    'message': messages}
 
     return render_to_response('gallery.html', context_dict, context_instance=context)
 
