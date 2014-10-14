@@ -56,7 +56,8 @@ def game(request):
 
     # Chose a random picture to guess
     # Restrict the selected images to the ones the user haven't vote
-    game_picture_list = Picture.objects.exclude(owner=request.user).exclude(visibility=False)
+    game_picture_list = Picture.objects.exclude(owner=request.user)
+    game_picture_list = game_picture_list.exclude(visibility=False)
 
     try:
         UserProfile.objects.select_related('pic')
@@ -200,9 +201,13 @@ def ranking(request):
     context = RequestContext(request)
 
     # Get the graph from the FB API
-    graph = get_facebook_graph(request=request)
-    friends = graph.get('me/friends', fields='')['data']
-    friends = [f['name'] for f in friends]
+    if not 'friends' in request.session:
+        graph = get_facebook_graph(request=request)
+        friends = graph.get('me/friends', fields='')['data']
+        friends = [f['name'] for f in friends]
+        request.session['friends'] = friends
+
+    friends = request.session['friends']
 
     # Load users ordered by global score
     user_list = UserProfile.objects.exclude(pk=-1)[:20]
@@ -226,7 +231,7 @@ def gallery(request):
     numVotes_list = [p.num_votes() for p in user_pictures_list]
 
     # Messages dict
-    messages = {}
+    #messages = {}
 
     # Handle file upload
     if request.method == 'POST':
@@ -267,8 +272,9 @@ def gallery(request):
                         request.user.userprofile.score_global -= 50
                         request.user.userprofile.save()
 
-                        messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
-                        print 'The image is has already been uploaded.'
+                        request.session['message'] = 'You already uploaded that image, please try uploading a new one.'
+                        # messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
+                        # print 'The image is has already been uploaded.'
                         break
 
             # Redirect to the document list after POST
@@ -287,8 +293,9 @@ def gallery(request):
                     'user': request.user,
                     'num_votes': numVotes_list,
                     'pic_form': pic_form,
-                    'message': messages}
+                    'message': request.session.get('message', '')}
 
+    request.session['message'] = ''
     return render_to_response('gallery.html', context_dict, context_instance=context)
 
 
@@ -304,9 +311,13 @@ def rm_image(request, id_rm):
 def achievements(request):
     context = RequestContext(request)
 
-     # Get the graph from the FB API
-    graph = get_facebook_graph(request=request)
-    num_friends = len(graph.get('me/friends', fields='')['data'])
+    # Get the graph from the FB API
+    if not 'num_friends' in request.session:
+        graph = get_facebook_graph(request=request)
+        request.session['num_friends'] = len(graph.get('me/friends', fields='')['data'])
+
+    num_friends = request.session['num_friends']
+
 
     stars = ['<i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
              '<i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
@@ -337,7 +348,7 @@ def achievements(request):
     vote_goals = [5, 10, 20, 50, 150, 400, 1000, 5000, 12000, 30000]
     pic_goals = [1, 2, 5, 10, 15, 30, 50, 75, 100, 200]
 
-    for i in range(0, len(share_goals)):
+    for i in range(len(share_goals)):
         if num_friends < share_goals[i]:
             share = 'Invite ' + str(share_goals[i]) + ' of your friends to play'
             share_stars = stars[i]
@@ -346,13 +357,13 @@ def achievements(request):
             share = 'Keep inviting your friends'
             share_stars = stars[-1]
 
-    for i in range(0, len(precision_coments)):
+    for i in range(len(precision_coments)):
         if request.user.userprofile.ach_precision == i:
             precision = precision_coments[i]
             precision_stars = stars[i]
             break
 
-    for i in range(0, len(vote_goals)):
+    for i in range(len(vote_goals)):
         if request.user.userprofile.eval_pic < vote_goals[i]:
             vote = 'Vote ' + str(vote_goals[i]) + ' pictures'
             vote_stars = stars[i]
@@ -361,7 +372,7 @@ def achievements(request):
             vote = 'Keep Voting'
             vote_stars = stars[-1]
 
-    for i in range(0, len(pic_goals)):
+    for i in range(len(pic_goals)):
         if request.user.userprofile.upload_pic < pic_goals[i]:
             pic = 'Upload ' + str(pic_goals[i]) + ' pictures'
             pic_stars = stars[i]
