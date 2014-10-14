@@ -2,6 +2,7 @@ import os
 import time
 import datetime
 from django.db.models import Count, Avg
+from django_facebook.decorators import facebook_required_lazy
 import imagehash
 
 from django.shortcuts import RequestContext, render_to_response
@@ -49,6 +50,7 @@ def home(request):
     return render_to_response('home.html', context_dict, context_instance=context)
 
 
+@facebook_required_lazy
 def game(request):
     context = RequestContext(request)
 
@@ -197,6 +199,7 @@ def game(request):
         return render_to_response('report.html', context_dict, context_instance=context)
 
 
+@facebook_required_lazy
 def ranking(request):
     context = RequestContext(request)
 
@@ -222,6 +225,7 @@ def ranking(request):
     return render_to_response('ranking.html', context_dict, context_instance=context)
 
 
+@facebook_required_lazy
 def gallery(request):
     context = RequestContext(request)
 
@@ -299,6 +303,7 @@ def gallery(request):
     return render_to_response('gallery.html', context_dict, context_instance=context)
 
 
+@facebook_required_lazy
 def rm_image(request, id_rm):
     p = Picture.objects.get(pk=id_rm)
     if request.user.id == p.owner.user.id:
@@ -308,6 +313,7 @@ def rm_image(request, id_rm):
     return ''
 
 
+@facebook_required_lazy
 def achievements(request):
     context = RequestContext(request)
 
@@ -395,11 +401,13 @@ def achievements(request):
     return render_to_response('achievements.html', context_dict, context_instance=context)
 
 
+@facebook_required_lazy
 def privacy(request):
     context = RequestContext(request)
     return render_to_response('privacy.html', context_instance=context)
 
 
+@facebook_required_lazy
 def help(request):
     context = RequestContext(request)
     return render_to_response('help.html', context_instance=context)
