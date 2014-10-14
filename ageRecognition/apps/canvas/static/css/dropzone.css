@@ -207,7 +207,7 @@
   filter: alpha(opacity=15);
 }
 .dropzone.dz-started .dz-message {
-  display: block;
+  display: none;
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: alpha(opacity=0);
