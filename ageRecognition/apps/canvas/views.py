@@ -10,7 +10,7 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
-from apps.canvas.extra_functions import compare
+from apps.canvas.extra_functions import compare, calculate_score
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
@@ -34,6 +34,9 @@ def home(request):
             context_dict = {'user_form': user_form}
 
             return render_to_response('terms.html', context_dict, context_instance=context)
+        else:
+            # Computing Global Score of the current user
+            calculate_score(request.user.userprofile)
 
     # Get the graph from the FB API
     graph = get_facebook_graph(request=request)
@@ -56,7 +59,9 @@ def home(request):
 def game(request):
     context = RequestContext(request)
 
-    user_votes_list = Votes.objects.filter(user=request.user)
+    user_votes_list = Votes.objects.values_list('id', 'score').filter(user=request.user)
+    voted_pics = [v[0] for v in user_votes_list]
+    votes_scores_list = [v[1] for v in user_votes_list]
 
     # Chose a random picture to guess
     # Restrict the selected images to the ones the user haven't vote
@@ -65,8 +70,8 @@ def game(request):
 
     try:
         UserProfile.objects.select_related('pic')
-        voted_pics = [v.pic for v in user_votes_list]
-        game_picture_list = game_picture_list.exclude(pic__in=voted_pics)
+
+        game_picture_list = game_picture_list.exclude(pk__in=voted_pics)
 
         # Sort the images by the users global score (se the users with highest scores get their images voted more).
         game_picture_list = game_picture_list.order_by('-owner__score_global')
@@ -125,15 +130,6 @@ def game(request):
                     newvote.score = abs(actual_game_pic_list[i].ground_truth - int(votes_list[i]))
                 newvote.save()
 
-                # Update the number of voted pictures
-                request.user.userprofile.eval_pic += 1
-
-                # Update the global score
-                if newvote.score > 10:
-                    request.user.userprofile.score_global += 1
-                else:
-                    request.user.userprofile.score_global += 1 + 2*(10 - newvote.score)
-
                 # Update Ground Truth of the voted picture
                 if actual_game_pic_list[i].ground_truth == 0:
                     actual_game_pic_list[i].ground_truth = newvote.vote
@@ -148,13 +144,14 @@ def game(request):
                 actual_game_pic_list[i].save()
 
                 # Calculate the score of the user
-                user_votes_scores_list = [v.score for v in user_votes_list].append(newvote.score)
+                votes_scores_list = votes_scores_list.append(newvote.score)
                 try:
-                    assert isinstance(user_votes_scores_list, list)
-                except:
-                    user_votes_scores_list = [newvote.score]
+                    assert isinstance(votes_scores_list, list)
+                except Exception, e:
+                    print e
+                    votes_scores_list = [newvote.score]
 
-                precision = sum(user_votes_scores_list)/(len(user_votes_scores_list))
+                precision = sum(votes_scores_list)/(len(votes_scores_list))
                 if precision > 10:
                     request.user.userprofile.ach_precision = 0
                 else:
@@ -204,6 +201,9 @@ def game(request):
 @facebook_required_lazy
 def ranking(request):
     context = RequestContext(request)
+
+    # Computing Global Score of the current user
+    calculate_score(request.user.userprofile)
 
     # Get the graph from the FB API
     if not 'friends' in request.session:
@@ -263,22 +263,12 @@ def gallery(request):
                 newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
                 newpic.save()
 
-                # Update the number of uploaded pictures
-                request.user.userprofile.upload_pic += 1
-
-                #Update the global score:
-                request.user.userprofile.score_global += 50
-                request.user.userprofile.save()
-
                 # Check if the new image has been uploaded by the user
                 for p in range(0, user_pictures_list.count()-1):
                     if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
                     # if str(newpic.hash) == user_pictures_list[p].hash:
                         os.remove(newpic.pic.path)
                         newpic.delete()
-                        request.user.userprofile.upload_pic -= 1
-                        request.user.userprofile.score_global -= 50
-                        request.user.userprofile.save()
 
                         request.session['message'] = 'You already uploaded that image, please try uploading a new one.'
                         # messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
@@ -315,7 +305,7 @@ def rm_image(request, id_rm):
         p.visibility = False
         p.save()
 
-    return ''
+    return
 
 
 @facebook_required_lazy
