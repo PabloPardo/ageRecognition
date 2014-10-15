@@ -78,7 +78,7 @@ def game(request):
             id_list = [p.id for p in game_picture_list]
 
             # Sort the images by number of votes
-            pics_ord_by_votes = list(Picture.objects.raw("SELECT canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) ON canvas_picture.id=vote_pic_id ORDER BY num_votes"))
+            pics_ord_by_votes = list(Picture.objects.raw("SELECT canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) ON canvas_picture.id=vote_pic_id ORDER BY num_votes;"))
 
             # Intersect the pics_ord_by_votes amb els game_picture_list
             pics_ord_by_votes = [p for p in pics_ord_by_votes if p.id in id_list]
