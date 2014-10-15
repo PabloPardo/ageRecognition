@@ -1,7 +1,7 @@
 import math
 import Image
 import operator
-from models import UserProfile, Picture, Votes
+from models import Picture, Votes
 
 
 def compare(path1, path2):

@@ -1,10 +1,9 @@
 import os
 import time
 import datetime
-from django.db.models import Count, Avg
+from django.db.models import Avg
 from django_facebook.decorators import facebook_required_lazy
 import imagehash
-import imghdr
 
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
