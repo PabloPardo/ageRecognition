@@ -221,10 +221,11 @@ def ranking(request):
         friends = request.session['friends']
 
         # Load users ordered by global score
-        user_list = UserProfile.objects.exclude(pk=-1)[:20]
+        user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:20]
 
         friends_user_list = UserProfile.objects.filter(user__facebookprofile__facebook_name__in=friends)
         friends_user_list = friends_user_list | UserProfile.objects.filter(user=request.user)
+        friends_user_list = friends_user_list.order_by('-score_global')
     else:
         user_list = []
         friends_user_list = []

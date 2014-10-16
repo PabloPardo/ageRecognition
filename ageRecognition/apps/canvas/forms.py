@@ -20,7 +20,7 @@ class PictureForm(forms.ModelForm):
                          'background-color: #FFFFFF;'
             }),
             'real_age': forms.IntegerField.widget(attrs={
-                'min': 1,
+                'min': 0,
                 'max': 100,
                 'value': 50,
                 'placeholder': 'How old were the person in the image?',
