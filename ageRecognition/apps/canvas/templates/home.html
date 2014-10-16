@@ -94,87 +94,42 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
+<!-- PROFILE -->
+<div id="profile" class="content-section">
+    <div class="col-md-12 text-center" style="height:200px;">
+        <h1 class="section-title">Profile</h1>
     </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <span class="pull-right">
+                    <!--Profile Image-->
+{#                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook profile image" />#}
+                    <img src="{{ MEDIA_URL }}{{ user.facebookprofile.image }}" title="facebook profile image" />
+                </span>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <header>
+                    <h1><strong>{{ user.first_name }} {{ user.midle_name }} {{user.last_name}}</strong></h1>
+                </header>
+                <ul>
+                    <li><strong>Uploaded Pictures: </strong> {{user.userprofile.upload_pic}} </li>
+                    <li><strong>Evaluated Pictures: </strong> {{user.userprofile.eval_pic}} </li>
+                    <li><strong>Score Global: </strong> {{user.userprofile.score_global}} </li>
+                </ul>
+            </div>
         </div>
         <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            <div class="col-md-4 col-sm-3">
             </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
-
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                    </div>
-                </form>
-                You are not logged in, Please login by clicking one of the buttons above
-            </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            <div class="col-md-4 col-sm-6 text-center" style="padding-top: 20px">
+                <a href="{% url 'help' %}" class="btn btn-default">How to Play</a>
+                <a href="{% url 'gallery' %}" class="btn btn-default">Upload Images</a>
             </div>
         </div>
     </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- PROFILE -->
-    <div id="profile" class="content-section">
-        <div class="col-md-12 text-center" style="height:200px;">
-            <h1 class="section-title">Profile</h1>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <span class="pull-right">
-                        <!--Profile Image-->
-{#                        <img src="http://graph.facebook.com/{{ user.profile_or_self.facebook_id }}/picture?type=large" title="facebook profile image" />#}
-                        <img src="{{ MEDIA_URL }}{{ user.facebookprofile.image }}" title="facebook profile image" />
-                    </span>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <header>
-                        <h1><strong>{{ user.first_name }} {{ user.midle_name }} {{user.last_name}}</strong></h1>
-                    </header>
-                    <ul>
-                        <li><strong>Uploaded Pictures: </strong> {{user.userprofile.upload_pic}} </li>
-                        <li><strong>Evaluated Pictures: </strong> {{user.userprofile.eval_pic}} </li>
-                        <li><strong>Score Global: </strong> {{user.userprofile.score_global}} </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-3">
-                </div>
-                <div class="col-md-4 col-sm-6 text-center" style="padding-top: 20px">
-                    <a href="{% url 'help' %}" class="btn btn-default">How to Play</a>
-                    <a href="{% url 'gallery' %}" class="btn btn-default">Upload Images</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END PROFILE -->
-{% endif %}
+</div>
+<!-- END PROFILE -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">

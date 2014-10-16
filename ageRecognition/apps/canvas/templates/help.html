@@ -89,81 +89,35 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
+<!-- HELP -->
+<div id="help" class="content-section">
+    <div class="col-md-12 text-center" style="height:200px;">
+        <h1 class="section-title">How to Play</h1>
     </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
-        </div>
-        <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+    <div class="container" style="padding-bottom: 100px">
+        <dic class="row">
+            <div class="col-md-3 col-sm-3">
             </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
-
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                    </div>
-                </form>
-                You are not logged in, Please login by clicking one of the buttons above
+            <div class="col-md-6 col-sm-6" style="background: #e4e4e4">
+               <p>In this section you have a short description of the game and its possibilities:</p>
+               <h4 class="enph_h">Profile</h4>
+               <p>In this section you can keep track your statistics. If you click the <strong>Upload button</strong> you will be able to add images to your gallery.</p>
+               <h4 class="enph_h">Game</h4>
+               <p>This is the main section, 4 images are shown and you have to guess the age of all of them. The better your guess is the more score you get.</p>
+               <h4 class="enph_h">Achievements</h4>
+               <p>Here you can see what have you achieve and what do you have do to get the next reward.</p>
+               <h4 class="enph_h">Gallery</h4>
+               <p>In this section you will be able to see the images you have uploaded and see how many people have voted them and get an estimation of your apparent age. </p>
+               <h4 class="enph_h">Ranking</h4>
+               <p>The last section allows you to compare your score with your friends in the Friends Ranking and to all the players in the Global Ranking.</p>
+               <div class="text-center" style="margin: 10px"><a href="{% url 'home' %}" class="btn btn-default">Start</a></div>
             </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            <div class="col-md-3 col-sm-3">
             </div>
         </div>
-    </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- HELP -->
-    <div id="help" class="content-section">
-        <div class="col-md-12 text-center" style="height:200px;">
-            <h1 class="section-title">How to Play</h1>
-        </div>
-        <div class="container" style="padding-bottom: 100px">
-            <dic class="row">
-                <div class="col-md-3 col-sm-3">
-                </div>
-                <div class="col-md-6 col-sm-6" style="background: #e4e4e4">
-                   <p>In this section you have a short description of the game and its possibilities:</p>
-                   <h4 class="enph_h">Profile</h4>
-                   <p>In this section you can keep track your statistics. If you click the <strong>Upload button</strong> you will be able to add images to your gallery.</p>
-                   <h4 class="enph_h">Game</h4>
-                   <p>This is the main section, 4 images are shown and you have to guess the age of all of them. The better your guess is the more score you get.</p>
-                   <h4 class="enph_h">Achievements</h4>
-                   <p>Here you can see what have you achieve and what do you have do to get the next reward.</p>
-                   <h4 class="enph_h">Gallery</h4>
-                   <p>In this section you will be able to see the images you have uploaded and see how many people have voted them and get an estimation of your apparent age. </p>
-                   <h4 class="enph_h">Ranking</h4>
-                   <p>The last section allows you to compare your score with your friends in the Friends Ranking and to all the players in the Global Ranking.</p>
-                   <div class="text-center" style="margin: 10px"><a href="{% url 'home' %}" class="btn btn-default">Start</a></div>
-                </div>
-                <div class="col-md-3 col-sm-3">
-                </div>
-            </div>
-        </div> <!-- /.container -->
-    </div> <!-- /#report -->
-    <!-- END HELP -->
-
-{% endif %}
+    </div> <!-- /.container -->
+</div> <!-- /#report -->
+<!-- END HELP -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">

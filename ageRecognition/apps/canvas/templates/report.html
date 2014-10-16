@@ -95,86 +95,40 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
+<!-- REPORT -->
+<div id="report" class="content-section">
+    <div class="col-md-12 text-center" style="height:200px;">
+        <h1 class="section-title">Report</h1>
     </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
-        </div>
-        <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+    <div class="container">
+        <dic class="row">
+            <div class="col-md-2 col-sm-3">
             </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
+            <div class="col-md-8 col-sm-6 text-center">
+                <p><strong>Specify the reasons of your report, thanks.</strong></p>
+                <form class="form-horizontal" role="form"
+                      action="{% url 'report' %}?id={{ request.GET.id }}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
-
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
+                    <div class="form-group">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-5 text-left pull-left">
+                            {{ report_form.options }}
+                            <p><strong>Write here:  </strong>{{ report_form.other}}</p>
+                            <p>{{ report_form.errors }}</p>
+                        </div>
+                        <div class="col-sm-3"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-default">Send Report</button>
+                        </div>
                     </div>
                 </form>
-                You are not logged in, Please login by clicking one of the buttons above
-            </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
             </div>
         </div>
-    </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- REPORT -->
-    <div id="report" class="content-section">
-        <div class="col-md-12 text-center" style="height:200px;">
-            <h1 class="section-title">Report</h1>
-        </div>
-        <div class="container">
-            <dic class="row">
-                <div class="col-md-2 col-sm-3">
-                </div>
-                <div class="col-md-8 col-sm-6 text-center">
-                    <p><strong>Specify the reasons of your report, thanks.</strong></p>
-                    <form class="form-horizontal" role="form"
-                          action="{% url 'report' %}?id={{ request.GET.id }}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <div class="col-sm-4"></div>
-                            <div class="col-sm-5 text-left pull-left">
-                                {{ report_form.options }}
-                                <p><strong>Write here:  </strong>{{ report_form.other}}</p>
-                                <p>{{ report_form.errors }}</p>
-                            </div>
-                            <div class="col-sm-3"></div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-default">Send Report</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-    </div> <!-- /.container -->
-    </div> <!-- /#report -->
-    <!-- END REPORT -->
-
-{% endif %}
+</div> <!-- /.container -->
+</div> <!-- /#report -->
+<!-- END REPORT -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">

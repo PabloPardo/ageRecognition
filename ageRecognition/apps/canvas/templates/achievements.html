@@ -99,112 +99,67 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
-    </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
-        </div>
+<!-- ACHIEVEMENTS -->
+<div id="achievements" class="content-section">
+    <div class="container">
         <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
-            </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
+            <div class="col-md-12 text-center" style="height:200px;">
+                <h1 class="section-title">Achievements</h1>
+            </div> <!-- /.col-md-12 -->
+        </div> <!-- /.row -->
+        <div class="row">
+            <div class="col-md-2 col-sm-3">
+            </div> <!-- /.col-md-2 -->
+            <div class="col-md-8 col-sm-6">
+                <table cellspacing="1" id="myTable" class="table table-striped tablesorter">
+                    <thead>
+                    <tr>
+                        <th>Achievement</th>
+                        <th>Description</th>
+                        <th>Next Goal</th>
+                        <th>Stars</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <!-- SHARE IT -->
+                        <td>Share it!</td>
+                        <td>Invite your friends to play and you will get stars.</td>
+                        <td>{{ share }}</td>
+                        <td><span class="pull-left"> {{ share_stars| safe }}</span></td>
+                    </tr>
+                    <tr>
+                        <!-- PRECISION -->
+                        <td>Precision</td>
+                        <td>The better your guess is the higher your rank will be.</td>
+                        <td>{{ precision }}</td>
+                        <td><span class="pull-left"> {{ precision_stars | safe }}</span></td>
+                    </tr>
+                    <tr>
+                        <!-- VOTE -->
+                        <td>Vote!</td>
+                        <td>Vote more images to get more stars.</td>
+                        <td>{{ vote }}</td>
+                        <td><span class="pull-left"> {{ vote_stars | safe }}</span></td>
+                    </tr>
+                    <tr>
+                        <!-- ADD PICTURES -->
+                        <td>Add Pictures!</td>
+                        <td>Upload more images to get more stars.</td>
+                        <td>{{ pic }}</td>
+                        <td><span class="pull-left"> {{ pic_stars | safe }}</span></td>
 
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                    </div>
-                </form>
-                You are not logged in, Please login by clicking one of the buttons above
-            </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
-            </div>
-        </div>
-    </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- ACHIEVEMENTS -->
-    <div id="achievements" class="content-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center" style="height:200px;">
-                    <h1 class="section-title">Achievements</h1>
-                </div> <!-- /.col-md-12 -->
-            </div> <!-- /.row -->
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-                <div class="col-md-8 col-sm-6">
-                    <table cellspacing="1" id="myTable" class="table table-striped tablesorter">
-                        <thead>
-                        <tr>
-                            <th>Achievement</th>
-                            <th>Description</th>
-                            <th>Next Goal</th>
-                            <th>Stars</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <!-- SHARE IT -->
-                            <td>Share it!</td>
-                            <td>Invite your friends to play and you will get stars.</td>
-                            <td>{{ share }}</td>
-                            <td><span class="pull-left"> {{ share_stars| safe }}</span></td>
-                        </tr>
-                        <tr>
-                            <!-- PRECISION -->
-                            <td>Precision</td>
-                            <td>The better your guess is the higher your rank will be.</td>
-                            <td>{{ precision }}</td>
-                            <td><span class="pull-left"> {{ precision_stars | safe }}</span></td>
-                        </tr>
-                        <tr>
-                            <!-- VOTE -->
-                            <td>Vote!</td>
-                            <td>Vote more images to get more stars.</td>
-                            <td>{{ vote }}</td>
-                            <td><span class="pull-left"> {{ vote_stars | safe }}</span></td>
-                        </tr>
-                        <tr>
-                            <!-- ADD PICTURES -->
-                            <td>Add Pictures!</td>
-                            <td>Upload more images to get more stars.</td>
-                            <td>{{ pic }}</td>
-                            <td><span class="pull-left"> {{ pic_stars | safe }}</span></td>
-
-                        </tr>
-                        </tbody>
-                    </table>
-                </div> <!-- /.col-md-8 -->
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-            </div> <!-- /.row -->
-            <div class="row" style="height: 50px"></div>
-        </div> <!-- /.container -->
-    </div> <!-- /#achievements -->
-    <!-- END ACHIEVEMENTS -->
-{% endif %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div> <!-- /.col-md-8 -->
+            <div class="col-md-2 col-sm-3">
+            </div> <!-- /.col-md-2 -->
+        </div> <!-- /.row -->
+        <div class="row" style="height: 50px"></div>
+    </div> <!-- /.container -->
+</div> <!-- /#achievements -->
+<!-- END ACHIEVEMENTS -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">

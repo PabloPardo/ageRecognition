@@ -108,130 +108,84 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
-    </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
-        </div>
+<!-- RANKING -->
+<div id="ranking" class="content-section">
+    <div class="container" style="padding-bottom: 50px">
         <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            <div class="col-md-12 text-center" style="height:200px;">
+                <h1 class="section-title">Ranking</h1>
+            </div> <!-- /.col-md-12 -->
+        </div> <!-- /.row -->
+        <div class="text-center"> <h3>Friend's Ranking</h3></div>
+        <div class="row">
+            <div class="col-md-2 col-sm-3">
+            </div> <!-- /.col-md-2 -->
+            <div class="col-md-8 col-md-8">
+                <table cellspacing="1" id="myFriendsTable" class="table table-striped tablesorter">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>Score</th>
+                            <th>#Votes</th>
+                            <th>#Uploaded Images</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for f in friends %}
+                        <tr>
+                            <td> {{ forloop.counter }}</td>
+                            <td><strong> {{f.user.first_name}} {{f.user.last_name}}</strong></td>
+                            <td> {{f.score_global }}</td>
+                            <td> {{ f.eval_pic }}</td>
+                            <td> {{ f.upload_pic }}</td>
+                        </tr>
+                    {% empty %}
+                        <strong style="text-align: center">Invite your friends and compete with them.</strong>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
-
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                    </div>
-                </form>
-                You are not logged in, Please login by clicking one of the buttons above
+            <div class="col-md-2 col-sm-3">
+            </div> <!-- /.col-md-2 -->
+        </div> <!-- /.row -->
+        <div class="text-center"> <h3>Global Ranking</h3></div>
+        <div class="row">
+            <div class="col-md-2 col-sm-3">
+            </div> <!-- /.col-md-2 -->
+            <div class="col-md-8 col-md-8">
+                <table cellspacing="1" id="myTable" class="table table-striped tablesorter"> {# table table-striped  #}
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Player</th>
+                            <th>Score</th>
+                            <th>#Votes</th>
+                            <th>#Uploaded Images</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td> {{ forloop.counter }}</td>
+                            <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
+                            <td> {{u.score_global }}</td>
+                            <td> {{ u.eval_pic }}</td>
+                            <td> {{ u.upload_pic }}</td>
+                        </tr>
+                    {% empty %}
+                        <strong style="text-align: center">There are no users</strong>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
-            </div>
-        </div>
-    </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- RANKING -->
-    <div id="ranking" class="content-section">
-        <div class="container" style="padding-bottom: 50px">
-            <div class="row">
-                <div class="col-md-12 text-center" style="height:200px;">
-                    <h1 class="section-title">Ranking</h1>
-                </div> <!-- /.col-md-12 -->
-            </div> <!-- /.row -->
-            <div class="text-center"> <h3>Friend's Ranking</h3></div>
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-                <div class="col-md-8 col-md-8">
-                    <table cellspacing="1" id="myFriendsTable" class="table table-striped tablesorter">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Player</th>
-                                <th>Score</th>
-                                <th>#Votes</th>
-                                <th>#Uploaded Images</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for f in friends %}
-                            <tr>
-                                <td> {{ forloop.counter }}</td>
-                                <td><strong> {{f.user.first_name}} {{f.user.last_name}}</strong></td>
-                                <td> {{f.score_global }}</td>
-                                <td> {{ f.eval_pic }}</td>
-                                <td> {{ f.upload_pic }}</td>
-                            </tr>
-                        {% empty %}
-                            <strong style="text-align: center">Invite your friends and compete with them.</strong>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-            </div> <!-- /.row -->
-            <div class="text-center"> <h3>Global Ranking</h3></div>
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-                <div class="col-md-8 col-md-8">
-                    <table cellspacing="1" id="myTable" class="table table-striped tablesorter"> {# table table-striped  #}
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Player</th>
-                                <th>Score</th>
-                                <th>#Votes</th>
-                                <th>#Uploaded Images</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for u in users %}
-                            <tr>
-                                <td> {{ forloop.counter }}</td>
-                                <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
-                                <td> {{u.score_global }}</td>
-                                <td> {{ u.eval_pic }}</td>
-                                <td> {{ u.upload_pic }}</td>
-                            </tr>
-                        {% empty %}
-                            <strong style="text-align: center">There are no users</strong>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                </div> <!-- /.col-md-2 -->
-            </div> <!-- /.row -->
-            <div class="row" style="height: 50px"></div>
-        </div> <!-- /.container -->
-    </div> <!-- /#ranking -->
-    <!-- END RANKING -->
-
-{% endif %}
+            <div class="col-md-2 col-sm-3">
+            </div> <!-- /.col-md-2 -->
+        </div> <!-- /.row -->
+        <div class="row" style="height: 50px"></div>
+    </div> <!-- /.container -->
+</div> <!-- /#ranking -->
+<!-- END RANKING -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">

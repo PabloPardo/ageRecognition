@@ -166,93 +166,48 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!--LOGIN-->
-{% if request.GET.fb_error_or_cancel or request.GET.error %}
-    <div class="error">
-        Please click allow in the facebook interface, to access Age Recognition
-    </div>
-{% endif %}
-
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not user.is_authenticated %}
-    <div id="login" class="content-section">
-        <div class="col-md-12 text-center">
-            <h1 class="section-title">Login</h1>
-        </div>
+<!-- GALLERY -->
+<div id="gallery" class="content-section">
+    <div class="container" style="padding-bottom: 150px">
         <div class="row">
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
-            </div>
-            <div class=".col-xs-8 .col-sm-10 .col-md-10 text-center">
-                <!--form to call registration via facebook -->
-                <form action="{% url 'facebook_connect' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ request.path }}" name="next" />
-
-                    <div id="facebook_login_js">
-                        <input onclick="F.connect(this.parentNode.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" /><br />
-                        (javascript popup)
-                    </div>
-                </form>
-                You are not logged in, Please login by clicking one of the buttons above
-            </div>
-            <div class=".col-xs-4 .col-sm-2 .col-md-2">
+            <div class="col-md-12 text-center" style="height:200px;">
+                <h1 class="section-title">Gallery</h1>
             </div>
         </div>
-    </div>
-{% endif %}
-<!--END-LOGIN-->
-
-{% if user.is_authenticated %}
-    <!-- GALLERY -->
-    <div id="gallery" class="content-section">
-        <div class="container" style="padding-bottom: 150px">
-            <div class="row">
-                <div class="col-md-12 text-center" style="height:200px;">
-                    <h1 class="section-title">Gallery</h1>
-                </div>
-            </div>
-            <div><p style="color: black;"><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
-            <form id='mydropzone' class="dropzone text-center" role="form"
-                          action="{% url 'gallery' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+        <div><p style="color: black;"><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
+        <form id='mydropzone' class="dropzone text-center" role="form"
+                      action="{% url 'gallery' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
 {#                ADD GALLERY OF PICTURES #}
-                {% for p in pictures %}
-                    <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ forloop.counter0 }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ p.num_votes }}', '{{ p.id }}');">
-                        <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
-                            {% thumbnail p.pic "100x100" quality=50 crop="center" as im %}
-                                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ p.pic }}">
-                            {% endthumbnail %}
-                        </div>
-                        {% if p.num_votes == 0 %}
-                            <p style="font-size: small; color: black;">Not voted yet.</p>
-                        {% else %}
-                            <p style="font-size: small; color: black;"><strong>Apparent age: </strong>{{ p.ground_truth }}</p>
-                        {% endif %}
+            {% for p in pictures %}
+                <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ forloop.counter0 }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ p.num_votes }}', '{{ p.id }}');">
+                    <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
+                        {% thumbnail p.pic "100x100" quality=50 crop="center" as im %}
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ p.pic }}">
+                        {% endthumbnail %}
                     </div>
-                {% empty %}
-                    <div style="text-align: center;">
-                        <p>Drag and Drop (or click) some images</p>
-                    </div>
-                {% endfor %}
+                    {% if p.num_votes == 0 %}
+                        <p style="font-size: small; color: black;">Not voted yet.</p>
+                    {% else %}
+                        <p style="font-size: small; color: black;"><strong>Apparent age: </strong>{{ p.ground_truth }}</p>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div style="text-align: center;">
+                    <p>Drag and Drop (or click) some images</p>
+                </div>
+            {% endfor %}
 
 {#                ADD UPLOAD BOTTON #}
-                <div class="form-group text-center">
-                        <input id="imgsubmit" class="btn btn-success" type="button"
-                                value="Upload Images"/>
-                </div>
-            </form>
-        </div>
+            <div class="form-group text-center">
+                    <input id="imgsubmit" class="btn btn-success" type="button"
+                            value="Upload Images"/>
+            </div>
+        </form>
     </div>
-    <!-- END GALLERY -->
-{% endif %}
+</div>
+<!-- END GALLERY -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">
