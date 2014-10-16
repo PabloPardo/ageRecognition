@@ -148,7 +148,7 @@
             <dic class="row">
                 <div class="col-md-2 col-sm-3">
                 </div>
-                <div class="col-md-8 col-sm-6 text-center">
+                <div class="col-md-8 col-sm-6 text-left">
                     <form class="form-horizontal" role="form"
                           action="{% url 'terms' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -209,7 +209,7 @@
                                     <p>This document was last updated on October 26, 2011</p>
                                 </div>
 
-                                <p><strong>I accept the terms and conditions:  </strong>{{ user_form.terms_conditions}}</p>
+                                <p style="color: black"><strong>I accept the terms and conditions:  </strong>{{ user_form.terms_conditions}}</p>
                                 <p>{{ user_form.errors }}</p>
                                 <button type="submit" class="btn btn-default">Accept</button>
                             </div>
