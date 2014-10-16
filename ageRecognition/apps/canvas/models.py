@@ -44,7 +44,9 @@ class UserProfile(models.Model):
 
 @receiver(post_save)
 def create_profile(sender, instance, created, **kwargs):
-    """Create a matching profile whenever a user object is created."""
+    """
+    Create a matching profile whenever a user object is created.
+    """
     if sender == get_user_model():
         user = instance
         # profile_model = get_profile_model()
@@ -60,12 +62,10 @@ class Picture(models.Model):
     ground_truth = models.IntegerField(default=0)
     date = models.DateField()
     visibility = models.BooleanField(default=True)
+    num_votes = models.IntegerField(null=True, blank=True, default=0)
 
     def __unicode__(self):
         return self.pic.name
-
-    def num_votes(self):
-        return Votes.objects.filter(pic=self).count()
 
 
 class Votes(models.Model):

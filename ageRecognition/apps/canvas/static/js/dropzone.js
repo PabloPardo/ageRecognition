@@ -557,7 +557,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       completemultiple: noop,
       maxfilesexceeded: noop,
       maxfilesreached: noop,
-      previewTemplate: "<div class=\"dz-preview dz-file-preview text-center\">\n  <div class=\"dz-details\">\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"dz-slider\">\n    <span>Input the age: <strong id=\"range_id\">0</strong></span>\n    <input  name=\"real_age\" min=\"1\" max=\"100\" value=\"0\" placeholder=\"How old does he/she looks like?\" type=\"range\" onchange='showValue(\"range_id\", this.value)' oninput='showValue(\"range_id\", this.value)'/>\n </div>\n   <div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n   <div class=\"dz-error-mark\"><span>✘</span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n </div>"
+      previewTemplate: "<div class=\"dz-preview dz-file-preview text-center\">\n  <div class=\"dz-details\">\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"dz-slider\">\n    <span>Input the age: <strong id=\"range_id\">0</strong></span>\n    <input  name=\"real_age\" min=\"0\" max=\"100\" value=\"0\" placeholder=\"How old does he/she looks like?\" type=\"range\" onchange='showValue(\"range_id\", this.value)' oninput='showValue(\"range_id\", this.value)'/>\n </div>\n   <div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n   <div class=\"dz-error-mark\"><span>✘</span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n </div>"
     };
 
     extend = function() {

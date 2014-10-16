@@ -72,7 +72,7 @@
                                 "<table cellspacing='2' id='stats' class='table table-striped tablesorter' style='barckground-color: wite'>" +
                                 "<thaed><tr>" +
                                     "<th>Real Age</th>" +
-                                    "<th>Aparented Age</th>" +
+                                    "<th>Apparent Age</th>" +
                                     "<th>Number of Votes</th>" +
                                 "</tr><thead><tbody><tr>" +
                                     "<td>" + real_age + "</td>" +
@@ -87,7 +87,7 @@
                         "<div class='form-group'>" +
                             "<div class='dz-slider' style='margin-bottom: -30px;'>" +
                                 "<p>Input the real age: <strong id='range_game_"+ id_pic +"'>"+ real_age +"</strong></p>" +
-                                "<input max='100' min='1' name='vote' onchange=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" oninput=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" type='range' value='"+ real_age +"'>" +
+                                "<input max='100' min='0' name='vote' onchange=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" oninput=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" type='range' value='"+ real_age +"'>" +
                                 "<input class='hidden' type='text' name='id_pic' value=\'" + id_pic + "\'>" +
                             "</div>" +
                             "<div style='padding-left: 175px;'>" +
@@ -218,19 +218,24 @@
                     <h1 class="section-title">Gallery</h1>
                 </div>
             </div>
-            <div><p><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
+            <div><p style="color: black;"><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
             <form id='mydropzone' class="dropzone text-center" role="form"
                           action="{% url 'gallery' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
 {#                ADD GALLERY OF PICTURES #}
                 {% for p in pictures %}
-                    <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ forloop.counter0 }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ num_votes|lookup:forloop.counter0 }}', '{{ p.id }}');">
+                    <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ forloop.counter0 }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ p.num_votes }}', '{{ p.id }}');">
                         <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
                             {% thumbnail p.pic "100x100" quality=50 crop="center" as im %}
                                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ p.pic }}">
                             {% endthumbnail %}
                         </div>
+                        {% if p.num_votes == 0 %}
+                            <p style="font-size: small; color: black;">Not voted yet.</p>
+                        {% else %}
+                            <p style="font-size: small; color: black;"><strong>Apparent age: </strong>{{ p.ground_truth }}</p>
+                        {% endif %}
                     </div>
                 {% empty %}
                     <div style="text-align: center;">

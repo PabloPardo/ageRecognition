@@ -88,6 +88,7 @@ def game(request):
 
                     # Update Ground Truth of the voted picture
                     newvote.pic = update_gt(newvote.pic)
+                    newvote.pic.num_votes += 1
                     newvote.pic.save()
 
                     # Calculate the precision of the user
@@ -138,14 +139,13 @@ def game(request):
             id_list = [p.id for p in game_picture_list]
 
             # Sort the images by number of votes
-            pics_ord_by_votes = list(Picture.objects.raw("SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes;"))
-
-            # Intersect the pics_ord_by_votes amb els game_picture_list
-            pics_ord_by_votes = [p for p in pics_ord_by_votes if p.id in id_list]
+            pics_ord_by_votes = Picture.objects.filter(pk__in=id_list).order_by('num_votes')
+            # SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*)
+            # as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes
 
             # Get the four images to show:
             actual_game_pic_list = list(game_picture_list[:2])
-            for i in range(0, len(pics_ord_by_votes)):
+            for i in range(pics_ord_by_votes.count()):
                 if not pics_ord_by_votes[i].id in id_list[:2]:
                     actual_game_pic_list.append(pics_ord_by_votes[i])
                 if len(actual_game_pic_list) == 4:
@@ -223,8 +223,6 @@ def gallery(request):
         # Load pictures for the home page
         user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
 
-        numVotes_list = [p.num_votes() for p in user_pictures_list]
-
         # Messages dict
         # messages = {}
 
@@ -255,7 +253,6 @@ def gallery(request):
                     # Check if the new image has been uploaded by the user
                     for p in range(0, user_pictures_list.count()-1):
                         if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
-                        # if str(newpic.hash) == user_pictures_list[p].hash:
                             os.remove(newpic.pic.path)
                             newpic.delete()
 
@@ -278,12 +275,10 @@ def gallery(request):
             pic_form = PictureForm()  # A empty, unbound pic_form
     else:
         user_pictures_list = []
-        numVotes_list = []
         pic_form = PictureForm()
 
     context_dict = {'pictures': user_pictures_list,
                     'user': request.user,
-                    'num_votes': numVotes_list,
                     'pic_form': pic_form,
                     'message': request.session.get('message', '')}
 
