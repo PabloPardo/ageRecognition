@@ -9,7 +9,7 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
-from apps.canvas.extra_functions import compare, calculate_score
+from apps.canvas.extra_functions import compare, calculate_score, update_gt
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
@@ -59,91 +59,39 @@ def game(request):
     context = RequestContext(request)
 
     if not request.user.pk is None:
-        user_votes_list = Votes.objects.values_list('id', 'score').filter(user=request.user)
+        user_votes_list = Votes.objects.values_list('pic__id', 'score').filter(user=request.user)
         voted_pics = [v[0] for v in user_votes_list]
-        votes_scores_list = [v[1] for v in user_votes_list]
 
-        # Chose a random picture to guess
-        # Restrict the selected images to the ones the user haven't vote
-        game_picture_list = Picture.objects.exclude(owner=request.user)
-        game_picture_list = game_picture_list.exclude(visibility=False)
-
-        try:
-            UserProfile.objects.select_related('pic')
-
-            game_picture_list = game_picture_list.exclude(pk__in=voted_pics)
-
-            # Sort the images by the users global score (se the users with highest scores get their images voted more).
-            game_picture_list = game_picture_list.order_by('-owner__score_global')
-            id_list = [p.id for p in game_picture_list]
-
-            # Sort the images by number of votes
-            pics_ord_by_votes = list(Picture.objects.raw("SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes;"))
-
-            # Intersect the pics_ord_by_votes amb els game_picture_list
-            pics_ord_by_votes = [p for p in pics_ord_by_votes if p.id in id_list]
-
-            # Sort the images by number of ppl from
-
-            # Get the four images to show:
-            actual_game_pic_list = list(game_picture_list[:2])
-            for i in range(0, len(pics_ord_by_votes)):
-                if not pics_ord_by_votes[i].id in id_list[:2]:
-                    actual_game_pic_list.append(pics_ord_by_votes[i])
-                if len(actual_game_pic_list) == 4:
-                    break
-
-        except Exception, e:
-            actual_game_pic_list = []
-            pics_ord_by_votes = []
-            print e
-
-        # Get statistics of the actual game pictures
-        actual_game_pic_stats = []
-        for p in actual_game_pic_list:
-            stats = {'num_votes': Votes.objects.filter(pic=p).count()}
-            avg_votes = Votes.objects.filter(pic=p).annotate(avg=Avg('vote'))
-            stats['avg_votes'] = int(avg_votes[0].avg) if avg_votes else 'No one voted yet'
-
-            actual_game_pic_stats.append(stats)
-
-        # Handle file upload
+        # Handle votes
         if request.method == 'POST':
             vote_form = VoteForm(data=request.POST, files=request.FILES)
             report_form = ReportForm(data=request.POST, files=request.FILES)
 
             votes_list = vote_form.data.getlist('vote')
+            pics_id = request.POST.getlist('id_pic')
             if vote_form.is_valid():
                 for i in range(0, len(votes_list)):
                     newvote = Votes()
                     newvote.vote = votes_list[i]
                     newvote.user = request.user.userprofile
-                    newvote.pic = actual_game_pic_list[i]
+                    newvote.pic = Picture.objects.get(id=pics_id[i])
                     newvote.date = str(datetime.datetime.now().date())
 
-                    if actual_game_pic_list[i].ground_truth == 0:
-                        if actual_game_pic_list[i].real_age:
-                            newvote.score = abs(actual_game_pic_list[i].real_age - int(votes_list[i]))
+                    if newvote.pic.ground_truth == 0:
+                        if newvote.pic.real_age:
+                            newvote.score = abs(newvote.pic.real_age - int(votes_list[i]))
                         else:
                             newvote.score = 1
                     else:
-                        newvote.score = abs(actual_game_pic_list[i].ground_truth - int(votes_list[i]))
+                        newvote.score = abs(newvote.pic.ground_truth - int(votes_list[i]))
                     newvote.save()
 
                     # Update Ground Truth of the voted picture
-                    if actual_game_pic_list[i].ground_truth == 0:
-                        actual_game_pic_list[i].ground_truth = newvote.vote
-                    else:
-                        votes_act_pic = Votes.objects.filter(pic=actual_game_pic_list[i])
-                        gt = 0.
-                        for v in votes_act_pic:
-                            gt += v.vote
-                        gt = int(gt / votes_act_pic.count())
-                        actual_game_pic_list[i].ground_truth = gt
+                    newvote.pic = update_gt(newvote.pic)
+                    newvote.pic.save()
 
-                    actual_game_pic_list[i].save()
-
-                    # Calculate the score of the user
+                    # Calculate the precision of the user
+                    votes_scores_list = [v[1] for v in user_votes_list]
                     votes_scores_list = votes_scores_list.append(newvote.score)
                     try:
                         assert isinstance(votes_scores_list, list)
@@ -159,32 +107,62 @@ def game(request):
 
                     request.user.userprofile.save()
 
-                # Redirect to the document list after POST
-                # return HttpResponseRedirect('/game/')
             elif report_form.is_valid():
-                # Find out which of the images is being reported
-                id_pic = request.GET.get('id')
-                for i in range(0, len(actual_game_pic_list)):
-                    if int(id_pic) == pics_ord_by_votes[i].id:
-                        break
 
                 newreport = Report()
-                newreport.pic = actual_game_pic_list[i]
+                newreport.pic = Picture.objects.get(id=request.GET.get('id'))
                 newreport.user = request.user.userprofile
                 newreport.date = str(datetime.datetime.now().date())
                 newreport.options = report_form.cleaned_data['options']
                 newreport.other = report_form.cleaned_data['other']
                 newreport.save()
 
-                if Report.objects.filter(pic=actual_game_pic_list[i]).count() >= 3:
-                    actual_game_pic_list[i].visibility = False
-                    actual_game_pic_list[i].save()
+                if Report.objects.filter(pic=newreport.pic).count() >= 3:
+                    newreport.pic.visibility = False
+                    newreport.pic.save()
                 return HttpResponseRedirect('/game/')
             else:
                 print vote_form.errors, report_form.errors
         else:
             vote_form = VoteForm()
             report_form = ReportForm()
+
+        # Restrict the selected images to the ones the user haven't vote
+        game_picture_list = Picture.objects.exclude(owner=request.user).exclude(visibility=False)
+
+        try:
+            game_picture_list = game_picture_list.exclude(pk__in=voted_pics)
+
+            # Sort the images by the users global score (se the users with highest scores get their images voted more).
+            game_picture_list = game_picture_list.order_by('-owner__score_global')
+            id_list = [p.id for p in game_picture_list]
+
+            # Sort the images by number of votes
+            pics_ord_by_votes = list(Picture.objects.raw("SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*) as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes;"))
+
+            # Intersect the pics_ord_by_votes amb els game_picture_list
+            pics_ord_by_votes = [p for p in pics_ord_by_votes if p.id in id_list]
+
+            # Get the four images to show:
+            actual_game_pic_list = list(game_picture_list[:2])
+            for i in range(0, len(pics_ord_by_votes)):
+                if not pics_ord_by_votes[i].id in id_list[:2]:
+                    actual_game_pic_list.append(pics_ord_by_votes[i])
+                if len(actual_game_pic_list) == 4:
+                    break
+
+        except Exception, e:
+            actual_game_pic_list = []
+            print e
+
+        # Get statistics of the actual game pictures
+        actual_game_pic_stats = []
+        for p in actual_game_pic_list:
+            stats = {'num_votes': Votes.objects.filter(pic=p).count()}
+            avg_votes = Votes.objects.filter(pic=p).annotate(avg=Avg('vote'))
+            stats['avg_votes'] = int(avg_votes[0].avg) if avg_votes else 'No one voted yet'
+
+            actual_game_pic_stats.append(stats)
     else:
         vote_form = VoteForm()
         report_form = ReportForm()

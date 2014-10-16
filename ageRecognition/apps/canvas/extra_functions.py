@@ -1,11 +1,13 @@
 import math
 import Image
 import operator
-from models import Picture, Votes
+from models import Picture, Votes, UserProfile
 
 
 def compare(path1, path2):
-    """ Compare tow images histograms and return the Root Mean Square Error """
+    """
+    Compare tow images histograms and return the Root Mean Square Error
+    """
 
     h1 = Image.open(path1).histogram()
     h2 = Image.open(path2).histogram()
@@ -16,7 +18,9 @@ def compare(path1, path2):
 
 
 def calculate_score(user):
-    """ Calculate the Global Score of a user """
+    """
+    Calculate the Global Score of a user
+    """
 
     # Count number of Uploaded Images
     upl_img = Picture.objects.filter(owner=user, visibility=True).count()
@@ -39,3 +43,19 @@ def calculate_score(user):
     user.score_global = upl_img_score + vts_score
     user.save()
     return
+
+
+def update_gt(pic):
+    """
+    Calculate the Ground truth of a given image.
+    :param pic: Picture model Object.
+    :return: Picture model Object with an updated ground truth.
+    """
+    votes_at_pic = Votes.objects.filter(pic=pic)
+    gt = 0.
+    for v in votes_at_pic:
+        gt += v.vote
+    gt = int(gt / votes_at_pic.count())
+    pic.ground_truth = gt
+
+    return pic

@@ -158,6 +158,7 @@
                                     {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
                                         <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                                     {% endthumbnail %}
+                                    <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
                                 </div>
                                 <p>{{ vote_form.errors }}</p>
                                 <div class="slider">
