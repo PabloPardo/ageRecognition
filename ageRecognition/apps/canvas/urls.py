@@ -8,7 +8,7 @@ urlpatterns = patterns('apps.canvas.views',
     url(r'^gallery/(?P<id_rm>\d+)/$', 'rm_image', name='rm_image'),
     url(r'^ranking/$', 'ranking', name='ranking'),
     url(r'^report/$', 'game', name='report'),
-    url(r'^terms/$', 'home', name='terms'),
+    url(r'^terms/$', 'terms', name='terms'),
     url(r'^privacy/$', 'privacy', name='privacy'),
     url(r'^help/$', 'help', name='help'),
 )

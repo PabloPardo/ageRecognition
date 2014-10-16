@@ -17,48 +17,36 @@ from django_facebook.api import get_facebook_graph
 
 @facebook_required_lazy
 def home(request):
-    context = RequestContext(request)
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
 
-    # Terms & Conditions
-    if not request.user.pk is None:
-        if not request.user.userprofile.terms_conditions:
-            if request.method == 'POST':
-                user_form = UserForm(data=request.POST, files=request.FILES)
-                if user_form.is_valid():
-                    request.user.userprofile.terms_conditions = user_form.cleaned_data['terms_conditions']
-                    request.user.userprofile.save()
-                    return HttpResponseRedirect(reverse('apps.canvas.views.help'))
-            else:
-                user_form = UserForm()
-            context_dict = {'user_form': user_form}
+        # Computing Global Score of the current user
+        calculate_score(request.user.userprofile)
 
-            return render_to_response('terms.html', context_dict, context_instance=context)
-        else:
-            # Computing Global Score of the current user
-            calculate_score(request.user.userprofile)
+        if request.user.username:
+            if not request.user.userprofile.hometown:
+                # Get the graph from the FB API
+                graph = get_facebook_graph(request=request)
 
-    # Get the graph from the FB API
-    graph = get_facebook_graph(request=request)
+                hometown = graph.get('me', fields='hometown')
+                if 'hometown' in hometown.keys():
+                    request.user.userprofile.hometown = hometown['hometown']['name']
+                else:
+                    request.user.userprofile.hometown = ''
+                request.user.userprofile.save()
 
-    if request.user.username:
-        if not request.user.userprofile.hometown:
-            hometown = graph.get('me', fields='hometown')
-            if 'hometown' in hometown.keys():
-                request.user.userprofile.hometown = hometown['hometown']['name']
-            else:
-                request.user.userprofile.hometown = ''
-            request.user.userprofile.save()
+        context_dict = {'user': request.user}
 
-    context_dict = {'user': request.user}
-
-    return render_to_response('home.html', context_dict, context_instance=context)
+        return render_to_response('home.html', context_dict, context_instance=context)
+    else:
+        return HttpResponseRedirect('/terms/')
 
 
 @facebook_required_lazy
 def game(request):
-    context = RequestContext(request)
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
 
-    if not request.user.pk is None:
         user_votes_list = Votes.objects.values_list('pic__id', 'score').filter(user=request.user)
         voted_pics = [v[0] for v in user_votes_list]
 
@@ -163,29 +151,26 @@ def game(request):
             stats['avg_votes'] = int(avg_votes[0].avg) if avg_votes else 'No one voted yet'
 
             actual_game_pic_stats.append(stats)
-    else:
-        vote_form = VoteForm()
-        report_form = ReportForm()
-        actual_game_pic_stats = []
-        actual_game_pic_list = []
 
-    context_dict = {'vote_form': vote_form,
-                    'report_form': report_form,
-                    'user': request.user,
-                    'game_pic_list': actual_game_pic_list,
-                    'game_pic_stats': actual_game_pic_stats}
+        context_dict = {'vote_form': vote_form,
+                        'report_form': report_form,
+                        'user': request.user,
+                        'game_pic_list': actual_game_pic_list,
+                        'game_pic_stats': actual_game_pic_stats}
 
-    if request.path == '/game/':
-        return render_to_response('game.html', context_dict, context_instance=context)
+        if request.path == '/game/':
+            return render_to_response('game.html', context_dict, context_instance=context)
+        else:
+            return render_to_response('report.html', context_dict, context_instance=context)
     else:
-        return render_to_response('report.html', context_dict, context_instance=context)
+        return HttpResponseRedirect('/terms/')
 
 
 @facebook_required_lazy
 def ranking(request):
-    context = RequestContext(request)
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
 
-    if not request.user.pk is None:
         # Computing Global Score of the current user
         calculate_score(request.user.userprofile)
 
@@ -204,22 +189,21 @@ def ranking(request):
         friends_user_list = UserProfile.objects.filter(user__facebookprofile__facebook_name__in=friends)
         friends_user_list = friends_user_list | UserProfile.objects.filter(user=request.user)
         friends_user_list = friends_user_list.order_by('-score_global')
+
+        context_dict = {'users': user_list,
+                        'user': request.user,
+                        'friends': friends_user_list}
+
+        return render_to_response('ranking.html', context_dict, context_instance=context)
     else:
-        user_list = []
-        friends_user_list = []
-
-    context_dict = {'users': user_list,
-                    'user': request.user,
-                    'friends': friends_user_list}
-
-    return render_to_response('ranking.html', context_dict, context_instance=context)
+        return HttpResponseRedirect('/terms/')
 
 
 @facebook_required_lazy
 def gallery(request):
-    context = RequestContext(request)
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
 
-    if not request.user.pk is None:
         # Load pictures for the home page
         user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
 
@@ -273,17 +257,16 @@ def gallery(request):
                 return HttpResponseRedirect('/gallery/')
         else:
             pic_form = PictureForm()  # A empty, unbound pic_form
+
+        context_dict = {'pictures': user_pictures_list,
+                        'user': request.user,
+                        'pic_form': pic_form,
+                        'message': request.session.get('message', '')}
+
+        request.session['message'] = ''
+        return render_to_response('gallery.html', context_dict, context_instance=context)
     else:
-        user_pictures_list = []
-        pic_form = PictureForm()
-
-    context_dict = {'pictures': user_pictures_list,
-                    'user': request.user,
-                    'pic_form': pic_form,
-                    'message': request.session.get('message', '')}
-
-    request.session['message'] = ''
-    return render_to_response('gallery.html', context_dict, context_instance=context)
+        return HttpResponseRedirect('/terms/')
 
 
 @facebook_required_lazy
@@ -298,107 +281,139 @@ def rm_image(request, id_rm):
 
 @facebook_required_lazy
 def achievements(request):
-    context = RequestContext(request)
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
 
-    # Get the graph from the FB API
-    if not 'num_friends' in request.session:
-        graph = get_facebook_graph(request=request)
-        request.session['num_friends'] = len(graph.get('me/friends', fields='')['data'])
+        # Get the graph from the FB API
+        if not 'num_friends' in request.session:
+            graph = get_facebook_graph(request=request)
+            request.session['num_friends'] = len(graph.get('me/friends', fields='')['data'])
 
-    num_friends = request.session['num_friends']
+        num_friends = request.session['num_friends']
 
 
-    stars = ['<i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o">',
-             '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star">',
-             ]
+        stars = ['<i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star-half-o">',
+                 '<i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star"><i class="fa fa-star">',
+                 ]
 
-    precision_coments = ['This is awkward',
-                         'You should check your sight',
-                         'That\'s all you can do?',
-                         'Well, you can do better',
-                         'Good, but try harder',
-                         'You are in the right track, keep improving',
-                         'Well done',
-                         'Great!',
-                         'Excellent guessing skills!',
-                         'Incredible, you are reaching perfection',
-                         'Amazing! Prefect precision!']
+        precision_coments = ['This is awkward',
+                             'You should check your sight',
+                             'That\'s all you can do?',
+                             'Well, you can do better',
+                             'Good, but try harder',
+                             'You are in the right track, keep improving',
+                             'Well done',
+                             'Great!',
+                             'Excellent guessing skills!',
+                             'Incredible, you are reaching perfection',
+                             'Amazing! Prefect precision!']
 
-    share_goals = [1, 3, 5, 7, 10, 15, 20, 25, 35, 50]
-    vote_goals = [5, 10, 20, 50, 150, 400, 1000, 5000, 12000, 30000]
-    pic_goals = [1, 2, 5, 10, 15, 30, 50, 75, 100, 200]
+        share_goals = [1, 3, 5, 7, 10, 15, 20, 25, 35, 50]
+        vote_goals = [5, 10, 20, 50, 150, 400, 1000, 5000, 12000, 30000]
+        pic_goals = [1, 2, 5, 10, 15, 30, 50, 75, 100, 200]
 
-    for i in range(len(share_goals)):
-        if num_friends < share_goals[i]:
-            share = 'Invite ' + str(share_goals[i]) + ' of your friends to play'
-            share_stars = stars[i]
-            break
-        elif num_friends >= share_goals[-1]:
-            share = 'Keep inviting your friends'
-            share_stars = stars[-1]
-
-    if not request.user.pk is None:
-        for i in range(len(precision_coments)):
-            if request.user.userprofile.ach_precision == i:
-                precision = precision_coments[i]
-                precision_stars = stars[i]
+        for i in range(len(share_goals)):
+            if num_friends < share_goals[i]:
+                share = 'Invite ' + str(share_goals[i]) + ' of your friends to play'
+                share_stars = stars[i]
                 break
+            elif num_friends >= share_goals[-1]:
+                share = 'Keep inviting your friends'
+                share_stars = stars[-1]
 
-        for i in range(len(vote_goals)):
-            if request.user.userprofile.eval_pic < vote_goals[i]:
-                vote = 'Vote ' + str(vote_goals[i]) + ' pictures'
-                vote_stars = stars[i]
-                break
-            elif request.user.userprofile.eval_pic >= vote_goals[-1]:
-                vote = 'Keep Voting'
-                vote_stars = stars[-1]
+        if not request.user.pk is None:
+            for i in range(len(precision_coments)):
+                if request.user.userprofile.ach_precision == i:
+                    precision = precision_coments[i]
+                    precision_stars = stars[i]
+                    break
 
-        for i in range(len(pic_goals)):
-            if request.user.userprofile.upload_pic < pic_goals[i]:
-                pic = 'Upload ' + str(pic_goals[i]) + ' pictures'
-                pic_stars = stars[i]
-                break
-            elif request.user.userprofile.upload_pic >= pic_goals[-1]:
-                pic = 'Keep uploading pictures'
-                pic_stars = stars[-1]
+            for i in range(len(vote_goals)):
+                if request.user.userprofile.eval_pic < vote_goals[i]:
+                    vote = 'Vote ' + str(vote_goals[i]) + ' pictures'
+                    vote_stars = stars[i]
+                    break
+                elif request.user.userprofile.eval_pic >= vote_goals[-1]:
+                    vote = 'Keep Voting'
+                    vote_stars = stars[-1]
+
+            for i in range(len(pic_goals)):
+                if request.user.userprofile.upload_pic < pic_goals[i]:
+                    pic = 'Upload ' + str(pic_goals[i]) + ' pictures'
+                    pic_stars = stars[i]
+                    break
+                elif request.user.userprofile.upload_pic >= pic_goals[-1]:
+                    pic = 'Keep uploading pictures'
+                    pic_stars = stars[-1]
+        else:
+            precision = precision_coments[0]
+            precision_stars = stars[0]
+            vote = 'Vote ' + str(vote_goals[0]) + ' pictures'
+            vote_stars = stars[0]
+            pic = 'Upload ' + str(pic_goals[0]) + ' pictures'
+            pic_stars = stars[0]
+
+        context_dict = {'user': request.user,
+                        'num_friends': num_friends,
+                        'share_stars': share_stars,
+                        'share': share,
+                        'precision': precision,
+                        'precision_stars': precision_stars,
+                        'vote': vote,
+                        'vote_stars': vote_stars,
+                        'pic': pic,
+                        'pic_stars': pic_stars}
+
+        return render_to_response('achievements.html', context_dict, context_instance=context)
     else:
-        precision = precision_coments[0]
-        precision_stars = stars[0]
-        vote = 'Vote ' + str(vote_goals[0]) + ' pictures'
-        vote_stars = stars[0]
-        pic = 'Upload ' + str(pic_goals[0]) + ' pictures'
-        pic_stars = stars[0]
-
-    context_dict = {'user': request.user,
-                    'num_friends': num_friends,
-                    'share_stars': share_stars,
-                    'share': share,
-                    'precision': precision,
-                    'precision_stars': precision_stars,
-                    'vote': vote,
-                    'vote_stars': vote_stars,
-                    'pic': pic,
-                    'pic_stars': pic_stars}
-
-    return render_to_response('achievements.html', context_dict, context_instance=context)
+        return HttpResponseRedirect('/terms/')
 
 
 @facebook_required_lazy
 def privacy(request):
-    context = RequestContext(request)
-    return render_to_response('privacy.html', context_instance=context)
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
+        return render_to_response('privacy.html', context_instance=context)
+    else:
+        return HttpResponseRedirect('/terms/')
 
 
 @facebook_required_lazy
 def help(request):
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
+        return render_to_response('help.html', context_instance=context)
+    else:
+        return HttpResponseRedirect('/terms/')
+
+
+@facebook_required_lazy
+def terms(request):
     context = RequestContext(request)
-    return render_to_response('help.html', context_instance=context)
+
+    if not request.user.pk is None:
+        if not request.user.userprofile.terms_conditions:
+            if request.method == 'POST':
+                user_form = UserForm(data=request.POST, files=request.FILES)
+                if user_form.is_valid():
+                    request.user.userprofile.terms_conditions = user_form.cleaned_data['terms_conditions']
+                    request.user.userprofile.save()
+                    return HttpResponseRedirect(reverse('apps.canvas.views.help'))
+            else:
+                user_form = UserForm()
+            context_dict = {'user_form': user_form}
+
+            return render_to_response('terms.html', context_dict, context_instance=context)
+        else:
+            return HttpResponseRedirect('/home/')
+
+    return render_to_response('terms.html', context_instance=context)
