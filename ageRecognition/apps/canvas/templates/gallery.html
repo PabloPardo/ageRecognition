@@ -50,6 +50,15 @@
         <script src="{% static 'js/main.js' %}"></script>
         <script src="{% static 'js/dropzone.js' %}"></script>
         <script>
+        {% if message %}
+            new Messi('{{ message }}', {
+                title: 'Repeated Images',
+                titleClass: 'anim warning',
+                modal: true,
+                buttons: [{id: 0, label: 'Continue', val: 'X', class: 'btn-default'}],
+                width: '800px'
+            });
+        {% endif %}
         function ShowStats(pic, real_age, ground_truth, num_votes_pic, id_pic){
             if (ground_truth==''){
                 ground_truth = 'Not voted yet'
@@ -255,7 +264,11 @@
 <script>
     $(document).ready(function() {
 
-        var mydropzone = new Dropzone('#mydropzone');
+        var mydropzone = new Dropzone('#mydropzone', {
+            success: function(file, response){
+                window.location.reload();
+            }
+        });
 
         $('#imgsubmit').click(function (e) {
             e.preventDefault();

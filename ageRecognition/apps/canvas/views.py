@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import datetime
@@ -6,7 +7,7 @@ from django_facebook.decorators import facebook_required_lazy
 import imagehash
 
 from django.shortcuts import RequestContext, render_to_response
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
 from apps.canvas.extra_functions import compare, calculate_score, update_gt
@@ -204,7 +205,7 @@ def gallery(request):
 
             if pic_form.files:
                 real_age_list = pic_form.data.getlist('real_age')
-                for i in range(0, len(pic_form.files)):
+                for i in range(len(pic_form.files)):
                     file_name = 'pic[' + str(i) + ']'
                     newpic = Picture()
                     newpic.pic = pic_form.files[file_name]
@@ -222,18 +223,18 @@ def gallery(request):
                     newpic.save()
 
                     # Check if the new image has been uploaded by the user
-                    for p in range(0, user_pictures_list.count()-1):
+                    for p in range(user_pictures_list.count()-1):
                         if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
                             os.remove(newpic.pic.path)
                             newpic.delete()
 
-                            request.session['message'] = 'You already uploaded that image, please try uploading a new one.'
+                            request.session['message'] = 'Some of the , please try uploading a new one.'
                             # messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
                             # print 'The image is has already been uploaded.'
                             break
 
                 # Redirect to the document list after POST
-                return HttpResponseRedirect('/gallery/')
+                return HttpResponse(json.dumps({}), content_type="application/json")
             else:
                 print pic_form.errors
 
