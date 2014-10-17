@@ -18,23 +18,10 @@ from django_facebook.api import get_facebook_graph
 @facebook_required_lazy
 def home(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
-        context = RequestContext(request)
-
         # Computing Global Score of the current user
         calculate_score(request.user.userprofile)
 
-        if request.user.username:
-            if not request.user.userprofile.hometown:
-                # Get the graph from the FB API
-                graph = get_facebook_graph(request=request)
-
-                hometown = graph.get('me', fields='hometown')
-                if 'hometown' in hometown.keys():
-                    request.user.userprofile.hometown = hometown['hometown']['name']
-                else:
-                    request.user.userprofile.hometown = ''
-                request.user.userprofile.save()
-
+        context = RequestContext(request)
         context_dict = {'user': request.user}
 
         return render_to_response('home.html', context_dict, context_instance=context)
@@ -400,13 +387,27 @@ def help(request):
 def terms(request):
     context = RequestContext(request)
 
-    if not request.user.pk is None:
-        if not request.user.userprofile.terms_conditions:
+    if not request.user.pk is None:  # If user is logged in
+        if not request.user.userprofile.terms_conditions:  # If user has not sign the T&C
             if request.method == 'POST':
                 user_form = UserForm(data=request.POST, files=request.FILES)
                 if user_form.is_valid():
                     request.user.userprofile.terms_conditions = user_form.cleaned_data['terms_conditions']
                     request.user.userprofile.save()
+
+                    # Get User's Home-town
+                    if request.user.username:
+                        if not request.user.userprofile.hometown:
+                            # Get the graph from the FB API
+                            graph = get_facebook_graph(request=request)
+
+                            hometown = graph.get('me', fields='hometown')
+                            if 'hometown' in hometown.keys():
+                                request.user.userprofile.hometown = hometown['hometown']['name']
+                            else:
+                                request.user.userprofile.hometown = ''
+                            request.user.userprofile.save()
+
                     return HttpResponseRedirect(reverse('apps.canvas.views.help'))
             else:
                 user_form = UserForm()
