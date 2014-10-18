@@ -228,7 +228,7 @@ def gallery(request):
                             os.remove(newpic.pic.path)
                             newpic.delete()
 
-                            request.session['message'] = 'Some of the , please try uploading a new one.'
+                            request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
                             # messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
                             # print 'The image is has already been uploaded.'
                             break
