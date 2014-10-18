@@ -108,14 +108,14 @@ def game(request):
         game_picture_list = Picture.objects.exclude(owner=request.user).exclude(visibility=False)
 
         try:
-            game_picture_list = game_picture_list.exclude(pk__in=voted_pics)
+            game_picture_list = game_picture_list.exclude(pk__in=voted_pics).filter(num_votes__lt=100)
 
             # Sort the images by the users global score (se the users with highest scores get their images voted more).
             game_picture_list = game_picture_list.order_by('-owner__score_global')
             id_list = [p.id for p in game_picture_list]
 
-            # Sort the images by number of votes
-            pics_ord_by_votes = Picture.objects.filter(pk__in=id_list).order_by('num_votes')
+            # Sort the images by number of votes (images with less than 100 votes)
+            pics_ord_by_votes = Picture.objects.filter(pk__in=id_list, num_votes__lt=100).order_by('num_votes')
             # SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*)
             # as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes
 
