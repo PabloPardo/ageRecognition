@@ -103,7 +103,7 @@
     <div class="container" style="padding-bottom: 50px">
         <div class="row">
         {% if game_pic_list %}
-            <form class="form-horizontal" role="form"
+            <form id="gameForm" class="form-horizontal" role="form"
                           action="{% url 'game' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
         {% for game_pic in game_pic_list %}
@@ -130,6 +130,7 @@
         {% endfor %}
             <div class="col-md-12 text-center">
             <button id="submit" type="submit" class="btn btn-success">Submit</button>
+{#            <button class="btn btn-success" onclick="gameFormSubmit()">Submit</button>#}
             </form>
         </div>
         {% else %}
@@ -187,28 +188,45 @@
 
 {% block js %}
 <script>
-    $(document).ready(function() {
-        $('#submit').on('click', function() {
-            var content =
-                    "<table cellspacing='2' id='stats' class='table table-striped tablesorter'>" +
-                    "<thead>" +
-                        "<tr><th>Images</th><th>Number of Votes</th><th>Age</th></tr>" +
-                    "</thead><tbody>" +
-                    "{% for p in game_pic_list %}" +
-                        "<tr>" +
-                        "<td><div class='dz-details game-pic-container-small'>" +
-                            "{% thumbnail p "50x50" quality=50 crop="center" as im %}" +
-                                "<img src='{{ im.url }}'' width='{{ im.width }}'' height='{{ im.height }}'>" +
-                            "{% endthumbnail %}" +
-                        "</div></td>" +
-                        "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
-                        "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'avg_votes' }}</td>" +
-                        "</tr>" +
-                    "{% endfor %}" +
-                    "</tbody></table>";
+    var content =
+                "<table cellspacing='2' id='stats' class='table table-striped tablesorter'>" +
+                "<thead>" +
+                    "<tr><th>Images</th><th>Number of Votes</th><th>Age</th></tr>" +
+                "</thead><tbody>" +
+                "{% for p in game_pic_list %}" +
+                    "<tr>" +
+                    "<td><div class='dz-details game-pic-container-small'>" +
+                        "{% thumbnail p "50x50" quality=50 crop="center" as im %}" +
+                            "<img src='{{ im.url }}'' width='{{ im.width }}'' height='{{ im.height }}'>" +
+                        "{% endthumbnail %}" +
+                    "</div></td>" +
+                    "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
+                    "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'avg_votes' }}</td>" +
+                    "</tr>" +
+                "{% endfor %}" +
+                "</tbody></table>";
 
-            new Messi(content, {title: 'Feedback', modal: true, buttons: [{id: 0, label: 'Continue', val: 'X'}], width: '800px'});
-        });
+    // this is the id of the form
+    var frm = $('#gameForm');
+    frm.submit( function (ev) {
+        $.ajax({
+               type: frm.attr('method'),
+               url: frm.attr('action'),
+               data: frm.serialize(), // serializes the form's elements.
+               success: function(data) {
+                   new Messi(content, {title: 'Feedback',
+                       modal: true,
+                       buttons: [{id: 0, label: 'Continue', val: 'X'}],
+                       width: '800px',
+                       callback: function(val) {
+                            if (val=='X'){
+                                location.reload(true);
+                            }
+                        }
+                   });
+               }
+         });
+        ev.preventDefault();
     });
 </script>
 {% endblock js %}

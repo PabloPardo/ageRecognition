@@ -37,18 +37,6 @@ function rmFormSubmit(id_rm) {
     }
 }
 
-function gameFormSubmit() {
-    var csrftoken = getCookie('csrftoken');
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/game/", false);
-    xmlhttp.setRequestHeader("X-CSRFToken", csrftoken);
-    xmlhttp.send();
-
-    if (xmlhttp.status === 200) {
-        location.reload(true);
-    }
-}
-
 function hideSave() {
    document.getElementById('save').style.visibility = 'hidden';
 }

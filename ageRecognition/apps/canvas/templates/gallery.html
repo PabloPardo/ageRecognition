@@ -118,11 +118,6 @@
             });
         }
         </script>
-        <script>
-        {% if message %}
-            document.onload(function(){ new Messi({{ message }}, {title: 'Buttons', buttons: [{id: 0, label: 'Close', val: 'X'}]}) });
-        {% endif %}
-        </script>
     {% endblock extra_head %}
 </head>
 <body>
@@ -265,7 +260,7 @@
     $(document).ready(function() {
 
         var mydropzone = new Dropzone('#mydropzone', {
-            success: function(file, response){
+            success: function(){
                 window.location.reload();
             }
         });
