@@ -22,6 +22,15 @@ def home(request):
         # Computing Global Score of the current user
         calculate_score(request.user.userprofile)
 
+        # Get the graph from the FB API
+        if not 'num_friends' in request.session or not 'friends' in request.session:
+            graph = get_facebook_graph(request=request)
+
+            friends = graph.get('me/friends', fields='')['data']
+            friends = [f['name'] for f in friends]
+            request.session['friends'] = friends
+            request.session['num_friends'] = len(friends)
+
         context = RequestContext(request)
         context_dict = {'user': request.user}
 
@@ -162,13 +171,6 @@ def ranking(request):
         # Computing Global Score of the current user
         calculate_score(request.user.userprofile)
 
-        # Get the graph from the FB API
-        if not 'friends' in request.session:
-            graph = get_facebook_graph(request=request)
-            friends = graph.get('me/friends', fields='')['data']
-            friends = [f['name'] for f in friends]
-            request.session['friends'] = friends
-
         friends = request.session['friends']
 
         # Load users ordered by global score
@@ -271,11 +273,6 @@ def rm_image(request, id_rm):
 def achievements(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
-
-        # Get the graph from the FB API
-        if not 'num_friends' in request.session:
-            graph = get_facebook_graph(request=request)
-            request.session['num_friends'] = len(graph.get('me/friends', fields='')['data'])
 
         num_friends = request.session['num_friends']
 
