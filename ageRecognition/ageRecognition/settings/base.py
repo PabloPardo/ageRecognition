@@ -162,6 +162,8 @@ class Base(Settings):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django_facebook.middleware.FacebookCanvasMiddleWare',
+        'django.middleware.cache.UpdateCacheMiddleware',
+        'django.middleware.cache.FetchFromCacheMiddleware'
     )
 
     ROOT_URLCONF = 'ageRecognition.urls'
@@ -309,6 +311,8 @@ class Base(Settings):
         }
     }
 
+    # SORL Configuration
+    THUMBNAIL_CACHE_TIMEOUT = sys.maxint
 
     BUNDLE_SERVICE_URL = ""
 
