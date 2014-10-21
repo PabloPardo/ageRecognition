@@ -63,17 +63,18 @@ def game(request):
                     newvote.date = str(datetime.datetime.now().date())
 
                     if newvote.pic.ground_truth == 0:
-                        if newvote.pic.real_age:
-                            newvote.score = abs(newvote.pic.real_age - int(votes_list[i]))
-                        else:
-                            newvote.score = 1
+                        newvote.score = abs(newvote.pic.real_age - int(votes_list[i]))
                     else:
                         newvote.score = abs(newvote.pic.ground_truth - int(votes_list[i]))
                     newvote.save()
 
-                    # Update Ground Truth of the voted picture
-                    newvote.pic = update_gt(newvote.pic)
+                    # Update Number of votes and Cumulative votes of the voted picture
                     newvote.pic.num_votes += 1
+                    newvote.pic.cum_votes += newvote.vote
+                    newvote.pic.save()
+
+                    # Update Ground Truth of the voted picture
+                    newvote.pic.ground_truth = int(newvote.pic.cum_votes / newvote.pic.num_votes)
                     newvote.pic.save()
 
                     # Calculate the precision of the user

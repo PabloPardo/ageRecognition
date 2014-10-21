@@ -40,19 +40,3 @@ def calculate_score(user):
     user.score_global = upl_img_score + vts_score
     user.save()
     return
-
-
-def update_gt(pic):
-    """
-    Calculate the Ground truth of a given image.
-    :param pic: Picture model Object.
-    :return: Picture model Object with an updated ground truth.
-    """
-    votes_at_pic = Votes.objects.filter(pic=pic)
-    gt = 0.
-    for v in votes_at_pic:
-        gt += v.vote
-    gt = int(gt / votes_at_pic.count())
-    pic.ground_truth = gt
-
-    return pic

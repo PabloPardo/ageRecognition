@@ -55,14 +55,24 @@ def create_profile(sender, instance, created, **kwargs):
 
 
 class Picture(models.Model):
+    GENDER_CHOICES = [(0, 'male'), (1, 'female')]
+    ETHNICITY_CHOICES = [(0, 'white'), (1, 'asian'), (2, 'black'), (3, 'other')]
+
     owner = models.ForeignKey(to=UserProfile)
     pic = ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
     hash = models.CharField(max_length=128)
     real_age = models.IntegerField(null=True, blank=True)
     ground_truth = models.IntegerField(default=0)
+
+    ### Not used yet
+    gender = models.BooleanField(choices=GENDER_CHOICES, null=True, blank=True)
+    ethnic = models.BooleanField(choices=ETHNICITY_CHOICES, null=True, blank=True)
+    ###
+
     date = models.DateField()
     visibility = models.BooleanField(default=True)
     num_votes = models.IntegerField(null=True, blank=True, default=0)
+    cum_votes = models.IntegerField(null=True, blank=True, default=0)
 
     def __unicode__(self):
         return self.pic.name
