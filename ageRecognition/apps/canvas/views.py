@@ -85,6 +85,8 @@ def game(request):
                     # Computing Global Score of the current user
                     calculate_score(request.user.userprofile)
 
+                return HttpResponseRedirect('/game/')
+
             elif report_form.is_valid():
 
                 newreport = Report()
