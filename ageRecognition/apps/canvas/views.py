@@ -190,9 +190,6 @@ def gallery(request):
         # Load pictures for the home page
         user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
 
-        # Messages dict
-        # messages = {}
-
         # Handle file upload
         if request.method == 'POST':
 
@@ -220,13 +217,11 @@ def gallery(request):
 
                     # Check if the new image has been uploaded by the user
                     for p in range(user_pictures_list.count()-1):
-                        # if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
                         if compare(json.loads(newpic.hist),  json.loads(user_pictures_list[p].hist)) < 0.1:
                             os.remove(newpic.pic.path)
                             newpic.delete()
 
                             request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
-                            # messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
                             break
 
                 # Redirect to the document list after POST
