@@ -35,10 +35,7 @@ def calculate_score(user):
 
     vts_score = 0
     for v in vts:
-        if v > 10:
-            vts_score += 5
-        else:
-            vts_score += 3*(10 - v)
+        vts_score += 5 if v > 10 else 3*(10 - v)
 
     user.score_global = upl_img_score + vts_score
     user.save()

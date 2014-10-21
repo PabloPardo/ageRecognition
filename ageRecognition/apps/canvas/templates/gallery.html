@@ -55,8 +55,7 @@
                 title: 'Repeated Images',
                 titleClass: 'anim warning',
                 modal: true,
-                buttons: [{id: 0, label: 'Continue', val: 'X', class: 'btn-default'}],
-                width: '800px'
+                buttons: [{id: 0, label: 'Continue', val: 'X', class: 'btn-default'}]
             });
         {% endif %}
         function ShowStats(pic, real_age, ground_truth, num_votes_pic, id_pic){
@@ -108,7 +107,10 @@
             new Messi(content, {
                 title: 'Image Information',
                 modal: true,
-                buttons: [{id:0, label: 'Remove Image', val: 'R', class: 'btn-danger'}, {id: 1, label: 'Continue', val: 'X', class: 'btn-success'}],
+                buttons: [
+                    {id:0, label: 'Remove Image', val: 'R', class: 'btn-danger'},
+                    {id: 1, label: 'Continue', val: 'X', class: 'btn-success'}
+                ],
                 width: '800px',
                 callback: function(val) {
                     if (val=='R'){
@@ -252,6 +254,7 @@
     </div> <!-- /.container -->
 </div> <!-- /.site-footer -->
 <!--END-FOOTER-->
+    <iframe src="http://www.facebook.com/plugins/facepile.php?app_id={{ FACEBOOK_APP_ID }}&amp;width=500&amp;max_rows=1" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px;" allowTransparency="true"></iframe>
 {% endblock content %}
 
 {% block js %}
