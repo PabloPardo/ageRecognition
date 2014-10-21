@@ -4,7 +4,6 @@ import time
 import datetime
 from django.db.models import Avg
 from django_facebook.decorators import facebook_required_lazy
-import imagehash
 
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
@@ -213,20 +212,21 @@ def gallery(request):
                     ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
                     file_extension = os.path.splitext(newpic.pic.path)[-1]
                     request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + file_extension
-
                     newpic.save()
-                    newpic.hash = imagehash.average_hash(Image.open('media/' + newpic.pic.name))
+
+                    # Add histogram to the pic
+                    newpic.hist = json.dumps(Image.open(newpic.pic.path).convert('RGB').histogram())
                     newpic.save()
 
                     # Check if the new image has been uploaded by the user
                     for p in range(user_pictures_list.count()-1):
-                        if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
+                        # if compare(newpic.pic.path, user_pictures_list[p].pic.path) < 0.1:
+                        if compare(json.loads(newpic.hist),  json.loads(user_pictures_list[p].hist)) < 0.1:
                             os.remove(newpic.pic.path)
                             newpic.delete()
 
                             request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
                             # messages['repeat'] = 'You already uploaded that image, please try uploading a new one.'
-                            # print 'The image is has already been uploaded.'
                             break
 
                 # Redirect to the document list after POST

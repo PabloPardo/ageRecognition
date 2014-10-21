@@ -4,13 +4,13 @@ import operator
 from models import Picture, Votes, UserProfile
 
 
-def compare(path1, path2):
+def compare(h1, h2):
     """
     Compare tow images histograms and return the Root Mean Square Error
     """
 
-    h1 = Image.open(path1).convert('RGB').histogram()
-    h2 = Image.open(path2).convert('RGB').histogram()
+    # h1 = Image.open(path1).convert('RGB').histogram()
+    # h2 = Image.open(path2).convert('RGB').histogram()
 
     rms = math.sqrt(reduce(operator.add, map(lambda a, b: (a-b)**2, h1, h2))/len(h1))
 

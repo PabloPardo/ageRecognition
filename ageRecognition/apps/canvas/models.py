@@ -62,7 +62,6 @@ class Picture(models.Model):
 
     owner = models.ForeignKey(to=UserProfile)
     pic = ImageField(upload_to='images/uploaded_images')  # Upload Images to a folder named by user_id
-    hash = models.CharField(max_length=128)
     real_age = models.IntegerField(null=True, blank=True)
     ground_truth = models.IntegerField(default=0)
 
@@ -75,6 +74,8 @@ class Picture(models.Model):
     visibility = models.BooleanField(default=True)
     num_votes = models.IntegerField(null=True, blank=True, default=0)
     cum_votes = models.IntegerField(null=True, blank=True, default=0)
+
+    hist = models.CharField(max_length=1024, null=True, blank=True)
 
     def __unicode__(self):
         return self.pic.name
