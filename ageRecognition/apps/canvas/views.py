@@ -10,7 +10,7 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
-from apps.canvas.extra_functions import compare, calculate_score, update_gt
+from apps.canvas.extra_functions import compare, calculate_score
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
