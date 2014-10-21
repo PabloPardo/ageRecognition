@@ -68,11 +68,6 @@ def game(request):
                     newvote.user.cum_vote_score += newvote.score
                     newvote.user.save()
 
-                    # Calculate the precision of the user
-                    precision = newvote.user.cum_vote_score / newvote.user.eval_pic
-                    newvote.user.ach_precision = 0 if precision > 10 else 10 - precision
-                    newvote.user.save()
-
                     # Update Number of votes and Cumulative votes of the voted picture
                     newvote.pic.num_votes += 1
                     newvote.pic.cum_votes += newvote.vote
@@ -82,6 +77,11 @@ def game(request):
                     newvote.pic.ground_truth = int(newvote.pic.cum_votes / newvote.pic.num_votes)
                     newvote.pic.save()
 
+                    # Calculate the precision of the user
+                    precision = newvote.user.cum_vote_score / newvote.user.eval_pic
+                    newvote.user.ach_precision = 0 if precision > 10 else 10 - precision
+                    newvote.user.save()
+                    
                     # Computing Global Score of the current user
                     calculate_score(request.user.userprofile)
 
