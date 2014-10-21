@@ -41,6 +41,8 @@ class UserProfile(models.Model):
     hometown = models.CharField(max_length=128)
     terms_conditions = models.BooleanField(default=False)
 
+    cum_vote_score = models.IntegerField(null=True, blank=True, default=0)
+
 
 @receiver(post_save)
 def create_profile(sender, instance, created, **kwargs):

@@ -44,9 +44,6 @@ def game(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
-        user_votes_list = Votes.objects.values_list('pic__id', 'score').filter(user=request.user)
-        voted_pics = [v[0] for v in user_votes_list]
-
         # Handle votes
         if request.method == 'POST':
             vote_form = VoteForm(data=request.POST, files=request.FILES)
@@ -68,6 +65,15 @@ def game(request):
                         newvote.score = abs(newvote.pic.ground_truth - int(votes_list[i]))
                     newvote.save()
 
+                    # Save cum_vote_score in user
+                    newvote.user.cum_vote_score += newvote.score
+                    newvote.user.save()
+
+                    # Calculate the precision of the user
+                    precision = newvote.user.cum_vote_score / newvote.user.eval_pic
+                    newvote.user.ach_precision = 0 if precision > 10 else 10 - precision
+                    newvote.user.save()
+
                     # Update Number of votes and Cumulative votes of the voted picture
                     newvote.pic.num_votes += 1
                     newvote.pic.cum_votes += newvote.vote
@@ -76,23 +82,6 @@ def game(request):
                     # Update Ground Truth of the voted picture
                     newvote.pic.ground_truth = int(newvote.pic.cum_votes / newvote.pic.num_votes)
                     newvote.pic.save()
-
-                    # Calculate the precision of the user
-                    votes_scores_list = [v[1] for v in user_votes_list]
-                    votes_scores_list = votes_scores_list.append(newvote.score)
-                    try:
-                        assert isinstance(votes_scores_list, list)
-                    except Exception, e:
-                        print e
-                        votes_scores_list = [newvote.score]
-
-                    precision = sum(votes_scores_list)/(len(votes_scores_list))
-                    if precision > 10:
-                        request.user.userprofile.ach_precision = 0
-                    else:
-                        request.user.userprofile.ach_precision = 10 - precision
-
-                    request.user.userprofile.save()
 
             elif report_form.is_valid():
 
@@ -118,6 +107,9 @@ def game(request):
         game_picture_list = Picture.objects.exclude(owner=request.user).exclude(visibility=False)
 
         try:
+            user_votes_list = Votes.objects.values_list('pic__id').filter(user=request.user)
+            voted_pics = [v[0] for v in user_votes_list]
+
             game_picture_list = game_picture_list.exclude(pk__in=voted_pics).filter(num_votes__lt=100)
 
             # Sort the images by the users global score (se the users with highest scores get their images voted more).
@@ -126,6 +118,7 @@ def game(request):
 
             # Sort the images by number of votes (images with less than 100 votes)
             pics_ord_by_votes = Picture.objects.filter(pk__in=id_list, num_votes__lt=100).order_by('num_votes')
+
             # SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*)
             # as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes
 
