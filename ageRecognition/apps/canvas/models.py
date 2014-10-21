@@ -75,7 +75,7 @@ class Picture(models.Model):
     num_votes = models.IntegerField(null=True, blank=True, default=0)
     cum_votes = models.IntegerField(null=True, blank=True, default=0)
 
-    hist = models.CharField(max_length=4096, null=True, blank=True)
+    hist = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return self.pic.name
