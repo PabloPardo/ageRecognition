@@ -65,8 +65,8 @@ class Picture(models.Model):
     ground_truth = models.IntegerField(default=0)
 
     ### Not used yet
-    gender = models.BooleanField(choices=GENDER_CHOICES, null=True, blank=True)
-    ethnic = models.BooleanField(choices=ETHNICITY_CHOICES, null=True, blank=True)
+    gender = models.NullBooleanField(choices=GENDER_CHOICES, null=True, blank=True)
+    ethnic = models.NullBooleanField(choices=ETHNICITY_CHOICES, null=True, blank=True)
     ###
 
     date = models.DateField()
