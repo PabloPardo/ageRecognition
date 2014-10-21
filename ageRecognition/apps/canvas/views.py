@@ -43,9 +43,6 @@ def game(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
-        # Computing Global Score of the current user
-        calculate_score(request.user.userprofile)
-
         # Handle votes
         if request.method == 'POST':
             vote_form = VoteForm(data=request.POST, files=request.FILES)
@@ -84,6 +81,9 @@ def game(request):
                     # Update Ground Truth of the voted picture
                     newvote.pic.ground_truth = int(newvote.pic.cum_votes / newvote.pic.num_votes)
                     newvote.pic.save()
+
+                    # Computing Global Score of the current user
+                    calculate_score(request.user.userprofile)
 
             elif report_form.is_valid():
 
@@ -198,9 +198,6 @@ def gallery(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
-        # Computing Global Score of the current user
-        calculate_score(request.user.userprofile)
-
         # Load pictures for the home page
         user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
 
@@ -237,6 +234,9 @@ def gallery(request):
 
                             request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
                             break
+
+                # Computing Global Score of the current user
+                calculate_score(request.user.userprofile)
 
                 # Redirect to the document list after POST
                 return HttpResponse(json.dumps({}), content_type="application/json")
