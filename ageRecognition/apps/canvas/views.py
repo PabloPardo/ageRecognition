@@ -43,6 +43,9 @@ def game(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
+        # Computing Global Score of the current user
+        calculate_score(request.user.userprofile)
+
         # Handle votes
         if request.method == 'POST':
             vote_form = VoteForm(data=request.POST, files=request.FILES)
@@ -161,6 +164,14 @@ def ranking(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
+        # Get the graph from the FB API
+        if not 'friends' in request.session:
+            graph = get_facebook_graph(request=request)
+
+            friends = graph.get('me/friends', fields='')['data']
+            friends = [f['name'] for f in friends]
+            request.session['friends'] = friends
+
         # Computing Global Score of the current user
         calculate_score(request.user.userprofile)
 
@@ -186,6 +197,9 @@ def ranking(request):
 def gallery(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
+
+        # Computing Global Score of the current user
+        calculate_score(request.user.userprofile)
 
         # Load pictures for the home page
         user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
@@ -262,6 +276,14 @@ def rm_image(request, id_rm):
 def achievements(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
+
+        # Get the graph from the FB API
+        if not 'num_friends' in request.session:
+            graph = get_facebook_graph(request=request)
+
+            friends = graph.get('me/friends', fields='')['data']
+            friends = [f['name'] for f in friends]
+            request.session['num_friends'] = len(friends)
 
         num_friends = request.session['num_friends']
 
