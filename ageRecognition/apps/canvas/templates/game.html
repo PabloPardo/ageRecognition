@@ -199,9 +199,17 @@ function zoomImg(path){
     var img = new Image();
 
     img.onload = function(){
-      var img_width = img.width;
+        var img_width, img_height;
+        if (img.height >= window.innerHeight){
+            img_height = window.innerHeight - 50;
+            img_width = 'auto';
+        }
+        else {
+            img_height = 'auto';
+            img_width = img.width;
+        }
 
-      new Messi('<img src={{ MEDIA_URL }}' + path + '>', {modal: true, width: img_width});
+        new Messi('<img src={{ MEDIA_URL }}' + path + '>', {modal: true, width: img_width, height: img_height});
     };
 
     img.src = '{{ MEDIA_URL }}' + path;
