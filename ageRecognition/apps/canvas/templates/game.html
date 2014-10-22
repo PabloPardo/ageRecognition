@@ -112,7 +112,7 @@
                 <div class="form-group">
                     <div class="dz-details game-pic-container">
                         {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
-                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" onclick="zoomImg('{{ game.pic.path }}')">
                         {% endthumbnail %}
                         <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
                     </div>
@@ -191,10 +191,15 @@
 
 {% block js %}
 <script>
+function zoomImg(path){
+    Messi.img(path);
+}
+</script>
+<script>
     var content =
                 "<table cellspacing='2' id='stats' class='table table-striped tablesorter'>" +
                 "<thead>" +
-                    "<tr><th>Images</th><th>Number of Votes</th><th>Age</th></tr>" +
+                    "<tr><th>Images</th><th>Number of Votes</th><th>Scores</th></tr>" +
                 "</thead><tbody>" +
                 "{% for p in game_pic_list %}" +
                     "<tr>" +
@@ -204,7 +209,7 @@
                         "{% endthumbnail %}" +
                     "</div></td>" +
                     "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
-                    "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'avg_votes' }}</td>" +
+                    "<td><p id='score_{{ forloop.counter }}' onload=\"calculateScore('range_game_{{ forloop.counter }}', 'score_{{ forloop.counter }}', {{ p.ground_truth }});\"></p></td>" +
                     "</tr>" +
                 "{% endfor %}" +
                 "</tbody></table>";

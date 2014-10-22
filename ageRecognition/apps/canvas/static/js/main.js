@@ -37,6 +37,19 @@ function rmFormSubmit(id_rm) {
     }
 }
 
+function calculateScore(id_value, id_score, gt) {
+    var guess = document.getElementById(id_value).innerHTML;
+    var error = Math.abs(parseInt(guess) - gt);
+    var score;
+    if(error > 10) {
+        score = 5;
+    }
+    else {
+        score = 3*(10 - error);
+    }
+    document.getElementById(id_score).innerHTML = score;
+}
+
 function hideSave() {
    document.getElementById('save').style.visibility = 'hidden';
 }
