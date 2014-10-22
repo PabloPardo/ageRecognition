@@ -109,7 +109,7 @@
         {% for game_pic in game_pic_list %}
 
             <div class="col-md-{% widthratio 12 game_pic_list|length 1 %} text-center dz-preview dz-image-preview">
-                <div id="img_{{ forloop.counter0 }}" class="form-group col-md-12" style="width: 250px">
+                <div id="img_{{ forloop.counter0 }}" class="form-group">
                     <div class="dz-details game-pic-container" style="margin-top: 25px">
                         {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
                             <img src="{{ im.url }}"
