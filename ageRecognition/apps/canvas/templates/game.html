@@ -201,7 +201,7 @@ function zoomImg(path){
     img.onload = function(){
         var img_width, img_height;
         if (img.height >= window.innerHeight){
-            img_height = window.innerHeight - 50;
+            img_height = window.innerHeight/2;
             img_width = 'auto';
         }
         else {
