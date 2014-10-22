@@ -201,12 +201,16 @@ function zoomImg(path){
     img.onload = function(){
         var img_width, img_height;
         if (img.height >= window.innerHeight){
-            img_height = window.innerHeight - 50;
+            img_height = window.innerHeight;
             img_width = img.width * img_height / img.height;
         }
+        else if (img.width >= window.innerWidth) {
+            img_width = window.innerWidth;
+            img_height = img.height * img_width / img.width;
+        }
         else {
-            img_height = 'auto';
             img_width = img.width;
+            img_height = 'auto'
         }
 
         new Messi('<img src={{ MEDIA_URL }}' + path + '>', {modal: true, width: img_width, height: img_height});
