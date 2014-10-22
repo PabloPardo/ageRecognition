@@ -190,9 +190,7 @@
                 <div class="dz-preview dz-image-preview" onclick="ShowStats('{{ forloop.counter0 }}', '{{ p.real_age}}' , '{{ p.ground_truth }}', '{{ p.num_votes }}', '{{ p.id }}');">
                     <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
                         {% thumbnail p.pic "100x100" quality=50 crop="center" as im %}
-                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ MEDIA_URL }}{{ p.pic }}">
-                        {% empty %}
-                            <img src="{{ MEDIA_URL }}{{ p.pic }}" alt="{{ MEDIA_URL }}{{ p.pic }}">
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="Image not found" onError="this.onerror=null;this.src='{{ MEDIA_URL }}{{ p.pic }}';" />
                         {% endthumbnail %}
                     </div>
                     {% if p.num_votes == 0 %}
