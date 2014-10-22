@@ -112,7 +112,7 @@
                 <div class="form-group">
                     <div class="dz-details game-pic-container">
                         {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
-                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" onclick="zoomImg('{{ game.pic.path }}')">
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" onclick="zoomImg('{{ game_pic.pic.path }}');">
                         {% endthumbnail %}
                         <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
                     </div>
