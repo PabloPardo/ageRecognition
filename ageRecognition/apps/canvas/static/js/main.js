@@ -37,7 +37,7 @@ function rmFormSubmit(id_rm) {
     }
 }
 
-function calculateScore(id_value, id_score, gt) {
+function calculateScore(id_value, gt) {
     var guess = document.getElementById(id_value).innerHTML;
     var error = Math.abs(parseInt(guess) - gt);
     var score;
@@ -47,7 +47,7 @@ function calculateScore(id_value, id_score, gt) {
     else {
         score = 3*(10 - error);
     }
-    document.getElementById(id_score).innerHTML = score;
+    return score;
 }
 
 function hideSave() {

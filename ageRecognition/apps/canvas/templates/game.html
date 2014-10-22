@@ -196,7 +196,15 @@
 {% block js %}
 <script>
 function zoomImg(path){
-    new Messi('<img src={{ MEDIA_URL }}' + path + '>', {modal: true});
+    var img = new Image();
+
+    img.onload = function(){
+      var img_width = img.width;
+
+      new Messi('<img src={{ MEDIA_URL }}' + path + '>', {modal: true, width: img_width});
+    };
+
+    img.src = path;
 }
 </script>
 <script>
