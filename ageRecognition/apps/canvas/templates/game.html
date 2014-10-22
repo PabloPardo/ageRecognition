@@ -108,29 +108,32 @@
                 {% csrf_token %}
         {% for game_pic in game_pic_list %}
 
-                <div class="col-md-{% widthratio 12 game_pic_list|length 1 %} text-center dz-preview dz-image-preview">
-                        <div class="form-group">
-                            <div class="dz-details game-pic-container">
-                                {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
-                                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                                {% endthumbnail %}
-                                <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
-                            </div>
-                            <p>{{ vote_form.errors }}</p>
-                            <div class="slider">
-                                <p>Input the age: <strong id="range_game_{{ forloop.counter }}">0</strong></p>
-                                <input id="id_vote" max="100" min="1" name="vote" onchange='showValue("range_game_{{ forloop.counter }}", this.value)' oninput="showValue('range_game_{{ forloop.counter }}', this.value)" type="range" value="0">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <a href="{% url 'report' %}?id={{ game_pic.id }}" class="btn btn-default btn-mini">Report Image</a>
-                        </div>
-
+            <div id="img_{{ forloop.counter0 }}" class="col-md-{% widthratio 12 game_pic_list|length 1 %} text-center dz-preview dz-image-preview">
+                <div class="form-group">
+                    <div class="dz-details game-pic-container">
+                        {% thumbnail game_pic "200x200" quality=80 crop="center" as im %}
+                            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                        {% endthumbnail %}
+                        <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
+                    </div>
+                    <p>{{ vote_form.errors }}</p>
+                    <div class="slider">
+                        <p>Input the age: <strong id="range_game_{{ forloop.counter }}">0</strong></p>
+                        <input id="id_vote"
+                               max="100" min="0"
+                               name="vote"
+                               onchange='showValue("range_game_{{ forloop.counter }}", this.value); document.getElementById("img_{{ forloop.counter0 }}").style.backgroundColor=rgba(174, 245, 206, 0.91);'
+                               oninput="showValue('range_game_{{ forloop.counter }}', this.value)"
+                               type="range" value="0">
+                    </div>
                 </div>
+                <div class="form-group">
+                    <a href="{% url 'report' %}?id={{ game_pic.id }}" class="btn btn-default btn-mini">Report Image</a>
+                </div>
+            </div>
         {% endfor %}
             <div class="col-md-12 text-center">
             <button id="submit" type="submit" class="btn btn-success">Submit</button>
-{#            <button class="btn btn-success" onclick="gameFormSubmit()">Submit</button>#}
             </form>
         </div>
         {% else %}
