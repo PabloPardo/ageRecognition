@@ -196,7 +196,7 @@
 {% block js %}
 <script>
 function zoomImg(path){
-    new Messi('<img src={{ MEDIA_URL }}' + path + '>');
+    new Messi('<img src={{ MEDIA_URL }}' + path + '>', {modal: true});
 }
 </script>
 <script>
