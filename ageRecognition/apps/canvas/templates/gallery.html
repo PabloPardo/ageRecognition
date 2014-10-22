@@ -191,6 +191,8 @@
                     <div class="dz-details game-pic-container-gallery" style="left: 0; padding: 0; margin: 0 22px 22px 22px">
                         {% thumbnail p.pic "100x100" quality=50 crop="center" as im %}
                             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ MEDIA_URL }}{{ p.pic }}">
+                        {% empty %}
+                            <img src="{{ MEDIA_URL }}{{ p.pic }}" alt="{{ MEDIA_URL }}{{ p.pic }}">
                         {% endthumbnail %}
                     </div>
                     {% if p.num_votes == 0 %}
