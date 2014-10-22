@@ -213,7 +213,7 @@ function zoomImg(path){
                         "{% endthumbnail %}" +
                     "</div></td>" +
                     "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
-                    "<td><p id='score_{{ forloop.counter }}' onload=\"calculateScore('range_game_{{ forloop.counter }}', 'score_{{ forloop.counter }}', {{ p.ground_truth }});\"></p></td>" +
+                    "<td><p id='score_{{ forloop.counter }}' =\"calculateScore('range_game_{{ forloop.counter }}', {{ p.ground_truth }});\"></p></td>" +
                     "</tr>" +
                 "{% endfor %}" +
                 "</tbody></table>";
