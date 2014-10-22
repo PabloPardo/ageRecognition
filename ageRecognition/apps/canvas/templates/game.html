@@ -116,11 +116,9 @@
                                  width="{{ im.width }}"
                                  height="{{ im.height }}"
                                  onclick="zoomImg('{{ game_pic.pic.name }}');"
-                                 style="cursor: pointer;">
-                        {% empty %}
-                            <img src="{{ MEDIA_URL }}{{ game_pic.pic }}"
-                                 onclick="zoomImg('{{ game_pic.pic.name }}');"
-                                 style="cursor: pointer;">
+                                 style="cursor: pointer;"
+                                 alt="Image not found"
+                                 onError='this.onerror=null;this.src="{{ MEDIA_URL }}{{ game_pic.pic }}";' />
                         {% endthumbnail %}
                         <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
                     </div>
@@ -250,7 +248,7 @@ function zoomImg(path){
                     "<tr>" +
                     "<td><div class='dz-details game-pic-container-small'>" +
                         "{% thumbnail p "50x50" quality=50 crop="center" as im %}" +
-                            "<img src='{{ im.url }}'' width='{{ im.width }}'' height='{{ im.height }}'>" +
+                            "<img src='{{ im.url }}' width='{{ im.width }}' height='{{ im.height }}' alt='Image not found' onError=\"this.onerror=null;this.src='{{ MEDIA_URL }}{{ p.pic }}';\" />" +
                         "{% endthumbnail %}" +
                     "</div></td>" +
                     "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +

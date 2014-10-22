@@ -65,7 +65,7 @@
             {% for p in pictures %}
                 if(pic == {{ forloop.counter0 }}){
                     var thumb = "{% thumbnail p '200x200' quality=80 crop="center" as im %}" +
-                                    "<img src='{{ im.url }}' alt='{{ im.url }}'> width='{{ im.width }}' height='{{ im.height }}'" +
+                                    "<img src='{{ im.url }}' width='{{ im.width }}' height='{{ im.height }}' alt='Image not found' onError=\"this.onerror=null;this.src='{{ MEDIA_URL }}{{ p.pic }}';\" />" +
                                 "{% endthumbnail %}"
                 }
             {% endfor %}
