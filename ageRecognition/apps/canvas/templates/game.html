@@ -199,13 +199,30 @@ function zoomImg(path){
     var img = new Image();
 
     img.onload = function(){
-        var img_width, img_height;
-        if (img.height >= window.innerHeight){
-            img_height = window.innerHeight;
+        var img_width, img_height, window_width, window_height;
+
+{#      Find out the size of the window #}
+        if( typeof( window.innerWidth ) == 'number' ) {
+            //Non-IE
+            window_width = window.innerWidth;
+            window_height = window.innerHeight;
+        } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+            //IE 6+ in 'standards compliant mode'
+            window_width = document.documentElement.clientWidth;
+            window_height = document.documentElement.clientHeight;
+        } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+            //IE 4 compatible
+            window_width = document.body.clientWidth;
+            window_height = document.body.clientHeight;
+        }
+        
+{#      Determine the size of the image #}
+        if (img.height >= window_height){
+            img_height = window_height;
             img_width = img.width * img_height / img.height;
         }
-        else if (img.width >= window.innerWidth) {
-            img_width = window.innerWidth;
+        else if (img.width >= window_width) {
+            img_width = window_width;
             img_height = img.height * img_width / img.width;
         }
         else {
