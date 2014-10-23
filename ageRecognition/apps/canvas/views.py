@@ -51,7 +51,8 @@ def game(request):
             votes_list = vote_form.data.getlist('vote')
             pics_id = request.POST.getlist('id_pic')
             if vote_form.is_valid():
-                for i in range(0, len(votes_list)):
+                scores = []
+                for i in range(len(votes_list)):
                     newvote = Votes()
                     newvote.vote = votes_list[i]
                     newvote.user = request.user.userprofile
@@ -62,6 +63,7 @@ def game(request):
                         newvote.score = abs(newvote.pic.real_age - int(votes_list[i]))
                     else:
                         newvote.score = abs(newvote.pic.ground_truth - int(votes_list[i]))
+                    scores.append(newvote.score)
                     newvote.save()
 
                     # Save cum_vote_score in user
@@ -87,7 +89,7 @@ def game(request):
                     # Computing Global Score of the current user
                     calculate_score(request.user.userprofile)
 
-                return HttpResponseRedirect('/game/')
+                return HttpResponse(json.dumps(scores), content_type="application/json")
 
             elif report_form.is_valid():
 
