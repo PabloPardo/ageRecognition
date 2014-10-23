@@ -255,7 +255,12 @@ function zoomImg(path){
                     "<td><p id='score_{{ forloop.counter }}' ></p></td>" +
                     "</tr>" +
                 "{% endfor %}" +
-                "</tbody></table>";
+                "</tbody></table>" +
+                "<script>" +
+                "{% for p in game_pic_list %}" +
+                   "document.getElementById('score_{{ forloop.counter }}').value = calculateScore('range_game_{{ forloop.counter }}', {{ p.ground_truth }});" +
+                "{% endfor %}" +
+                "</" + "script>";
 
     // this is the id of the form
     var frm = $('#gameForm');
@@ -275,9 +280,6 @@ function zoomImg(path){
                             }
                         }
                    });
-                   {% for p in game_pic_list %}
-                   document.getElementById('score_{{ forloop.counter }}').value = calculateScore('range_game_{{ forloop.counter }}', {{ p.ground_truth }});
-                   {% endfor %}
                }
          });
         ev.preventDefault();
