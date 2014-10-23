@@ -106,7 +106,7 @@
                 <span class="pull-right">
                     <!--Profile Image-->
                     {% thumbnail user.facebookprofile.image "200x200" quality=80 crop="center" as im %}
-                        <img style="padding:1px;border:1px solid #021a40;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" title="facebook profile image">
+                        <img style="padding:1px;border:1px solid #021a40;" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" title="facebook profile image" alt='Image not found' onError="this.onerror=null;this.src='{{ MEDIA_URL }}{{ user.facebookprofile.image }}';">
                     {% endthumbnail %}
                 </span>
             </div>
