@@ -94,8 +94,21 @@
                     "{% csrf_token %}" +
                         "<div class='form-group'>" +
                             "<div class='dz-slider' style='margin-bottom: -30px;'>" +
-                                "<p>Input the real age: <strong id='range_game_"+ id_pic +"'>"+ real_age +"</strong></p>" +
-                                "<input max='100' min='0' name='vote' onchange=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" oninput=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" type='range' value='"+ real_age +"'>" +
+                                "<p>Input the real age</p>" +
+                                "<input id='range_game_" + id_pic + "'" +
+                                        "max='100' " +
+                                        "min='0' " +
+                                        "oninput=\"showValue(\'id_vote_"+ id_pic +"\', this.value); showSave();\" " +
+                                        "type='number' " +
+                                        "value='"+ real_age + "' " +
+                                        "style='width:80px;'>" +
+                                "<input id='id_vote_" + id_pic + "'" +
+                                        "max='100' " +
+                                        "min='0' " +
+                                        "name='vote' " +
+                                        "oninput=\"showValue(\'range_game_"+ id_pic +"\', this.value); showSave();\" " +
+                                        "type='range' " +
+                                        "value='"+ real_age +"'>" +
                                 "<input class='hidden' type='text' name='id_pic' value=\'" + id_pic + "\'>" +
                             "</div>" +
                             "<div style='padding-left: 175px;'>" +

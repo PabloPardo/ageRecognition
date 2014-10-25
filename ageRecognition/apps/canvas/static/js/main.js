@@ -1,7 +1,23 @@
 
 function showValue(id, newValue)
 {
-	document.getElementById(id).innerHTML=newValue;
+	document.getElementById(id).value=newValue;
+}
+
+var lsLabeled = new Array(0);
+function enableSubmit(nimg, id){
+    var found = false;
+    for(var i=0;i<lsLabeled.length;i++){
+        if(lsLabeled[i] == id){
+            found = true;
+            break;
+        }
+    }
+
+    if(!found) lsLabeled.push(id);
+    if(lsLabeled.length >= nimg){
+        document.getElementById('submitButton').disabled = false;
+    }
 }
 
 function showSave() {

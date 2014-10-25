@@ -124,13 +124,22 @@
                     </div>
                     <p>{{ vote_form.errors }}</p>
                     <div class="slider">
-                        <p>Input the age: <strong id="range_game_{{ forloop.counter }}">0</strong></p>
-                        <input id="id_vote"
+                        <p>Input the age:</p>
+                        <input id="range_game_{{ forloop.counter }}"
+                               type="number"
+                               value="0"
+                               min="0"
+                               max="100"
+                               onfocus="enableSubmit({{ game_pic_list|length }}, {{ forloop.counter }})"
+                               oninput="showValue('id_vote_{{ forloop.counter }}', this.value);"
+                               style="width:80px" />
+                        <input id="id_vote_{{ forloop.counter }}"
                                max="100" min="0"
                                name="vote"
-                               onchange='showValue("range_game_{{ forloop.counter }}", this.value); document.getElementById("img_{{ forloop.counter0 }}").style.backgroundColor="rgba(174, 245, 206, 0.91)";'
+                               onfocus="enableSubmit({{ game_pic_list|length }}, {{ forloop.counter }})"
                                oninput="showValue('range_game_{{ forloop.counter }}', this.value)"
-                               type="range" value="0">
+                               type="range"
+                               value="0" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -139,8 +148,7 @@
             </div>
         {% endfor %}
             <div class="col-md-12 text-center">
-{#            <button id="submit" type="submit" class="btn btn-success">Submit</button>#}
-                <input onclick="checkGame({{ game_pic_list|length }});" type="button" value="Submit" class="btn btn-success">
+                <input onclick="checkGame({{ game_pic_list|length }});" id="submitButton" type="button" value="Submit" disabled="disabled" class="btn btn-success">
             </div>
             </form>
         </div>
