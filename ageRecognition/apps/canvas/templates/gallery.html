@@ -219,9 +219,10 @@
             {% endfor %}
 
 {#                ADD UPLOAD BOTTON #}
-            <div class="form-group text-center">
-                    <input id="imgsubmit" class="btn btn-success" type="button"
+            <div id="imgsubmit" class="form-group text-center">
+                    <input id="imgsubmit_accept" class="btn btn-success" type="button"
                             value="Upload Images"/>
+                    <button class="btn btn-danger" onclick="location.reload();">Cancel Upload</button>
             </div>
         </form>
     </div>
@@ -282,7 +283,7 @@
         });
 
         var content = 'Do you want to upload these images and donate them to ChaLearn for research on age recognition?';
-        $('#imgsubmit').click(function (e) {
+        $('#imgsubmit_accept').click(function (e) {
            new Messi(content, {
                title: 'Upload Image',
                modal: true,

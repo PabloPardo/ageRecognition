@@ -358,12 +358,45 @@
   display: block;
   padding: 4px 5px;
   text-align: center;
-  color: #aaa;
-  margin-top: 26px;
+  color: #666;
+  margin-top: 5px;
 }
 .dropzone a.dz-remove:hover,
 .dropzone-previews a.dz-remove:hover {
+  background-image: -webkit-linear-gradient(top, #fa5c4d, #ca1514);
+  background-image: -moz-linear-gradient(top, #fa5c4d, #ca1514);
+  background-image: -o-linear-gradient(top, #fa5c4d, #ca1514);
+  background-image: -ms-linear-gradient(top, #fa5c4d, #ca1514);
+  background-image: linear-gradient(to bottom, #fa5c4d, #ca1514);
+  color: #ffffff;
+  border: 1px solid #666;
+}
+.dropzone a.dz-crop,
+.dropzone-previews a.dz-crop {
+  background-image: -webkit-linear-gradient(top, #fafafa, #eee);
+  background-image: -moz-linear-gradient(top, #fafafa, #eee);
+  background-image: -o-linear-gradient(top, #fafafa, #eee);
+  background-image: -ms-linear-gradient(top, #fafafa, #eee);
+  background-image: linear-gradient(to bottom, #fafafa, #eee);
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #eee;
+  text-decoration: none;
+  display: block;
+  padding: 4px 5px;
+  text-align: center;
   color: #666;
+  margin-top: 26px;
+}
+.dropzone a.dz-crop:hover,
+.dropzone-previews a.dz-crop:hover {
+  background-image: -webkit-linear-gradient(top, #26b864, #259149);
+  background-image: -moz-linear-gradient(top, #26b864, #259149);
+  background-image: -o-linear-gradient(top, #26b864, #259149);
+  background-image: -ms-linear-gradient(top, #26b864, #259149);
+  background-image: linear-gradient(to bottom, #26b864, #259149);
+  color: #ffffff;
+  border: 1px solid #666;
 }
 @-moz-keyframes loading {
   from {

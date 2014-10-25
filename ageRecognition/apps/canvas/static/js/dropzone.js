@@ -437,6 +437,11 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
             node = _ref1[_j];
             node.innerHTML = this.filesize(file.size);
           }
+
+          // Add Crop Image Button
+          file._cropLink = Dropzone.createElement("<a class=\"dz-crop\" href=\"javascript:undefined;\" data-dz-crop> Crop Image </a>");
+          file.previewElement.appendChild(file._cropLink);
+
           if (this.options.addRemoveLinks) {
             file._removeLink = Dropzone.createElement("<a class=\"dz-remove\" href=\"javascript:undefined;\" data-dz-remove>" + this.options.dictRemoveFile + "</a>");
             file.previewElement.appendChild(file._removeLink);
