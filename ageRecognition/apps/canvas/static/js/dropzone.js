@@ -294,6 +294,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       parallelUploads: 10,
       uploadMultiple: true,
       maxFilesize: 5,
+      minFilesize: 0.005,
       paramName: "pic",
       createImageThumbnails: true,
       maxThumbnailFilesize: 10,
@@ -313,6 +314,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
       dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
       dictFileTooBig: "File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.",
+      dictFileTooSmall: "File is too small ({{filesize}}MiB. Min filsize: {{minFilesize}}MiB.",
       dictInvalidFileType: "You can't upload files of this type.",
       dictResponseError: "Server responded with {{statusCode}} code.",
       dictCancelUpload: "Cancel upload",
@@ -1129,6 +1131,8 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
     Dropzone.prototype.accept = function(file, done) {
       if (file.size > this.options.maxFilesize * 1024 * 1024) {
         return done(this.options.dictFileTooBig.replace("{{filesize}}", Math.round(file.size / 1024 / 10.24) / 100).replace("{{maxFilesize}}", this.options.maxFilesize));
+      } else if(file.size < this.options.minFilesize * 1024 * 1024){
+        return done(this.options.dictFileTooSmall.replace("{{filesize}}", Math.round(file.size / 1024 / 10.24) / 100).replace("{{minFilesize}}", this.options.minFilesize));
       } else if (!Dropzone.isValidFile(file, this.options.acceptedFiles)) {
         return done(this.options.dictInvalidFileType);
       } else if ((this.options.maxFiles != null) && this.getAcceptedFiles().length >= this.options.maxFiles) {
