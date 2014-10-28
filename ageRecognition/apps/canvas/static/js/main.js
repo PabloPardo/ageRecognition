@@ -3,6 +3,10 @@ function showValue(id, newValue)
 {
 	document.getElementById(id).value=newValue;
 }
+function showValue1(id, newValue)
+{
+	document.getElementById(id).innerHTML=newValue;
+}
 
 var lsLabeled = new Array(0);
 function enableSubmit(nimg, id){

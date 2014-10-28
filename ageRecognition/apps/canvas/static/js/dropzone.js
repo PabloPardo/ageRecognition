@@ -638,8 +638,8 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
                                         "value=\"0\" " +
                                         "placeholder=\"How old does he/she looks like?\" " +
                                         "type=\"range\" " +
-                                        "onchange='showValue(\"range_id\", this.value)' " +
-                                        "oninput='showValue(\"range_id\", this.value)'/>\n" +
+                                        "onchange='showValue1(\"range_id\", this.value)' " +
+                                        "oninput='showValue1(\"range_id\", this.value)'/>\n" +
                             "</div>\n" +
                         "   <div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n" +
                         "   <div class=\"dz-error-mark\"><span>✘</span></div>\n" +
