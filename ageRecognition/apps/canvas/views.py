@@ -225,7 +225,7 @@ def gallery(request):
 
                     ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
                     file_extension = os.path.splitext(newpic.pic.path)[-1]
-                    request.FILES[file_name].name = str(request.user.id) + str(i) + '_' + ts + file_extension
+                    request.FILES[file_name].name = str(request.user.id) + '_' + str(i) + '_' + ts + file_extension
                     newpic.save()
 
                     # Add histogram to the pic

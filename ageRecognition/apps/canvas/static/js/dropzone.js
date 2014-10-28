@@ -285,7 +285,35 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         dropzone.on("dragEnter", function() { });
      */
 
-    Dropzone.prototype.events = ["drop", "dragstart", "dragend", "dragenter", "dragover", "dragleave", "addedfile", "removedfile", "thumbnail", "error", "errormultiple", "processing", "processingmultiple", "uploadprogress", "totaluploadprogress", "sending", "sendingmultiple", "success", "successmultiple", "canceled", "canceledmultiple", "complete", "completemultiple", "reset", "maxfilesexceeded", "maxfilesreached"];
+    Dropzone.prototype.events = [
+        "drop",
+        "dragstart",
+        "dragend",
+        "dragenter",
+        "dragover",
+        "dragleave",
+        "addedfile",
+        "removedfile",
+        "thumbnail",
+        "error",
+        "errormultiple",
+        "processing",
+        "processingmultiple",
+        "uploadprogress",
+        "totaluploadprogress",
+        "sending",
+        "sendingmultiple",
+        "success",
+        "successmultiple",
+        "canceled",
+        "canceledmultiple",
+        "complete",
+        "completemultiple",
+        "reset",
+        "maxfilesexceeded",
+        "maxfilesreached",
+        "croppedfile"
+    ];
 
     Dropzone.prototype.defaultOptions = {
       url: null,
@@ -309,12 +337,13 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       autoProcessQueue: false,
       autoQueue: true,
       addRemoveLinks: true,
+      addCropLinks: true,
       previewsContainer: null,
       dictDefaultMessage: "Drop images or click here to upload",
       dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
       dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
       dictFileTooBig: "File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.",
-      dictFileTooSmall: "File is too small ({{filesize}}MiB. Min filsize: {{minFilesize}}MiB.",
+      dictFileTooSmall: "File is too small ({{filesize}} KiB. Min filsize: {{minFilesize}} KiB.",
       dictInvalidFileType: "You can't upload files of this type.",
       dictResponseError: "Server responded with {{statusCode}} code.",
       dictCancelUpload: "Cancel upload",
@@ -418,7 +447,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         return this.element.classList.remove("dz-started");
       },
       addedfile: function(file, num_pic, id_pic) {
-        var node, removeFileEvent, removeLink, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
+        var node, removeFileEvent, cropFileEvent, removeLink, cropLink, _i, _j, _k, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _results;
         if (this.element === this.previewsContainer) {
           this.element.classList.add("dz-started");
         }
@@ -441,8 +470,28 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
           }
 
           // Add Crop Image Button
-          file._cropLink = Dropzone.createElement("<a class=\"dz-crop\" href=\"javascript:undefined;\" data-dz-crop> Crop Image </a>");
-          file.previewElement.appendChild(file._cropLink);
+          if (this.options.addCropLinks) {
+              file._cropLink = Dropzone.createElement("<a class=\"dz-crop\" href=\"javascript:undefined;\" data-dz-crop> Crop Image </a>");
+              file.previewElement.appendChild(file._cropLink);
+          }
+          cropFileEvent = (function(_this) {
+            return function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (file.status === Dropzone.UPLOADING) {
+                // Print message asking to wait until upload
+                return;
+              } else {
+                return _this.cropFile(file);
+              }
+            };
+          })(this);
+          _ref3 = file.previewElement.querySelectorAll("[data-dz-crop]");
+          _results = [];
+          for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+            cropLink = _ref3[_k];
+            _results.push(cropLink.addEventListener("click", cropFileEvent));
+          }
 
           if (this.options.addRemoveLinks) {
             file._removeLink = Dropzone.createElement("<a class=\"dz-remove\" href=\"javascript:undefined;\" data-dz-remove>" + this.options.dictRemoveFile + "</a>");
@@ -484,6 +533,19 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
           }
         }
         return this._updateMaxFilesReachedClass();
+      },
+      croppedfile: function(file, dataURL) {
+        if (file.previewElement) {
+          var content = 'Temporarily deactivated';
+          new Messi(content, {
+              title:'Crop Image',
+              model: true,
+              buttons:[
+                  {id:0, label:'Accept', val:'Y', class: 'btn-success'},
+//                  {id:1, label:'Cancel',val:'N', class: 'btn-danger'}
+              ]
+          });
+        }
       },
       thumbnail: function(file, dataUrl) {
         var thumbnailElement, _i, _len, _ref, _results;
@@ -773,6 +835,11 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         };
       })(this));
       this.on("removedfile", (function(_this) {
+        return function() {
+          return _this.updateTotalUploadProgress();
+        };
+      })(this));
+      this.on("croppedfile", (function(_this) {
         return function() {
           return _this.updateTotalUploadProgress();
         };
@@ -1132,7 +1199,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       if (file.size > this.options.maxFilesize * 1024 * 1024) {
         return done(this.options.dictFileTooBig.replace("{{filesize}}", Math.round(file.size / 1024 / 10.24) / 100).replace("{{maxFilesize}}", this.options.maxFilesize));
       } else if(file.size < this.options.minFilesize * 1024 * 1024){
-        return done(this.options.dictFileTooSmall.replace("{{filesize}}", Math.round(file.size / 1024 / 10.24) / 100).replace("{{minFilesize}}", this.options.minFilesize));
+        return done(this.options.dictFileTooSmall.replace("{{filesize}}", Math.round(file.size / 10.24) / 100).replace("{{minFilesize}}", this.options.minFilesize * 1024));
       } else if (!Dropzone.isValidFile(file, this.options.acceptedFiles)) {
         return done(this.options.dictInvalidFileType);
       } else if ((this.options.maxFiles != null) && this.getAcceptedFiles().length >= this.options.maxFiles) {
@@ -1230,6 +1297,13 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       if (this.files.length === 0) {
         return this.emit("reset");
       }
+    };
+
+    Dropzone.prototype.cropFile = function(file) {
+      if (file.status === Dropzone.UPLOADING) {
+        return;
+      }
+      this.emit("croppedfile", file);
     };
 
     Dropzone.prototype.removeAllFiles = function(cancelIfNecessary) {

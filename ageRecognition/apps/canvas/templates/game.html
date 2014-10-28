@@ -132,12 +132,14 @@
                                max="100"
                                onfocus="enableSubmit({{ game_pic_list|length }}, {{ forloop.counter }})"
                                oninput="showValue('id_vote_{{ forloop.counter }}', this.value);"
+                               onchange="showValue('id_vote_{{ forloop.counter }}', this.value);"
                                style="width:80px" />
                         <input id="id_vote_{{ forloop.counter }}"
                                max="100" min="0"
                                name="vote"
                                onfocus="enableSubmit({{ game_pic_list|length }}, {{ forloop.counter }})"
                                oninput="showValue('range_game_{{ forloop.counter }}', this.value)"
+                               onchange="showValue('range_game_{{ forloop.counter }}', this.value)"
                                type="range"
                                value="0" />
                     </div>
