@@ -103,6 +103,7 @@
     <div class="container" style="padding-bottom: 50px">
         <div class="row">
         {% if game_pic_list %}
+            <div class="text-center"><p style="color: #000000">Click on the images to enlarge them.</p></div>
             <form id="gameForm" class="form-horizontal" role="form"
                           action="{% url 'game' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
