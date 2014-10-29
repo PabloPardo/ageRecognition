@@ -59,7 +59,7 @@
                     <a href="#" class="toggle-menu"><i class="fa fa-bars"></i></a>
                     <div class="main-menu">
                         <ul>
-                            <li class="trophy"><a href="{% url 'prizes' %}" style="color: rgba(255, 255, 255, 0)">prizes</a></li>
+                            <li class="trophy"><a href="{% url 'prizes' %}" style="color: rgba(255, 255, 255, 0)">Prizes</a></li>
                             <li><a href="{% url 'home' %}" >Profile</a></li>
                             <li><a href="{% url 'game' %}">Game</a></li>
                             <li><a href="{% url 'achievements' %}">Achievements</a></li>
@@ -91,35 +91,25 @@
 </div> <!-- /#home -->
 <!--END-HEADER-->
 
-<!-- HELP -->
-<div id="help" class="content-section">
+<!-- prizeS -->
+<div id="prizes" class="content-section">
     <div class="col-md-12 text-center" style="height:200px;">
-        <h1 class="section-title">How to Play</h1>
+        <h1 class="section-title">Prizes</h1>
     </div>
     <div class="container" style="padding-bottom: 100px">
         <dic class="row">
             <div class="col-md-3 col-sm-3">
             </div>
-            <div class="col-md-6 col-sm-6" style="background: #e4e4e4">
-               <p>In this section you have a short description of the game and its possibilities:</p>
-               <h4 class="enph_h">Profile</h4>
-               <p>In this section you can keep track of your statistics. If you click the <strong>Upload button</strong> you will be able to add images to your gallery.</p>
-               <h4 class="enph_h">Game</h4>
-               <p>This is the main section, four images are shown and you have to guess the age of all of them. The better your guess is the more points you get.</p>
-               <h4 class="enph_h">Achievements</h4>
-               <p>Here you can see what you have achieved and what you need to do to get the next reward.</p>
-               <h4 class="enph_h">Gallery</h4>
-               <p>In this section you will be able to see the images you have uploaded and see how many people have voted on them and get an estimation of your apparent age. </p>
-               <h4 class="enph_h">Ranking</h4>
-               <p>The last section allows you to compare your score with your friends in the Friends Ranking and to all the players in the Global Ranking.</p>
-               <div class="text-center" style="margin: 10px"><a href="{% url 'home' %}" class="btn btn-default">Start</a></div>
+            <div class="col-md-6 col-sm-6">
+                <p style="color: #000000">The first <strong>50</strong> players in the ranking at the <strong>beginning of 2015</strong> will receive a lot of cosmetics from <a href="http://www.californianaturel.com/"><strong>California Naturel</strong></a>.</p>
+                <div class="text-center"><img src="{{ STATIC_URL }}images/california-naturel_1.jpg"></div> 
             </div>
             <div class="col-md-3 col-sm-3">
             </div>
         </div>
     </div> <!-- /.container -->
 </div> <!-- /#report -->
-<!-- END HELP -->
+<!-- END prizeS -->
 
 <!--FOOTER-->
 <div class="site-footer hidden-xs hidden-sm">

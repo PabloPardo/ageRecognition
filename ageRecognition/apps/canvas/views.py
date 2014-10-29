@@ -408,6 +408,15 @@ def help(request):
 
 
 @facebook_required_lazy
+def prizes(request):
+    if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
+        context = RequestContext(request)
+        return render_to_response('prizes.html', context_instance=context)
+    else:
+        return HttpResponseRedirect('/terms/')
+
+
+@facebook_required_lazy
 def terms(request):
     context = RequestContext(request)
 

@@ -370,7 +370,7 @@ div.terms strong {color:#000;}
 }
 .main-menu ul li {
   display: inline-block;
-  width: 150px;
+  width: 135px;
   text-align: center;
   line-height: 102px;
 }
@@ -386,6 +386,10 @@ div.terms strong {color:#000;}
 .main-menu ul .current_li a {
   background: url(../images/active-state.png) no-repeat;
   background-position: center 65px;
+}
+.main-menu ul .trophy {
+  background: url(../images/trophy_icon.png) no-repeat;
+  background-position: center;
 }
 #id_options {
     list-style-type: none;
