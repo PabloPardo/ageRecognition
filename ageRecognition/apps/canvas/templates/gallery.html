@@ -195,7 +195,12 @@
                 <h1 class="section-title">Gallery</h1>
             </div>
         </div>
-        <div><p style="color: black;"><strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.</p></div>
+        <div>
+            <p style="color: black;">
+                <strong>Click</strong> on the gray box to <strong>upload</strong> more images or click on the uploaded images to get more <strong>info</strong>.
+                <button id="info-btn" class="btn btn-default">More Info</button>
+            </p>
+        </div>
         <form id='mydropzone' class="dropzone text-center" role="form"
                       action="{% url 'gallery' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -284,23 +289,52 @@
             }
         });
 
-        var content = 'Do you want to upload these images and donate them to ChaLearn for research on age recognition?';
         $('#imgsubmit_accept').click(function (e) {
-           new Messi(content, {
-               title: 'Upload Image',
-               modal: true,
-               buttons: [
-                   {id: 0, label: 'Accept', val: 'Y', class: 'btn-success'},
-                   {id: 1, label: 'Cancel', val: 'N', class: 'btn-danger'}
-               ],
-               callback: function(val) {
-                   if (val=='Y') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        mydropzone.processQueue();
+           new Messi('Do you want to upload these images and donate them to ChaLearn for research on age recognition?',
+                   {
+                       title: 'Upload Image',
+                       modal: true,
+                       buttons: [
+                           {id: 0, label: 'Accept', val: 'Y', class: 'btn-success'},
+                           {id: 1, label: 'Cancel', val: 'N', class: 'btn-danger'}
+                       ],
+                       callback: function(val) {
+                           if (val=='Y') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                mydropzone.processQueue();
+                           }
                    }
-               }
            })
+        });
+
+        $('#info-btn').click(function (e) {
+            var content =   '<table cellspacing="2" class="table table-striped tablesorter" style="barckground-color: wite">' +
+                            '   <tbody>' +
+                            '       <tr>' +
+                            '        <td>' +
+                            '            <p style="color:black;"><strong>What kind of images can I upload?</strong></p>' +
+                            '            <ul style="color: black;">' +
+                            '               <li>You should upload images of a single person.</li>' +
+                            '               <li>You can upload images from you or your friends.</li>' +
+                            '               <li>You can upload images from when you were younger.</li>' +
+                            '               <li>You can use the crop button to select what part of the image you want to upload. (NOT READY YET)</li>' +
+                            '            </ul>' +
+                            '        </td>' +
+                            '        <td>' +
+                            '            <div class="dz-details game-pic-container">' +
+                            '                <img src="{{ STATIC_URL }}images/example.jpg">' +
+                            '            </div>' +
+                            '        </td>' +
+                            '       </tr>' +
+                            '   </tbody>' +
+                            '</table>';
+            new Messi(content, {
+                title:'More Info',
+                modal:true,
+                width: '700px',
+                buttons: [{id:0, label:'Back', class: 'btn-danger'}]
+            })
         });
     });
 </script>
