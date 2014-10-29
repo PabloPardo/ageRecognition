@@ -30,8 +30,17 @@ def home(request):
             request.session['friends'] = friends
             request.session['num_friends'] = len(friends)
 
+        user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')
+        count = 0
+        for u in user_list:
+            count += 1
+            if u.user.id == request.user.id:
+                rank = count
+                break
+
         context = RequestContext(request)
-        context_dict = {'user': request.user}
+        context_dict = {'user': request.user,
+                        'rank': rank}
 
         return render_to_response('home.html', context_dict, context_instance=context)
     else:
