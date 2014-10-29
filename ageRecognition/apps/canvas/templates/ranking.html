@@ -196,6 +196,7 @@
             <tbody>
                 <tr>
                     <td style="border-top: 0;"> <a href="{% url 'privacy' %}"><p>Privacy Policy</p></a> </td>
+                    <td style="border-top: 0;"> <a href="mailto:face_aging@chalearn.org"><p>Contact with us</p></a> </td>
                     <td style="border-top: 0;"><strong> <a href="{% url 'auth_logout' %}?next={{ request.path|urlencode }}"><p>logout</p></a> </strong></td>
 
                     <td class="pull-right" style="border-top: 0;">
@@ -228,7 +229,6 @@
     </div> <!-- /.container -->
 </div> <!-- /.site-footer -->
 <!--END-FOOTER-->
-{#<iframe src="https://www.facebook.com/plugins/facepile.php?app_id={{ FACEBOOK_APP_ID }}&amp;width=500&amp;max_rows=1" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px;" allowTransparency="true"></iframe>#}
 
 {% endblock content %}
 
