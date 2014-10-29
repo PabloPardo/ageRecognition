@@ -1,3 +1,12 @@
+function showMenu() {
+    // TODO: When hiding the menu and enlarging the window, the menu still hidden.
+    var menu = document.getElementsByClassName('main-menu');
+    if (menu[0].style.display == "block"){
+        menu[0].style.display = "none";
+    } else {
+        menu[0].style.display = "block";
+    }
+}
 
 function showValue(id, newValue)
 {

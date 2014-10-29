@@ -227,7 +227,7 @@ body {
 }
 
 a {
-  color: #26b864;
+  color: #000000;
   text-decoration: none !important;
   -webkit-transition: all 200ms ease-in;
   -moz-transition: all 200ms ease-in;
@@ -236,7 +236,7 @@ a {
   transition: all 200ms ease-in;
 }
 a:hover {
-  color: #f5a200;
+  color: #26b864;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -360,8 +360,8 @@ div.terms strong {color:#000;}
 }
 
 .main-menu {
-  text-align: right;
-  position: relative;
+  text-align: left;
+  /*position: relative;*/
 }
 .main-menu ul {
   position: absolute;
@@ -390,6 +390,9 @@ div.terms strong {color:#000;}
 .main-menu ul .trophy {
   background: url(../images/trophy_icon.png) no-repeat;
   background-position: center;
+}
+.main-menu ul .trophy a {
+  color: rgba(255, 255, 255, 0);
 }
 #id_options {
     list-style-type: none;
@@ -786,6 +789,7 @@ div.gallery img {
 
   .toggle-menu {
     display: block;
+      padding-bottom: 37px;
   }
 
   .site-header .container {
@@ -815,6 +819,8 @@ div.gallery img {
   .main-menu ul li {
     padding: 0;
     margin: 0;
+    width: auto;
+    line-height: normal;
     display: block;
     border-bottom: 1px solid #2f2f2f;
   }
@@ -828,6 +834,17 @@ div.gallery img {
     font-weight: 600;
     font-size: 18px;
     display: block;
+  }
+  .main-menu ul .trophy {
+    background: none;
+    background-position: center;
+  }
+  .main-menu ul .current_li a {
+    background: url(../images/active-state.png) no-repeat;
+    background-position: center 80px;
+  }
+  .main-menu ul .trophy a {
+    color: #ffffff;
   }
 }
 @media (max-width: 767px) {
