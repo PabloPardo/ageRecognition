@@ -63,7 +63,7 @@ def game(request):
                         newvote.score = abs(newvote.pic.real_age - int(votes_list[i]))
                     else:
                         newvote.score = abs(newvote.pic.ground_truth - int(votes_list[i]))
-                    scores.append(newvote.score)
+                    scores.append(5 if newvote.score > 10 else 3*(10 - newvote.score))
                     newvote.save()
 
                     # Save cum_vote_score in user

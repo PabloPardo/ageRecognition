@@ -260,8 +260,14 @@ function submitGameForm() {
             url: frm.attr('action'),
             data: frm.serialize(), // serializes the form's elements.
             success: function (data) {
+                var total = 0,
+                    max_total = 0;
+                for (var i = 0; i < data.length; i += 1) {
+                    total += data[i];
+                    max_total += 30;
+}
                 var content =
-                        "<table cellspacing='2' id='stats' class='table table-striped tablesorter'>" +
+                        "<table cellspacing='2' id='stats' style='color:black;' class='table table-striped tablesorter'>" +
                         "<thead>" +
                                 "<tr><th>Images</th><th>Number of Votes</th><th>Scores</th></tr>" +
                         "</thead><tbody>" +
@@ -274,16 +280,18 @@ function submitGameForm() {
                                 "{% endthumbnail %}" +
                             "</div></td>" +
                             "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
-                            "<td>" + data[{{ forloop.counter0 }}] + "</td>" +
+                            "<td>" + data[{{ forloop.counter0 }}] + "/30</td>" +
                             "</tr>" +
                             "{% endfor %}" +
+                            "<tr><td></td><td><strong>Total punctuation:</strong></td>" +
+                            "<td>" + total + "/" + max_total +"</td></tr>" +
                         "</tbody></table>";
                 new Messi(content, {title: 'Feedback',
                     modal: true,
                     buttons: [
                         {id: 0, label: 'Continue', val: 'X', class: 'btn-success'}
                     ],
-                    width: '800px',
+                    width: '400px',
                     callback: function (val) {
                         if (val == 'X') {
                             location.reload(true);
