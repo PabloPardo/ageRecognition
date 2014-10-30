@@ -254,6 +254,13 @@ function zoomImg(path){
     };
 
     img.src = '{{ MEDIA_URL }}' + path;
+
+    $(document).click(function(){
+        if (!$(event.target).closest('.messi').length) {
+            // Hide the popups.
+            $('.messi, .messi-modal').remove();
+        }
+    });
 }
 </script>
 <script>
