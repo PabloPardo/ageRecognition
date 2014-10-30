@@ -261,6 +261,11 @@ function zoomImg(path){
             $('.messi, .messi-modal').remove();
         }
     });
+    $(document).keyup(function(e) {
+      if (e.keyCode == 27) {
+          $('.messi, .messi-modal').remove();
+      }
+    });
 }
 </script>
 <script>
