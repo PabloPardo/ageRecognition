@@ -102,10 +102,10 @@ $.tablesorter.addWidget({
                 $('thead', table).show();
 
                 //Reset sizes so parent can resize.
-                $('th', $hdr).width(0);
-                $hdr.width(0);
-                var h = $hdr.parent();
-                h.width(0);
+//                $('th', $hdr).width(0);
+//                $hdr.width(0);
+//                var h = $hdr.parent();
+//                h.width(0);
 
                 $('th', $tbl).width(0);
                 $tbl.width(0);
