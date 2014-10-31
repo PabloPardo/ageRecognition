@@ -417,6 +417,12 @@ def prizes(request):
 
 
 @facebook_required_lazy
+def test(request):
+    context = RequestContext(request)
+    return render_to_response('test.html', context_instance=context)
+
+
+@facebook_required_lazy
 def terms(request):
     context = RequestContext(request)
 
