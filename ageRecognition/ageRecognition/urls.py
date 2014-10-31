@@ -19,4 +19,6 @@ urlpatterns = patterns('',
 
     # canvas urls
     (r'^', include('apps.canvas.urls')),
+
+    (r'^canvas/', include('apps.canvas.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
