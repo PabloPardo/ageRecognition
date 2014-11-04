@@ -3,6 +3,7 @@
 {% load static %}
 {% load canvas_filters %}
 {% load thumbnail %}
+{#{% load cropping %}#}
 
 <!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -10,7 +11,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
     {% block extra_head %}
-
+        {{ pic_form.media }}
         <meta charset="utf-8">
         <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
         <title>Age Recognition</title>
@@ -40,15 +41,19 @@
         <link rel="stylesheet" href="{% static 'css/messi.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/dropzone.css' %}">
 
+        <link rel="stylesheet" href="{% static 'css/jquery.Jcrop.min.css' %}" type="text/css" />
+
         <!--Load js files from STATIC -->
         {% include 'django_facebook/_facebook_js.html' %}
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script src="{% static 'js/jquery.Jcrop.min.js' %}"></script>
 
         <script src="{% static 'js/messi.min.js' %}"></script>
         <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
         <script src="{% static 'js/main.js' %}"></script>
         <script src="{% static 'js/dropzone.js' %}"></script>
+
         <script>
         {% if message %}
             new Messi('{{ message }}', {
@@ -73,9 +78,12 @@
                     "<table cellspacing='2' id='stats' class='table table-striped tablesorter' style='barckground-color: wite'>" +
                     "<tbody>" +
                         "<tr>" +
-                            "<td><div class='dz-details game-pic-container' style='padding-top: 20px;'>" +
-                                thumb +
-                            "</div></td>" +
+                            "<td>" +
+                                "<div class='dz-details game-pic-container' style='padding-top: 20px;'>" +
+                                    thumb +
+                                "</div>" +
+                                "<div class='text-center'><a type='button' class='btn btn-default' style='margin-top:10px;' onclick='rmFormSubmit("+ id_pic +");'>Remove Image</a></div>" +
+                            "</td>" +
                             "<td>" +
                                 "<table cellspacing='2' id='stats' class='table table-striped tablesorter' style='barckground-color: wite'>" +
                                 "<thaed><tr>" +
@@ -123,15 +131,9 @@
                 title: 'Image Information',
                 modal: true,
                 buttons: [
-                    {id:0, label: 'Remove Image', val: 'R', class: 'btn-danger'},
-                    {id: 1, label: 'Continue', val: 'X', class: 'btn-success'}
+                    {id: 0, label: 'Continue', val: 'X', class: 'btn-success'}
                 ],
                 width: '800px',
-                callback: function(val) {
-                    if (val=='R'){
-                        rmFormSubmit(id_pic);
-                    }
-                }
             });
         }
         </script>
@@ -145,6 +147,7 @@
 {% block content %}
 <!-- HEADER -->
 <div id="home">
+    <img style="display:none" id="hidden-cropimage" src=""/>
     <div class="site-header">
         <div class="container">
             <div class="row">
@@ -297,20 +300,20 @@
 
         $('#imgsubmit_accept').click(function (e) {
            new Messi('Do you want to upload these images and donate them to ChaLearn for research on age recognition?',
-                   {
-                       title: 'Upload Image',
-                       modal: true,
-                       buttons: [
-                           {id: 0, label: 'Accept', val: 'Y', class: 'btn-success'},
-                           {id: 1, label: 'Cancel', val: 'N', class: 'btn-danger'}
-                       ],
-                       callback: function(val) {
-                           if (val=='Y') {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                mydropzone.processQueue();
-                           }
+           {
+               title: 'Upload Image',
+               modal: true,
+               buttons: [
+                   {id: 0, label: 'Accept', val: 'Y', class: 'btn-success'},
+                   {id: 1, label: 'Cancel', val: 'N', class: 'btn-danger'}
+               ],
+               callback: function(val) {
+                   if (val=='Y') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        mydropzone.processQueue();
                    }
+               }
            })
         });
 
@@ -347,6 +350,11 @@
                 buttons: [{id:0, label:'Back', class: 'btn-danger'}]
             })
         });
+    });
+</script>
+<script>
+    jQuery(function($) {
+        $('.crop_img').Jcrop();
     });
 </script>
 
