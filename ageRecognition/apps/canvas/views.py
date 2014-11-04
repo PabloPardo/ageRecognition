@@ -4,7 +4,7 @@ import time
 import datetime
 from django.db.models import Avg
 from django_facebook.decorators import facebook_required_lazy
-
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -166,7 +166,7 @@ def game(request):
                         'game_pic_list': actual_game_pic_list,
                         'game_pic_stats': actual_game_pic_stats}
 
-        if request.path == '/game/':
+        if request.path == '/game/' or request.path == '/canvas/game/':
             return render_to_response('game.html', context_dict, context_instance=context)
         else:
             return render_to_response('report.html', context_dict, context_instance=context)
@@ -416,7 +416,7 @@ def prizes(request):
         return HttpResponseRedirect('/terms/')
 
 
-@facebook_required_lazy
+@csrf_exempt
 def test(request):
     context = RequestContext(request)
     return render_to_response('test.html', context_instance=context)
