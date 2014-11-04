@@ -13,7 +13,8 @@ from apps.canvas.extra_functions import compare, calculate_score
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
-
+from django.db.models.fields.files import FieldFile
+from ageRecognition.settings.base import Base
 
 @facebook_required_lazy
 def home(request):
@@ -44,7 +45,7 @@ def home(request):
 
         return render_to_response('home.html', context_dict, context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -113,7 +114,7 @@ def game(request):
                 if Report.objects.filter(pic=newreport.pic).count() >= 3:
                     newreport.pic.visibility = False
                     newreport.pic.save()
-                return HttpResponseRedirect('/game/')
+                return HttpResponseRedirect('/canvas/game/')
             else:
                 print vote_form.errors, report_form.errors
         else:
@@ -171,7 +172,7 @@ def game(request):
         else:
             return render_to_response('report.html', context_dict, context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -205,7 +206,7 @@ def ranking(request):
 
         return render_to_response('ranking.html', context_dict, context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -223,6 +224,10 @@ def gallery(request):
 
             if pic_form.files:
                 real_age_list = pic_form.data.getlist('real_age')
+                x = request.POST.getlist('x')
+                y = request.POST.getlist('y')
+                w = request.POST.getlist('w')
+                h = request.POST.getlist('h')
                 for i in range(len(pic_form.files)):
                     file_name = 'pic[' + str(i) + ']'
                     newpic = Picture()
@@ -239,15 +244,33 @@ def gallery(request):
 
                     # Add histogram to the pic
                     newpic.hist = json.dumps(Image.open(newpic.pic.path).convert('RGB').histogram())
+
+                    # Crop Image if needed
+                    img = Image.open(newpic.pic.path)
+                    if int(float(x[i])) != -1:
+                        left = int(float(x[i]))
+                        top = int(float(y[i]))
+                        width = int(float(w[i]))
+                        height = int(float(h[i]))
+                        newimg = img.crop((left, top, left + width, top + height))
+                        newimg.save(Base.PROJECT_DIR + Base.MEDIA_URL + '/' + newpic.pic.name)
+                        field = newpic.pic.field
+                        name = newpic.pic.name
+                        newpic.pic = FieldFile(newimg, field, name)
+
                     newpic.save()
 
                     # Check if the new image has been uploaded by the user
                     for p in range(user_pictures_list.count()-1):
                         if compare(json.loads(newpic.hist),  json.loads(user_pictures_list[p].hist)) < 0.1:
+                            if not user_pictures_list[p].visibility:
+                                user_pictures_list[p].visibility = True
+                                user_pictures_list[p].save()
+                            else:
+                                request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
+
                             os.remove(newpic.pic.path)
                             newpic.delete()
-
-                            request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
                             break
 
                 # Computing Global Score of the current user
@@ -274,7 +297,7 @@ def gallery(request):
         request.session['message'] = ''
         return render_to_response('gallery.html', context_dict, context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -284,7 +307,7 @@ def rm_image(request, id_rm):
         p.visibility = False
         p.save()
 
-    return
+    return HttpResponseRedirect('/canvas/gallery/')
 
 
 @facebook_required_lazy
@@ -386,7 +409,7 @@ def achievements(request):
 
         return render_to_response('achievements.html', context_dict, context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -395,7 +418,7 @@ def privacy(request):
         context = RequestContext(request)
         return render_to_response('privacy.html', context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -404,7 +427,7 @@ def help(request):
         context = RequestContext(request)
         return render_to_response('help.html', context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @facebook_required_lazy
@@ -413,7 +436,7 @@ def prizes(request):
         context = RequestContext(request)
         return render_to_response('prizes.html', context_instance=context)
     else:
-        return HttpResponseRedirect('/terms/')
+        return HttpResponseRedirect('/canvas/terms/')
 
 
 @csrf_exempt
@@ -454,6 +477,6 @@ def terms(request):
 
             return render_to_response('terms.html', context_dict, context_instance=context)
         else:
-            return HttpResponseRedirect('/home/')
+            return HttpResponseRedirect('/canvas/home/')
 
     return render_to_response('terms.html', context_instance=context)

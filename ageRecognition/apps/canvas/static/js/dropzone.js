@@ -295,6 +295,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         "addedfile",
         "removedfile",
         "thumbnail",
+        "thumbnailCrop",
         "error",
         "errormultiple",
         "processing",
@@ -326,8 +327,10 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       paramName: "pic",
       createImageThumbnails: true,
       maxThumbnailFilesize: 10,
-      thumbnailWidth: 150,
-      thumbnailHeight: 150,
+      thumbnailWidth: 800,
+      thumbnailHeight: 800,
+      thumbnailCropWidth: 800,
+      thumbnailCropHeight: 800,
       maxFiles: 10,
       params: {},
       clickable: true,
@@ -415,6 +418,47 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         }
         info.srcX = (file.width - info.srcWidth) / 2;
         info.srcY = (file.height - info.srcHeight) / 2;
+        return info;
+      },
+
+      resizeCrop: function(file) {
+        var info, srcRatio, trgRatio;
+        info = {
+          srcX: 0,
+          srcY: 0,
+          srcWidth: file.width,
+          srcHeight: file.height
+        };
+        srcRatio = file.width / file.height;
+        info.optWidth = this.options.thumbnailCropWidth;
+        info.optHeight = this.options.thumbnailCropHeight;
+        if ((info.optWidth == null) && (info.optHeight == null)) {
+          info.optWidth = info.srcWidth;
+          info.optHeight = info.srcHeight;
+        } else if (info.optWidth == null) {
+          info.optWidth = srcRatio * info.optHeight;
+        } else if (info.optHeight == null) {
+          info.optHeight = (1 / srcRatio) * info.optWidth;
+        }
+        trgRatio = info.optWidth / info.optHeight;
+        if (file.height < info.optHeight || file.width < info.optWidth) {
+          info.trgHeight = info.srcHeight;
+          info.trgWidth = info.srcWidth;
+        } else {
+          if (srcRatio > trgRatio) {
+            info.srcHeight = file.height;
+            info.srcWidth = info.srcHeight * trgRatio;
+          } else {
+            info.srcWidth = file.width;
+            info.srcHeight = info.srcWidth / trgRatio;
+          }
+        }
+//        info.srcX = (file.width - info.srcWidth) / 2;
+//        info.srcY = (file.height - info.srcHeight) / 2;
+          info.srcX = file.previewElement.children[1].children['x'].value;
+          info.srcY = file.previewElement.children[1].children['y'].value;
+          info.srcWidth = file.previewElement.children[1].children['w'].value;
+          info.srcHeight = file.previewElement.children[1].children['h'].value;
         return info;
       },
 
@@ -534,17 +578,11 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         }
         return this._updateMaxFilesReachedClass();
       },
-      croppedfile: function(file, dataURL) {
+      croppedfile: function(file) {
         if (file.previewElement) {
-          var content = 'Temporarily deactivated';
-          new Messi(content, {
-              title:'Crop Image',
-              model: true,
-              buttons:[
-                  {id:0, label:'Accept', val:'Y', class: 'btn-success'},
-//                  {id:1, label:'Cancel',val:'N', class: 'btn-danger'}
-              ]
-          });
+
+          this.showCropWindow(file);
+
         }
       },
       thumbnail: function(file, dataUrl) {
@@ -558,6 +596,21 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
           if (_ref.length > 0) {
               $('#imgsubmit').show();
           }
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            thumbnailElement = _ref[_i];
+            thumbnailElement.alt = file.name;
+            _results.push(thumbnailElement.src = dataUrl);
+          }
+          return _results;
+        }
+      },
+      thumbnailCrop: function(file, dataUrl) {
+        var thumbnailElement, _i, _len, _ref, _results;
+
+        if (file.previewElement) {
+          file.previewElement.classList.add("dz-image-preview");
+          _ref = file.previewElement.querySelectorAll("[data-dz-thumbnail]");
+          _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             thumbnailElement = _ref[_i];
             thumbnailElement.alt = file.name;
@@ -640,6 +693,10 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
                                         "type=\"range\" " +
                                         "onchange='showValue1(\"range_id\", this.value)' " +
                                         "oninput='showValue1(\"range_id\", this.value)'/>\n" +
+                            "       <input type='hidden' name='x' value='-1'/>" +
+                            "       <input type='hidden' name='y' value='-1'/>" +
+                            "       <input type='hidden' name='w' value='-1'/>" +
+                            "       <input type='hidden' name='h' value='-1'/>" +
                             "</div>\n" +
                         "   <div class=\"dz-progress\"><span class=\"dz-upload\" data-dz-uploadprogress></span></div>\n" +
                         "   <div class=\"dz-error-mark\"><span>✘</span></div>\n" +
@@ -1356,6 +1413,122 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       return fileReader.readAsDataURL(file);
     };
 
+
+    Dropzone.prototype.showCropWindow = function (file) {
+        var original_img = file.previewElement.children[0].children[0].cloneNode(true);
+        var x = file.previewElement.children[1].children['x'].value,
+            y = file.previewElement.children[1].children['y'].value,
+            w = file.previewElement.children[1].children['w'].value,
+            h = file.previewElement.children[1].children['h'].value;
+        var content = $('<div/>');
+        content.append('<table class="table tablesorter" style="color: black;">' +
+                  '  <thead>' +
+                  '    <tr>' +
+                  '      <th class="text-center">Original Image</th>' +
+                  '      <th class="text-center">Cropped Image</th>' +
+                  '    </tr>' +
+                  '  </thead>' +
+                  '  <body>' +
+                  '    <tr>' +
+                  '      <td></td>' +
+                  '      <td></td>' +
+                  '    </tr>' +
+                  '  </body>' +
+                  '</table>' +
+                  '<p style="color: black;">Crop the <strong>Original Image</strong> by selecting the area you want.</p>');
+
+        original_img.id = 'originalimg';
+        $(content[0].children[0].children[1].children[0].children[0]).append(original_img);
+        $(content[0].children[0].children[1].children[0].children[1]).append('<canvas id="preview" width="150" height="150"/>');
+
+        tgtImage = file.previewElement.children[0].children[0];
+        new Messi(content.html(), {
+          title:'Crop Image',
+          modal: true,
+          buttons:[
+              {id:0, label:'Accept', val:'Y', class: 'btn-success'},
+              {id:1, label:'Cancel',val:'N', class: 'btn-danger'}
+          ],
+          callback: function(val) {
+                       if (val=='N') {
+                           cancelCrop(x,y,w,h);
+                           return this.createThumbnail(file);
+                       }
+                       if (val == 'Y') {
+                            tgtImage.src = document.getElementById('hidden-cropimage').src;
+                           saveCrop();
+                       }
+                   }
+        });
+
+        function saveCrop(){
+            file.previewElement.children[0].children[0] = document.getElementById('preview');
+        }
+
+        function showPreview(c, img){
+          var fsize = img.width / $('div.jcrop-holder > div.jcrop-tracker').width();
+
+          file.previewElement.children[1].children['x'].value = c.x*fsize;
+          file.previewElement.children[1].children['y'].value = c.y*fsize;
+          file.previewElement.children[1].children['w'].value = c.w*fsize;
+          file.previewElement.children[1].children['h'].value = c.h*fsize;
+
+          var canvas = document.getElementById("preview");
+          var ctx = canvas.getContext("2d");
+          if(c.w > 0 && c.h > 0)
+            drawImageIOSFix(ctx, img, c.x*fsize ,c.y*fsize ,c.w*fsize , c.h*fsize , 0 , 0, canvas.width, canvas.height);
+            document.getElementById('hidden-cropimage').src = canvas.toDataURL();
+        }
+
+        function cancelCrop(x, y, w, h){
+          file.previewElement.children[1].children['x'].value = x;
+          file.previewElement.children[1].children['y'].value = y;
+          file.previewElement.children[1].children['w'].value = w;
+          file.previewElement.children[1].children['h'].value = h;
+        }
+
+        $('#originalimg').Jcrop({
+            onSelect: function(c){showPreview(c, original_img);},
+            minSize: [10, 10],
+            aspectRatio: 1
+        });
+    };
+
+    Dropzone.prototype.createCropThumbnail = function(file, callback) {
+      var fileReader;
+      fileReader = new FileReader;
+      fileReader.onload = (function(_this) {
+        return function() {
+          var img;
+          img = document.createElement("img");
+          img.onload = function() {
+            var canvas, ctx, resizeInfo, thumbnail, _ref, _ref1, _ref2, _ref3;
+            file.width = img.width;
+            file.height = img.height;
+            resizeInfo = _this.options.resizeCrop.call(_this, file);
+            if (resizeInfo.trgWidth == null) {
+              resizeInfo.trgWidth = resizeInfo.optWidth;
+            }
+            if (resizeInfo.trgHeight == null) {
+              resizeInfo.trgHeight = resizeInfo.optHeight;
+            }
+            canvas = document.createElement("canvas");
+            ctx = canvas.getContext("2d");
+            canvas.width = resizeInfo.trgWidth;
+            canvas.height = resizeInfo.trgHeight;
+            drawImageIOSFix(ctx, img, (_ref = resizeInfo.srcX) != null ? _ref : 0, (_ref1 = resizeInfo.srcY) != null ? _ref1 : 0, resizeInfo.srcWidth, resizeInfo.srcHeight, (_ref2 = resizeInfo.trgX) != null ? _ref2 : 0, (_ref3 = resizeInfo.trgY) != null ? _ref3 : 0, resizeInfo.trgWidth, resizeInfo.trgHeight);
+            thumbnail = canvas.toDataURL("image/png");
+            _this.emit("thumbnailCrop", file, thumbnail);
+            if (callback != null) {
+              return callback();
+            }
+          };
+          return img.src = fileReader.result;
+        };
+      })(this);
+      return fileReader.readAsDataURL(file);
+    };
+
     Dropzone.prototype.processQueue = function() {
       var i, parallelUploads, processingLength, queuedFiles;
       parallelUploads = this.options.parallelUploads;
@@ -1448,18 +1621,8 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
     };
 
     Dropzone.prototype.uploadFiles = function(files) {
-    var obj = this;
-//    new Messi('This is a message with Messi with custom buttons.', {
-//        title: 'Buttons',
-//        buttons: [{id: 0, label: 'Yes', val: 'Y'}, {id: 1, label: 'No', val: 'N'}],
-//        callback: function(val) {
-//            if (val=='Y'){
-//                uploadsMessi(files, obj);
-//            } else{
-//                cancelUploads(files, obj);
-//            }
-//        }});
-    uploadsMessi(files, obj);
+      var obj = this;
+      uploadsMessi(files, obj);
     };
 
     Dropzone.prototype._finished = function(files, responseText, e) {
@@ -1772,7 +1935,6 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
     return ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh / vertSquashRatio);
   };
 
-
   /*
    * contentloaded.js
    *
@@ -1853,52 +2015,9 @@ if (typeof exports == "object") {
 })();
 
 function cancelUploads(files, obj) {
-//    _ref = obj.files;
-//    _results = [];
-//    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-//        file = _ref[_i];
-//        _results.push(obj.cancelUpload(file));
-//      }
     obj.emit("canceledmultiple", files);
     obj.processQueue();
 }
-
-function resize_image(file) {
-    var info, srcRatio, trgRatio;
-    info = {
-      srcX: 0,
-      srcY: 0,
-      srcWidth: file.width,
-      srcHeight: file.height
-    };
-    srcRatio = file.width / file.height;
-    info.optWidth = this.options.thumbnailWidth;
-    info.optHeight = this.options.thumbnailHeight;
-    if ((info.optWidth == null) && (info.optHeight == null)) {
-      info.optWidth = info.srcWidth;
-      info.optHeight = info.srcHeight;
-    } else if (info.optWidth == null) {
-      info.optWidth = srcRatio * info.optHeight;
-    } else if (info.optHeight == null) {
-      info.optHeight = (1 / srcRatio) * info.optWidth;
-    }
-    trgRatio = info.optWidth / info.optHeight;
-    if (file.height < info.optHeight || file.width < info.optWidth) {
-      info.trgHeight = info.srcHeight;
-      info.trgWidth = info.srcWidth;
-    } else {
-      if (srcRatio > trgRatio) {
-        info.srcHeight = file.height;
-        info.srcWidth = info.srcHeight * trgRatio;
-      } else {
-        info.srcWidth = file.width;
-        info.srcHeight = info.srcWidth / trgRatio;
-      }
-    }
-    info.srcX = (file.width - info.srcWidth) / 2;
-    info.srcY = (file.height - info.srcHeight) / 2;
-    return info;
-  };
 
 function uploadsMessi(files, obj) {
       var file, formData, handleError, headerName, headerValue, headers, i, input, inputName, inputType, key, option, progressObj, response, updateProgress, value, xhr, _i, _j, _k, _l, _len, _len1, _len2, _len3, _m, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;

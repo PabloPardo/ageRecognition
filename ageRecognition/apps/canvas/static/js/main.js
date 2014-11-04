@@ -57,7 +57,7 @@ function rmFormSubmit(id_rm) {
 
     var csrftoken = getCookie('csrftoken');
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "/gallery/"+id_rm, false);
+    xmlhttp.open("GET", "/canvas/gallery/"+id_rm, false);
     xmlhttp.setRequestHeader("X-CSRFToken", csrftoken);
     xmlhttp.send();
 

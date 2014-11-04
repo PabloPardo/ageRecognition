@@ -122,6 +122,8 @@
                                  style="cursor: pointer;"
                                  alt="Image not found"
                                  onError='this.onerror=null;this.src="{{ MEDIA_URL }}{{ game_pic.pic }}";' />
+                        {% empty %}
+                            <img src="{{ MEDIA_URL }}{{ game_pic.pic }}" style="cursor: pointer;">
                         {% endthumbnail %}
                         <input type="hidden" name="id_pic" value="{{ game_pic.id }}">
                     </div>
@@ -341,7 +343,6 @@ function checkGame(num_img) {
                     {id:1, label:'Cancel', val:'N', class:'btn-danger'}],
                 callback: function(val){
                     if(val=='Y'){
-//                        document.forms['gameForm'].submit();
                         submitGameForm();
                     }
                 }
@@ -349,7 +350,6 @@ function checkGame(num_img) {
             return
         }
     }
-//    document.forms['gameForm'].submit();
     submitGameForm();
 }
 </script>
