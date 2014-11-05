@@ -327,10 +327,10 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
       paramName: "pic",
       createImageThumbnails: true,
       maxThumbnailFilesize: 10,
-      thumbnailWidth: 800,
-      thumbnailHeight: 800,
-      thumbnailCropWidth: 800,
-      thumbnailCropHeight: 800,
+      thumbnailWidth: 10000,
+      thumbnailHeight: 10000,
+      thumbnailCropWidth: 10000,
+      thumbnailCropHeight: 10000,
       maxFiles: 10,
       params: {},
       clickable: true,
@@ -1452,10 +1452,9 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
           callback: function(val) {
                        if (val=='N') {
                            cancelCrop(x,y,w,h);
-                           return this.createThumbnail(file);
                        }
                        if (val == 'Y') {
-                            tgtImage.src = document.getElementById('hidden-cropimage').src;
+                           tgtImage.src = document.getElementById('hidden-cropimage').src;
                            saveCrop();
                        }
                    }
