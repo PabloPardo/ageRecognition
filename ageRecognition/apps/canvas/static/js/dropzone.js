@@ -1416,6 +1416,12 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 
     Dropzone.prototype.showCropWindow = function (file) {
         var original_img = file.previewElement.children[0].children[0].cloneNode(true);
+
+        // Original Size of the image
+        var orig_width = file.previewElement.children[0].children[0].naturalWidth,
+            orig_height = file.previewElement.children[0].children[0].naturalHeight;
+        var orig_ratio = orig_width / orig_height;
+
         var x = file.previewElement.children[1].children['x'].value,
             y = file.previewElement.children[1].children['y'].value,
             w = file.previewElement.children[1].children['w'].value,
@@ -1441,7 +1447,15 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         $(content[0].children[0].children[1].children[0].children[0]).append(original_img);
         $(content[0].children[0].children[1].children[0].children[1]).append('<canvas id="preview" width="150" height="150"/>');
 
-        tgtImage = file.previewElement.children[0].children[0];
+        if (orig_ratio < 1) {
+            original_img.height = 300;
+            original_img.width = original_img.height * orig_ratio;
+        } else {
+            original_img.width = 300;
+            original_img.height = original_img.width / orig_ratio;
+        }
+
+        var tgtImage = file.previewElement.children[0].children[0];
         new Messi(content.html(), {
           title:'Crop Image',
           modal: true,
@@ -1465,7 +1479,8 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
         }
 
         function showPreview(c, img){
-          var fsize = img.width / $('div.jcrop-holder > div.jcrop-tracker').width();
+//          var fsize = img.width / $('div.jcrop-holder > div.jcrop-tracker').width();
+          var fsize = orig_width / img.width;
 
           file.previewElement.children[1].children['x'].value = c.x*fsize;
           file.previewElement.children[1].children['y'].value = c.y*fsize;
