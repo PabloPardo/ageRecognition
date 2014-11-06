@@ -138,11 +138,11 @@
                     <tbody>
                     {% for f in friends %}
                         <tr>
-                            <td> {{ forloop.counter }}</td>
-                            <td><strong> {{f.user.first_name}} {{f.user.last_name}}</strong></td>
-                            <td> {{f.score_global }}</td>
-                            <td> {{ f.eval_pic }}</td>
-                            <td> {{ f.upload_pic }}</td>
+                            <td> {{ forloop.counter }} </td>
+                            <td><strong> {{f.user.first_name}} {{f.user.last_name}} </strong></td>
+                            <td> {{f.score_global }} </td>
+                            <td> {{ f.eval_pic }} </td>
+                            <td> {{ f.upload_pic }} </td>
                         </tr>
                     {% empty %}
                         <strong style="text-align: center">Invite your friends and compete with them.</strong>
@@ -180,6 +180,15 @@
                     {% empty %}
                         <strong style="text-align: center">There are no users</strong>
                     {% endfor %}
+                    {% if rank != -1 %}
+                        <tr>
+                            <td> {{ rank }} </td>
+                            <td><strong> {{user.first_name}} {{user.last_name}}</strong></td>
+                            <td> {{user.userprofile.score_global }}</td>
+                            <td> {{ user.userprofile.eval_pic }}</td>
+                            <td> {{ user.userprofile.upload_pic }}</td>
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>

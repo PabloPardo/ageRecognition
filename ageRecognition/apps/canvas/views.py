@@ -194,7 +194,18 @@ def ranking(request):
         friends = request.session['friends']
 
         # Load users ordered by global score
-        user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')[:20]
+        user_list = UserProfile.objects.exclude(pk=-1).order_by('-score_global')
+
+        count = 0
+        rank = -1
+        for u in user_list:
+            count += 1
+            if u.user.id == request.user.id:
+                rank = count
+                break
+
+        user_list = user_list[:50]
+        user_rank = rank if rank > 50 else -1
 
         friends_user_list = UserProfile.objects.filter(user__facebookprofile__facebook_name__in=friends)
         friends_user_list = friends_user_list | UserProfile.objects.filter(user=request.user)
@@ -202,6 +213,7 @@ def ranking(request):
 
         context_dict = {'users': user_list,
                         'user': request.user,
+                        'rank': user_rank,
                         'friends': friends_user_list}
 
         return render_to_response('ranking.html', context_dict, context_instance=context)
