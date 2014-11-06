@@ -139,7 +139,7 @@
                     {% for f in friends %}
                         <tr>
                             <td> {{ forloop.counter }} </td>
-                            <td><strong> {{f.user.first_name}} {{f.user.last_name}} </strong></td>
+                            <td><strong> {{f.user.facebookprofile.facebook_name }} </strong></td>
                             <td> {{f.score_global }} </td>
                             <td> {{ f.eval_pic }} </td>
                             <td> {{ f.upload_pic }} </td>
@@ -171,11 +171,11 @@
                     <tbody>
                     {% for u in users %}
                         <tr>
-                            <td> {{ forloop.counter }}</td>
-                            <td><strong> {{u.user.first_name}} {{u.user.last_name}}</strong></td>
-                            <td> {{u.score_global }}</td>
-                            <td> {{ u.eval_pic }}</td>
-                            <td> {{ u.upload_pic }}</td>
+                            <td> {{ forloop.counter }} </td>
+                            <td><strong> {{ u.user.facebookprofile.facebook_name }} </strong></td>
+                            <td> {{u.score_global }} </td>
+                            <td> {{ u.eval_pic }} </td>
+                            <td> {{ u.upload_pic }} </td>
                         </tr>
                     {% empty %}
                         <strong style="text-align: center">There are no users</strong>
@@ -183,10 +183,10 @@
                     {% if rank != -1 %}
                         <tr>
                             <td> {{ rank }} </td>
-                            <td><strong> {{user.first_name}} {{user.last_name}}</strong></td>
-                            <td> {{user.userprofile.score_global }}</td>
-                            <td> {{ user.userprofile.eval_pic }}</td>
-                            <td> {{ user.userprofile.upload_pic }}</td>
+                            <td><strong> {{ user.facebookprofile.facebook_name }} </strong></td>
+                            <td> {{user.userprofile.score_global }} </td>
+                            <td> {{ user.userprofile.eval_pic }} </td>
+                            <td> {{ user.userprofile.upload_pic }} </td>
                         </tr>
                     {% endif %}
                     </tbody>
