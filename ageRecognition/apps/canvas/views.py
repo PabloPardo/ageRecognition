@@ -62,6 +62,7 @@ def game(request):
             pics_id = request.POST.getlist('id_pic')
             if vote_form.is_valid():
                 scores = []
+                response = {'scores': scores, 'votes': votes_list}
                 for i in range(len(votes_list)):
                     newvote = Votes()
                     newvote.vote = votes_list[i]
@@ -99,7 +100,7 @@ def game(request):
                     # Computing Global Score of the current user
                     calculate_score(request.user.userprofile)
 
-                return HttpResponse(json.dumps(scores), content_type="application/json")
+                return HttpResponse(json.dumps(response), content_type="application/json")
 
             elif report_form.is_valid():
 
