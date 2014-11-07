@@ -285,7 +285,8 @@ function submitGameForm() {
                 for (var i = 0; i < data['scores'].length; i += 1) {
                     total += data['scores'][i];
                     max_total += 30;
-}
+                }
+                document.body.style.cursor = 'default';
                 var content =
                         "<table cellspacing='2' id='stats' style='color:black;' class='table table-striped tablesorter'>" +
                         "<thead>" +
@@ -326,32 +327,35 @@ function submitGameForm() {
     frm.submit();
 }
 function checkGame(num_img) {
-    for(var i=0; i<num_img; i++) {
-        if($('#range_game_' + i).html() == '0'){
-            var msg;
-            if(num_img==1){
-                msg = 'Your guess is 0, are you sure you want to submit?';
-            }
-            else {
-                msg = 'There is at leas one image with age 0. Do you want to submit the ' + num_img.toString() + ' images?';
-            }
-
-            new Messi(msg, {
-                title: 'Warning',
-                titleClass: 'anim warning',
-                buttons: [
-                    {id:0, label:'Accpet', val:'Y', class:'btn-success'},
-                    {id:1, label:'Cancel', val:'N', class:'btn-danger'}],
-                callback: function(val){
-                    if(val=='Y'){
-                        submitGameForm();
-                    }
-                }
-            });
-            return
-        }
-    }
+    document.body.style.cursor = 'wait';
     submitGameForm();
+    document.getElementById('submitButton').disabled = true;
+{#    for(var i=0; i<num_img; i++) {#}
+{#        if($('#range_game_' + i).html() == '0'){#}
+{#            var msg;#}
+{#            if(num_img==1){#}
+{#                msg = 'Your guess is 0, are you sure you want to submit?';#}
+{#            }#}
+{#            else {#}
+{#                msg = 'There is at leas one image with age 0. Do you want to submit the ' + num_img.toString() + ' images?';#}
+{#            }#}
+{##}
+{#            new Messi(msg, {#}
+{#                title: 'Warning',#}
+{#                titleClass: 'anim warning',#}
+{#                buttons: [#}
+{#                    {id:0, label:'Accpet', val:'Y', class:'btn-success'},#}
+{#                    {id:1, label:'Cancel', val:'N', class:'btn-danger'}],#}
+{#                callback: function(val){#}
+{#                    if(val=='Y'){#}
+{#                        submitGameForm();#}
+{#                    }#}
+{#                }#}
+{#            });#}
+{#            return#}
+{#        }#}
+{#    }#}
+{#    submitGameForm();#}
 }
 </script>
 {% endblock js %}

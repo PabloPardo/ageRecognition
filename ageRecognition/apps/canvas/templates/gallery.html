@@ -294,6 +294,7 @@
 
         var mydropzone = new Dropzone('#mydropzone', {
             success: function(){
+                document.body.style.cursor = 'default';
                 window.location.reload();
             }
         });
@@ -308,6 +309,8 @@
                    {id: 1, label: 'Cancel', val: 'N', class: 'btn-danger'}
                ],
                callback: function(val) {
+                   document.getElementById('imgsubmit_accept').disabled = false;
+                   document.body.style.cursor = 'wait';
                    if (val=='Y') {
                         e.preventDefault();
                         e.stopPropagation();
