@@ -282,14 +282,14 @@ function submitGameForm() {
             success: function (data) {
                 var total = 0,
                     max_total = 0;
-                for (var i = 0; i < data.length; i += 1) {
-                    total += data[i];
+                for (var i = 0; i < data['scores'].length; i += 1) {
+                    total += data['scores'][i];
                     max_total += 30;
 }
                 var content =
                         "<table cellspacing='2' id='stats' style='color:black;' class='table table-striped tablesorter'>" +
                         "<thead>" +
-                                "<tr><th>Images</th><th>Number of Votes</th><th>Scores</th></tr>" +
+                                "<tr><th>Images</th><th>Number of Votes</th><th>Your Guess</th><th>Scores</th></tr>" +
                         "</thead><tbody>" +
                         "{% for p in game_pic_list %}" +
                             "<tr>" +
@@ -300,7 +300,8 @@ function submitGameForm() {
                                 "{% endthumbnail %}" +
                             "</div></td>" +
                             "<td>{{ game_pic_stats|lookup:forloop.counter0|lookup:'num_votes' }}</td>" +
-                            "<td>" + data[{{ forloop.counter0 }}] + "/30</td>" +
+                            "<td>" + data['votes'][{{ forloop.counter0 }}] + "</td>" +
+                            "<td>" + data['scores'][{{ forloop.counter0 }}] + "/30</td>" +
                             "</tr>" +
                             "{% endfor %}" +
                             "<tr><td></td><td><strong>Total points:</strong></td>" +
