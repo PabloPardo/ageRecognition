@@ -52,7 +52,23 @@ def stats(request):
         plt.ylabel('Number of Votes')
         plt.savefig(static_stats_path + 'img_votes_distr.png')
 
-        context_dict = {}
+        # Plot Distribution of pictures over users
+        pic_usr_hist = []
+        for u in usr:
+            pic_usr_hist.append(u.upload_pic)
+        pic_usr_hist = sorted(pic_usr_hist, key=int)
+        plt.figure()
+        plt.bar(range(len(pic_usr_hist)), pic_usr_hist)
+        plt.xlabel('User ID')
+        plt.ylabel('Number of Uploaded Images')
+        plt.savefig(static_stats_path + 'img_usr_distr.png')
+
+        context_dict = {
+            'num_usr': len(usr),
+            'num_img': len(img),
+            'num_vte': len(vte),
+            'num_rpt': len(rpt),
+        }
 
         return render_to_response('stats.html', context_dict, context_instance=context)
     else:
