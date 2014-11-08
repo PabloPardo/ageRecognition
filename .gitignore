@@ -3,6 +3,7 @@
 ageRecognition/config/generated
 ageRecognition/static/**/**
 ageRecognition/media/**/**
+ageRecognition/apps/canvas/static/stats/**
 **/**/.ageRecognitionConfig
 
 # Virtuelenv files #

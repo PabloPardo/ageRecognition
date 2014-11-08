@@ -2,6 +2,7 @@ import math
 import operator
 from models import Picture, Votes, UserProfile
 import matplotlib.pyplot as plt
+import matplotlib.dates as dts
 
 
 def compare(h1, h2):
@@ -52,6 +53,7 @@ def calculate_score(user):
 
 def plot_stats(usr, img, vte, rpt, path):
     # Plot Distribution of votes over pictures
+    # ----------------------------------------
     pic_votes_hist = []
     for p in img:
         count = 0
@@ -67,6 +69,7 @@ def plot_stats(usr, img, vte, rpt, path):
     plt.savefig(path + 'img_votes_distr.png')
 
     # Plot Distribution of pictures over users
+    # ----------------------------------------
     pic_usr_hist = []
     for u in usr:
         pic_usr_hist.append(u.upload_pic)
@@ -76,3 +79,55 @@ def plot_stats(usr, img, vte, rpt, path):
     plt.xlabel('User ID')
     plt.ylabel('Number of Uploaded Images')
     plt.savefig(path + 'img_usr_distr.png')
+
+    # Plot the evolution in time of the DB
+    # ------------------------------------
+
+    # Plot the number of users in time
+    user_join_dates = [u.user.date_joined for u in usr]
+    cum_num_usr = []
+    count_usr = 0
+    for u in usr:
+        count_usr += 1
+        cum_num_usr.append(count_usr)
+
+    dates_usr = dts.date2num(user_join_dates)
+
+    # Plot the number of pictures in time
+    picture_dates = [p.date for p in img]
+    cum_num_img = []
+    count_img = 0
+    for p in img:
+        count_img += 1
+        cum_num_img.append(count_img)
+
+    dates_img = dts.date2num(picture_dates)
+
+    # Plot the number of pictures in time
+    votes_dates = [v.date for v in vte]
+    cum_num_vte = []
+    count_vte = 0
+    for v in vte:
+        count_vte += 1
+        cum_num_vte.append(count_vte)
+
+    dates_vte = dts.date2num(votes_dates)
+
+    months = dts.MonthLocator(range(1, 13), bymonthday=1, interval=3)
+    monthsFmt = dts.DateFormatter("%b '%y")
+
+    fig, ax = plt.subplots()
+    p1, = ax.plot_date(dates_usr, cum_num_usr, fmt="-")
+    p2, = ax.plot_date(dates_img, cum_num_img, fmt="r-")
+    p3, = ax.plot_date(dates_vte, cum_num_vte, fmt="g-")
+
+    ax.xaxis.set_major_locator(months)
+    ax.xaxis.set_major_formatter(monthsFmt)
+    ax.autoscale_view()
+
+    fig.autofmt_xdate()
+
+    plt.xlabel('Time')
+    ax.legend([p1, p2, p3], ['Users', 'Pictures', 'Votes'])
+    ax.grid(True)
+    plt.savefig(path + 'time_usr.png')
