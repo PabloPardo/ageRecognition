@@ -13,5 +13,5 @@ urlpatterns = patterns('apps.canvas.views',
     url(r'^privacy/$', 'privacy', name='privacy'),
     url(r'^help/$', 'help', name='help'),
     url(r'^prizes/$', 'prizes', name='prizes'),
-    url(r'^test/$', 'test', name='test')
+    url(r'^test/$', 'test', name='test'),
 )
