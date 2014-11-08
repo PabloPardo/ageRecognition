@@ -1,7 +1,7 @@
 import math
-import Image
 import operator
 from models import Picture, Votes, UserProfile
+import matplotlib.pyplot as plt
 
 
 def compare(h1, h2):
@@ -48,3 +48,31 @@ def calculate_score(user):
     user.score_global = upl_img_score + vts_score
     user.save()
     return
+
+
+def plot_stats(usr, img, vte, rpt, path):
+    # Plot Distribution of votes over pictures
+    pic_votes_hist = []
+    for p in img:
+        count = 0
+        for v in vte:
+            if v.pic == p:
+                count += 1
+        pic_votes_hist.append(count)
+    pic_votes_hist = sorted(pic_votes_hist, key=int)
+    plt.figure()
+    plt.bar(range(len(pic_votes_hist)), pic_votes_hist)
+    plt.xlabel('Picture ID')
+    plt.ylabel('Number of Votes')
+    plt.savefig(path + 'img_votes_distr.png')
+
+    # Plot Distribution of pictures over users
+    pic_usr_hist = []
+    for u in usr:
+        pic_usr_hist.append(u.upload_pic)
+    pic_usr_hist = sorted(pic_usr_hist, key=int)
+    plt.figure()
+    plt.bar(range(len(pic_usr_hist)), pic_usr_hist)
+    plt.xlabel('User ID')
+    plt.ylabel('Number of Uploaded Images')
+    plt.savefig(path + 'img_usr_distr.png')

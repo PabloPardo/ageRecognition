@@ -9,18 +9,20 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
-from apps.canvas.extra_functions import compare, calculate_score
+from apps.canvas.extra_functions import compare, calculate_score, plot_stats
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
 from django.db.models.fields.files import FieldFile
 from ageRecognition.settings.base import Base
-import matplotlib.pyplot as plt
 
 
 @facebook_required_lazy
 def stats(request):
-    accepted_ids = ['10152267472422012']
+    # Add accepted facebook ID's
+    accepted_ids = ['10152267472422012',
+                    '371671599651652',
+                    '10152763949984306']
 
     # Get the graph from the FB API
     graph = get_facebook_graph(request=request)
@@ -37,31 +39,7 @@ def stats(request):
         vte = list(Votes.objects.all().order_by('date'))
         rpt = list(Report.objects.all().order_by('date'))
 
-        # Plot Distribution of votes over pictures
-        pic_votes_hist = []
-        for p in img:
-            count = 0
-            for v in vte:
-                if v.pic == p:
-                    count += 1
-            pic_votes_hist.append(count)
-        pic_votes_hist = sorted(pic_votes_hist, key=int)
-        plt.figure()
-        plt.bar(range(len(pic_votes_hist)), pic_votes_hist)
-        plt.xlabel('Picture ID')
-        plt.ylabel('Number of Votes')
-        plt.savefig(static_stats_path + 'img_votes_distr.png')
-
-        # Plot Distribution of pictures over users
-        pic_usr_hist = []
-        for u in usr:
-            pic_usr_hist.append(u.upload_pic)
-        pic_usr_hist = sorted(pic_usr_hist, key=int)
-        plt.figure()
-        plt.bar(range(len(pic_usr_hist)), pic_usr_hist)
-        plt.xlabel('User ID')
-        plt.ylabel('Number of Uploaded Images')
-        plt.savefig(static_stats_path + 'img_usr_distr.png')
+        plot_stats(usr, img, vte, rpt, static_stats_path)
 
         context_dict = {
             'num_usr': len(usr),
