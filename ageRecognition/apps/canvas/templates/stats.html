@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+<head lang="en">
+    {% block extra_head %}
+    <meta charset="UTF-8">
+    <title>Stats</title>
+    {% endblock extra_head %}
+</head>
+<body>
+{% block content %}
+    <img src="{{ STATIC_URL }}stats/img_votes_distr.png">
+{% endblock content %}
+</body>
+</html>

@@ -15,6 +15,49 @@ from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
 from django.db.models.fields.files import FieldFile
 from ageRecognition.settings.base import Base
+import matplotlib.pyplot as plt
+
+
+@facebook_required_lazy
+def stats(request):
+    accepted_ids = ['10152267472422012']
+
+    # Get the graph from the FB API
+    graph = get_facebook_graph(request=request)
+    request.user.facebookprofile.facebook_id = graph.get('me', fields='id')['id']
+    request.user.facebookprofile.save()
+
+    if (not request.user.pk is None) and request.user.facebookprofile.facebook_id in accepted_ids:
+        context = RequestContext(request)
+        static_stats_path = Base.STATICFILES_DIRS[0] + '/static/stats/'
+
+        # Get Data Base
+        usr = list(UserProfile.objects.all().order_by('user__date_joined'))
+        img = list(Picture.objects.all().order_by('date'))
+        vte = list(Votes.objects.all().order_by('date'))
+        rpt = list(Report.objects.all().order_by('date'))
+
+        # Plot Distribution of votes over pictures
+        pic_votes_hist = []
+        for p in img:
+            count = 0
+            for v in vte:
+                if v.pic == p:
+                    count += 1
+            pic_votes_hist.append(count)
+        pic_votes_hist = sorted(pic_votes_hist, key=int)
+        plt.figure()
+        plt.bar(range(len(pic_votes_hist)), pic_votes_hist)
+        plt.xlabel('Picture ID')
+        plt.ylabel('Number of Votes')
+        plt.savefig(static_stats_path + 'img_votes_distr.png')
+
+        context_dict = {}
+
+        return render_to_response('stats.html', context_dict, context_instance=context)
+    else:
+        return HttpResponseRedirect('/canvas/terms/')
+
 
 @facebook_required_lazy
 def home(request):
