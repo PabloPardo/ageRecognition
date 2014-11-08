@@ -15,21 +15,18 @@ from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
 from django.db.models.fields.files import FieldFile
 from ageRecognition.settings.base import Base
+from ageRecognition.settings.local import SUPERUSER_ID
 
 
 @facebook_required_lazy
 def stats(request):
-    # Add accepted facebook ID's
-    accepted_ids = ['10152267472422012',
-                    '371671599651652',
-                    '10152763949984306']
 
     # Get the graph from the FB API
     graph = get_facebook_graph(request=request)
     request.user.facebookprofile.facebook_id = graph.get('me', fields='id')['id']
     request.user.facebookprofile.save()
 
-    if (not request.user.pk is None) and request.user.facebookprofile.facebook_id in accepted_ids:
+    if (not request.user.pk is None) and request.user.facebookprofile.facebook_id in SUPERUSER_ID:
         context = RequestContext(request)
         static_stats_path = Base.STATICFILES_DIRS[0] + '/static/stats/'
 
