@@ -10,7 +10,36 @@
 </head>
 <body>
 {% block content %}
-    <img src="{{ STATIC_URL }}stats/img_votes_distr.png">
+    <ul>
+        <li><strong>Number of Users:</strong> {{ num_usr }}</li>
+        <li><strong>Number of Images:</strong> {{ num_img }}</li>
+        <li><strong>Number of Votes:</strong> {{ num_vte }}</li>
+        <li><strong>Number of Reports:</strong> {{ num_rpt }}</li>
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Votes per image Distribution
+                </th>
+                <th>
+                    Distribution of pictures over users
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <img src="{{ STATIC_URL }}stats/img_votes_distr.png" width="500" height="500">
+                </td>
+                <td>
+                    <img src="{{ STATIC_URL }}stats/img_usr_distr.png" width="500" height="500">
+                </td>
+            </tr>
+        </tbody>
+    </table>
 {% endblock content %}
 </body>
+{% block js %}
+{% endblock js %}
 </html>
