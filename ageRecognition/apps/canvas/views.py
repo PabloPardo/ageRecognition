@@ -20,11 +20,11 @@ from ageRecognition.settings.local import SUPERUSER_ID
 
 @facebook_required_lazy
 def stats(request):
-
-    # Get the graph from the FB API
-    graph = get_facebook_graph(request=request)
-    request.user.facebookprofile.facebook_id = graph.get('me', fields='id')['id']
-    request.user.facebookprofile.save()
+    if (not request.user.pk is None) and request.user.facebookprofile.facebook_id:
+        # Get the graph from the FB API
+        graph = get_facebook_graph(request=request)
+        request.user.facebookprofile.facebook_id = graph.get('me', fields='id')['id']
+        request.user.facebookprofile.save()
 
     if (not request.user.pk is None) and request.user.facebookprofile.facebook_id in SUPERUSER_ID:
         context = RequestContext(request)
