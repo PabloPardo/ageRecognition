@@ -18,17 +18,17 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet">
     <link rel="icon" type="image/png" href="{% static 'images/logo/small_logo.png' %}" />
     <!--Load Bootstrap css files-->
+    <link rel="stylesheet" href="{% static 'css/bootstrap1.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/normalize.min.css' %}">
     <!--Load font-awesome css files (fancy icons)-->
     <link rel="stylesheet" href="{% static 'font-awesome-4.1.0/css/font-awesome.min.css' %}">
     <!--Load animate and presonaliced css files-->
-    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
-    <link rel="stylesheet" href="{% static 'css/templatemo_misc.css' %}">
-    <link rel="stylesheet" href="{% static 'css/templatemo_style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style_tables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo_misc.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/templatemo_style.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_tables.min.css' %}">
     <!-- Load django_facebook css files form STATIC-->
     <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
 
@@ -38,10 +38,10 @@
     <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
-    <script src="{% static 'js/jquery.tablesorter.js' %}"></script>
-    <script src="{% static 'js/bootstrap.js' %}"></script>
-    <script src="{% static 'js/plugins.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/jquery.tablesorter.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins.min.js' %}"></script>
+    <script src="{% static 'js/main.min.js' %}"></script>
     <script type="text/javascript" id="js">$(document).ready(function() {
         // call the tablesorter plugin
         $("table").tablesorter({
