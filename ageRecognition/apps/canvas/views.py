@@ -98,7 +98,7 @@ def game(request):
                     user = request.user.userprofile
                     newvote = Votes()
 
-                    newvote.vote = votes_list[i]
+                    newvote.vote = int(votes_list[i])
                     newvote.user = request.user.userprofile
                     newvote.pic = pic
                     newvote.date = str(datetime.datetime.now().date())
