@@ -9,11 +9,10 @@ from django.shortcuts import RequestContext, render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.image import Image
-from apps.canvas.extra_functions import compare, calculate_score, plot_stats
+from apps.canvas.extra_functions import compare, plot_stats
 from apps.canvas.models import UserProfile, Picture, Votes, Report
 from apps.canvas.forms import UserForm, PictureForm, VoteForm, ReportForm
 from django_facebook.api import get_facebook_graph
-from django.db.models.fields.files import FieldFile
 from ageRecognition.settings.base import Base
 from ageRecognition.settings.local import SUPERUSER_ID
 
@@ -53,9 +52,6 @@ def stats(request):
 @facebook_required_lazy
 def home(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
-        # Computing Global Score of the current user
-        calculate_score(request.user.userprofile)
-
         # Get the graph from the FB API
         if not 'num_friends' in request.session or not 'friends' in request.session:
             graph = get_facebook_graph(request=request)
@@ -98,42 +94,34 @@ def game(request):
                 scores = []
                 response = {'scores': scores, 'votes': votes_list}
                 for i in range(len(votes_list)):
+                    pic = Picture.objects.get(id=pics_id[i])
+                    user = request.user.userprofile
                     newvote = Votes()
+
                     newvote.vote = votes_list[i]
                     newvote.user = request.user.userprofile
-                    newvote.pic = Picture.objects.get(id=pics_id[i])
+                    newvote.pic = pic
                     newvote.date = str(datetime.datetime.now().date())
-
-                    if newvote.pic.ground_truth == 0:
-                        newvote.score = abs(newvote.pic.real_age - int(votes_list[i]))
-                    else:
-                        newvote.score = abs(newvote.pic.ground_truth - int(votes_list[i]))
+                    newvote.score = abs(pic.ground_truth - int(votes_list[i]))
                     scores.append(5 if newvote.score > 10 else 3*(10 - newvote.score))
-                    newvote.save()
-
-                    # Save cum_vote_score in user
-                    newvote.user.cum_vote_score += int(newvote.score)
-                    newvote.user.eval_pic += 1
-                    newvote.user.save()
 
                     # Update Number of votes and Cumulative votes of the voted picture
-                    newvote.pic.num_votes += 1
-                    newvote.pic.cum_votes += int(newvote.vote)
-                    newvote.pic.save()
-
-
                     # Update Ground Truth of the voted picture
-                    newvote.pic.ground_truth = int(newvote.pic.cum_votes / newvote.pic.num_votes)
-                    newvote.pic.save()
+                    pic.num_votes += 1
+                    pic.cum_votes += newvote.vote
+                    pic.ground_truth = int(pic.cum_votes / pic.num_votes)
 
-                    # Calculate the precision of the user
-                    precision = newvote.user.cum_vote_score / newvote.user.eval_pic
-                    newvote.user.ach_precision = 0 if precision > 10 else 10 - precision
-                    newvote.user.save()
+                    # Update user's cum_vote_score and precision
+                    user.cum_vote_score += newvote.score
+                    user.eval_pic += 1
+                    user.ach_precision = max(0, 10 - user.cum_vote_score / user.eval_pic)
+                    user.score_global += 0 if newvote.score > 10 else 3 * (10 - newvote.score)
 
-                    # Computing Global Score of the current user
-                    calculate_score(request.user.userprofile)
+                    user.save()
+                    pic.save()
+                    newvote.save()
 
+                # Compute Global Score of the current user and return
                 return HttpResponse(json.dumps(response), content_type="application/json")
 
             elif report_form.is_valid():
@@ -223,9 +211,6 @@ def ranking(request):
             friends = [f['name'] for f in friends]
             request.session['friends'] = friends
 
-        # Computing Global Score of the current user
-        calculate_score(request.user.userprofile)
-
         friends = request.session['friends']
 
         # Load users ordered by global score
@@ -261,20 +246,19 @@ def gallery(request):
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
-        # Load pictures for the home page
-        user_pictures_list = Picture.objects.filter(owner=request.user, visibility=True)
-
         # Handle file upload
         if request.method == 'POST':
 
             pic_form = PictureForm(data=request.POST, files=request.FILES)
-
             if pic_form.files:
                 real_age_list = pic_form.data.getlist('real_age')
                 x = request.POST.getlist('x')
                 y = request.POST.getlist('y')
                 w = request.POST.getlist('w')
                 h = request.POST.getlist('h')
+
+                ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
+                user_pictures_list = list(Picture.objects.filter(owner=request.user))
                 for i in range(len(pic_form.files)):
                     file_name = 'pic[' + str(i) + ']'
                     newpic = Picture()
@@ -283,14 +267,31 @@ def gallery(request):
                     newpic.owner = request.user.userprofile
                     newpic.real_age = real_age_list[i]
                     newpic.date = str(datetime.datetime.now().date())
-
-                    ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
-                    file_extension = os.path.splitext(newpic.pic.path)[-1]
-                    request.FILES[file_name].name = str(request.user.id) + '_' + str(i) + '_' + ts + file_extension
+                    newpic.pic.name = str(request.user.id) + '_' + str(i) + '_' + ts + os.path.splitext(newpic.pic.name)[-1]
+                    newpic.num_votes = 1
+                    newpic.cum_votes = newpic.real_age
                     newpic.save()
 
-                    # Add histogram to the pic
+                    # Check if the new image has been uploaded by the user
                     newpic.hist = json.dumps(Image.open(newpic.pic.path).convert('RGB').histogram())
+                    found = False
+                    for p in range(len(user_pictures_list)):
+                        tpicture = user_pictures_list[p]
+                        if compare(json.loads(newpic.hist),  json.loads(tpicture.hist)) < 0.1:
+                            if not tpicture.visibility:
+                                tpicture.visibility = True
+                                tpicture.save()
+                                request.user.userprofile.upload_pic += 1
+                            else:
+                                request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
+                            found = True
+                            break
+
+                    # If image already exists, process next one
+                    if found:
+                        os.remove(newpic.pic.path)
+                        newpic.delete()
+                        continue
 
                     # Crop Image if needed
                     img = Image.open(newpic.pic.path)
@@ -301,27 +302,14 @@ def gallery(request):
                         height = int(float(h[i]))
                         newimg = img.crop((left, top, left + width, top + height))
                         newimg.save(Base.PROJECT_DIR + Base.MEDIA_URL + '/' + newpic.pic.name)
-                        field = newpic.pic.field
-                        name = newpic.pic.name
-                        newpic.pic = FieldFile(newimg, field, name)
 
+                    # Save image to db & disk
+                    request.user.userprofile.upload_pic += 1
+                    request.user.userprofile.score_global += 50
                     newpic.save()
 
-                    # Check if the new image has been uploaded by the user
-                    for p in range(user_pictures_list.count()-1):
-                        if compare(json.loads(newpic.hist),  json.loads(user_pictures_list[p].hist)) < 0.1:
-                            if not user_pictures_list[p].visibility:
-                                user_pictures_list[p].visibility = True
-                                user_pictures_list[p].save()
-                            else:
-                                request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
-
-                            os.remove(newpic.pic.path)
-                            newpic.delete()
-                            break
-
-                # Computing Global Score of the current user
-                calculate_score(request.user.userprofile)
+                # Save user images counter
+                request.user.userprofile.save()
 
                 # Redirect to the document list after POST
                 return HttpResponse(json.dumps({}), content_type="application/json")
@@ -336,7 +324,7 @@ def gallery(request):
         else:
             pic_form = PictureForm()  # A empty, unbound pic_form
 
-        context_dict = {'pictures': user_pictures_list,
+        context_dict = {'pictures': Picture.objects.filter(owner=request.user, visibility=True),
                         'user': request.user,
                         'pic_form': pic_form,
                         'message': request.session.get('message', '')}
@@ -353,6 +341,11 @@ def rm_image(request, id_rm):
     if request.user.id == p.owner.user.id:
         p.visibility = False
         p.save()
+
+        u = request.user.userprofile
+        u.upload_pic -= 1
+        u.score_global -= 50
+        u.save()
 
     return HttpResponseRedirect('/canvas/gallery/')
 
