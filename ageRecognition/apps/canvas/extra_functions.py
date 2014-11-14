@@ -47,6 +47,9 @@ def plot_stats(usr, img, vte, rpt, path):
     # Plot the evolution in time of the DB
     # ------------------------------------
 
+    months = dts.MonthLocator(range(1, 13), bymonthday=1, interval=3)
+    monthsFmt = dts.DateFormatter("%b '%y")
+
     # Plot the number of users in time
     user_join_dates = [u.user.date_joined for u in usr]
     cum_num_usr = []
@@ -56,6 +59,20 @@ def plot_stats(usr, img, vte, rpt, path):
         cum_num_usr.append(count_usr)
 
     dates_usr = dts.date2num(user_join_dates)
+
+    fig, ax = plt.subplots()
+    ax.plot_date(dates_usr, cum_num_usr, fmt="-")
+
+    ax.xaxis.set_major_locator(months)
+    ax.xaxis.set_major_formatter(monthsFmt)
+    ax.autoscale_view()
+
+    fig.autofmt_xdate()
+
+    plt.xlabel('Time')
+    plt.ylabel('No. Users')
+    ax.grid(True)
+    plt.savefig(path + 'time_usr.png')
 
     # Plot the number of pictures in time
     picture_dates = [p.date for p in img]
@@ -67,6 +84,20 @@ def plot_stats(usr, img, vte, rpt, path):
 
     dates_img = dts.date2num(picture_dates)
 
+    fig, ax = plt.subplots()
+    ax.plot_date(dates_img, cum_num_img, fmt="r-")
+
+    ax.xaxis.set_major_locator(months)
+    ax.xaxis.set_major_formatter(monthsFmt)
+    ax.autoscale_view()
+
+    fig.autofmt_xdate()
+
+    plt.xlabel('Time')
+    plt.ylabel('No. Pictures')
+    ax.grid(True)
+    plt.savefig(path + 'time_img.png')
+
     # Plot the number of pictures in time
     votes_dates = [v.date for v in vte]
     cum_num_vte = []
@@ -77,13 +108,8 @@ def plot_stats(usr, img, vte, rpt, path):
 
     dates_vte = dts.date2num(votes_dates)
 
-    months = dts.MonthLocator(range(1, 13), bymonthday=1, interval=3)
-    monthsFmt = dts.DateFormatter("%b '%y")
-
     fig, ax = plt.subplots()
-    p1, = ax.plot_date(dates_usr, cum_num_usr, fmt="-")
-    p2, = ax.plot_date(dates_img, cum_num_img, fmt="r-")
-    p3, = ax.plot_date(dates_vte, cum_num_vte, fmt="g-")
+    ax.plot_date(dates_vte, cum_num_vte, fmt="g-")
 
     ax.xaxis.set_major_locator(months)
     ax.xaxis.set_major_formatter(monthsFmt)
@@ -92,6 +118,6 @@ def plot_stats(usr, img, vte, rpt, path):
     fig.autofmt_xdate()
 
     plt.xlabel('Time')
-    ax.legend([p1, p2, p3], ['Users', 'Pictures', 'Votes'])
+    plt.ylabel('No. Votes')
     ax.grid(True)
-    plt.savefig(path + 'time_usr.png')
+    plt.savefig(path + 'time_vts.png')
