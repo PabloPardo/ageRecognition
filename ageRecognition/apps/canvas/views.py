@@ -150,8 +150,10 @@ def game(request):
         try:
             user_votes_list = Votes.objects.values_list('pic__id').filter(user=request.user)
             voted_pics = [v[0] for v in user_votes_list]
+            pic_rpt_list = Report.objects.values_list('pic__id').filter(user=request.user)
+            rpted_pics = [r[0] for r in pic_rpt_list]
 
-            game_picture_list = game_picture_list.exclude(pk__in=voted_pics).filter(num_votes__lt=100)
+            game_picture_list = game_picture_list.exclude(pk__in=voted_pics).exclude(pk__in=rpted_pics).filter(num_votes__lt=50)
 
             # Sort the images by the users global score (se the users with highest scores get their images voted more).
             game_picture_list = game_picture_list.order_by('-owner__score_global')
