@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import time
 import datetime
 from django.db.models import Avg
@@ -155,23 +156,30 @@ def game(request):
 
             game_picture_list = game_picture_list.exclude(pk__in=voted_pics).exclude(pk__in=rpted_pics).filter(num_votes__lt=50)
 
-            # Sort the images by the users global score (se the users with highest scores get their images voted more).
-            game_picture_list = game_picture_list.order_by('-owner__score_global')
-            id_list = [p.id for p in game_picture_list]
+            # Chose 4 random images (or less if not enough)
+            if game_picture_list.count() > 4:
+                idx = random.sample(range(game_picture_list.count()), 4)
+                actual_game_pic_list = [game_picture_list[i] for i in idx]
+            else:
+                actual_game_pic_list = game_picture_list
 
-            # Sort the images by number of votes (images with less than 100 votes)
-            pics_ord_by_votes = Picture.objects.filter(pk__in=id_list, num_votes__lt=100).order_by('num_votes')
-
-            # SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*)
-            # as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes
-
-            # Get the four images to show:
-            actual_game_pic_list = list(game_picture_list[:2])
-            for i in range(pics_ord_by_votes.count()):
-                if not pics_ord_by_votes[i].id in id_list[:2]:
-                    actual_game_pic_list.append(pics_ord_by_votes[i])
-                if len(actual_game_pic_list) == 4:
-                    break
+            # # Sort the images by the users global score (se the users with highest scores get their images voted more).
+            # game_picture_list = game_picture_list.order_by('-owner__score_global')
+            # id_list = [p.id for p in game_picture_list]
+            #
+            # # Sort the images by number of votes (images with less than 100 votes)
+            # pics_ord_by_votes = Picture.objects.filter(pk__in=id_list, num_votes__lt=100).order_by('num_votes')
+            #
+            # # SELECT x.num_votes,canvas_picture.* from canvas_picture LEFT JOIN (SELECT pic_id as vote_pic_id, Count(*)
+            # # as num_votes FROM canvas_votes GROUP BY pic_id) AS x ON canvas_picture.id=x.vote_pic_id ORDER BY num_votes
+            #
+            # # Get the four images to show:
+            # actual_game_pic_list = list(game_picture_list[:2])
+            # for i in range(pics_ord_by_votes.count()):
+            #     if not pics_ord_by_votes[i].id in id_list[:2]:
+            #         actual_game_pic_list.append(pics_ord_by_votes[i])
+            #     if len(actual_game_pic_list) == 4:
+            #         break
 
         except Exception, e:
             actual_game_pic_list = []
