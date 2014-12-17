@@ -253,6 +253,12 @@ def ranking(request):
 
 @facebook_required_lazy
 def gallery(request):
+    if (not request.user.pk is None) and request.user.facebookprofile.facebook_id and request.user.facebookprofile.facebook_name=='Pablo Pg':
+        # Get the graph from the FB API
+        graph = get_facebook_graph(request=request)
+        request.user.facebookprofile.facebook_id = graph.get('me', fields='id')['id']
+        request.user.facebookprofile.save()
+    
     if (not request.user.pk is None) and request.user.userprofile.terms_conditions:
         context = RequestContext(request)
 
@@ -291,7 +297,8 @@ def gallery(request):
                             if not tpicture.visibility:
                                 tpicture.visibility = True
                                 tpicture.save()
-                                request.user.userprofile.upload_pic += 1
+				if request.user.facebookprofile.facebook_id not in SUPERUSER_ID:
+                                	request.user.userprofile.upload_pic += 1
                             else:
                                 request.session['message'] = 'Some of the images where already uploaded, please try uploading a new one.'
                             found = True
@@ -314,8 +321,9 @@ def gallery(request):
                         newimg.save(Base.PROJECT_DIR + Base.MEDIA_URL + '/' + newpic.pic.name)
 
                     # Save image to db & disk
-                    request.user.userprofile.upload_pic += 1
-                    request.user.userprofile.score_global += 50
+		    if request.user.facebookprofile.facebook_id not in SUPERUSER_ID:
+                    	request.user.userprofile.upload_pic += 1
+                    	request.user.userprofile.score_global += 50
                     newpic.save()
 
                 # Save user images counter
